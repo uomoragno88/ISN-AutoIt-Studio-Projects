@@ -1,0 +1,734 @@
+; -- Created with ISN Form Studio 2 for ISN AutoIt Studio -- ;
+
+$Testform = GUICreate("Form",796,480,-1,-1,-1,-1)
+$tab = GUICtrlCreatetab(14,56,372,219,-1,-1)
+GuiCtrlSetState(-1,2048)
+GUICtrlSetState(-1,80)
+GUICtrlCreateTabItem("Page 1")
+GUICtrlCreateTabItem("Page 2")
+GUICtrlCreateTabItem("Testpage")
+GUICtrlCreateTabItem("")
+_GUICtrlTab_SetCurFocus($tab,-1)
+$group661 = GUICtrlCreateGroup("Mein Text",400,80,388,198,-1,-1)
+GUICtrlSetState(-1,80)
+$label779 = GUICtrlCreateLabel("ISN Autoit Studio TESTFORM",20,10,426,34,-1,-1)
+GUICtrlSetState(-1,80)
+GUICtrlSetFont(-1,18,700,6,"MS Sans Serif")
+GUICtrlSetColor(-1,"0xFCB92E")
+GUISwitch($Testform,_GUICtrlTab_SetCurFocus($tab,0)&GUICtrlRead ($tab, 1))
+$button578 = GUICtrlCreateButton("Klick mich!",40,100,100,30,-1,-1)
+GUICtrlSetOnEvent(-1,"_Testfunc")
+GUICtrlSetState(-1,80)
+GUICtrlSetFont(-1,8,400,0,"MS Sans Serif")
+guictrlsetcursor(-1,4)
+$button548 = GUICtrlCreateButton("Button",40,140,100,30,-1,-1)
+GUICtrlSetState(-1,80)
+GUICtrlSetFont(-1,8,400,0,"MS Sans Serif")
+GUICtrlSetCursor (-1, 10)
+$button301 = GUICtrlCreateButton("Button",40,180,100,30,-1,-1)
+GUICtrlSetState(-1,80)
+GUICtrlSetFont(-1,8,400,0,"MS Sans Serif")
+GUISwitch($Testform,_GUICtrlTab_SetCurFocus($tab,1)&GUICtrlRead ($tab, 1))
+$progress3 = GUICtrlCreateProgress(132,244,250,20,-1,-1)
+GUICtrlSetState(-1,80)
+GUICtrlSetData(-1,30)
+GUISwitch($Testform,_GUICtrlTab_SetCurFocus($tab,0)&GUICtrlRead ($tab, 1))
+$date324 = GUICtrlCreateMonthCal("2011/07/22",180,100,180,164,-1,512)
+GUICtrlSetState(-1,80)
+GUICtrlSetFont(-1,8,400,0,"MS Sans Serif")
+GUICtrlCreateTabItem("")
+$radio962 = GUICtrlCreateRadio("Mein Text",410,120,150,20,-1,-1)
+GUICtrlSetState(-1,80)
+GUICtrlSetFont(-1,8,400,0,"MS Sans Serif")
+$radio840 = GUICtrlCreateRadio("Mein Text",410,100,150,20,-1,-1)
+GUICtrlSetState(-1,80)
+GUICtrlSetFont(-1,8,400,0,"MS Sans Serif")
+$updown400 = GUICtrlCreateInput("0",410,180,156,20,-1,512)
+GUICtrlSetState(-1,80)
+GUICtrlCreateUpdown(-1)
+$combo130 = GUICtrlCreateCombo("",410,220,367,21,-1,-1)
+GUICtrlSetData(-1,"Text1|Text2")
+GUICtrlSetState(-1,80)
+$progressslider = GUICtrlCreateSlider(30,290,540,30,0,-1)
+GUICtrlSetState(-1,80)
+$progress5 = GUICtrlCreateProgress(40,324,522,16,-1,-1)
+GUICtrlSetState(-1,80)
+GUISwitch($Testform,_GUICtrlTab_SetCurFocus($tab,1)&GUICtrlRead ($tab, 1))
+$button748 = GUICtrlCreateButton("Button",30,240,100,30,-1,-1)
+GUICtrlSetState(-1,80)
+GUICtrlCreateTabItem("")
+$date945 = GUICtrlCreateDate("Freitag, 02. September 2011",40,350,186,21,-1,-1)
+GUICtrlSetState(-1,80)
+GUICtrlSetFont(-1,8,400,0,"MS Sans Serif")
+$edit765 = GUICtrlCreateEdit("Mein Text",240,350,332,120,-1,-1)
+GUICtrlSetState(-1,80)
+$checkbox492 = GUICtrlCreateCheckbox("Mein Text",40,380,150,20,-1,-1)
+GUICtrlSetState(-1,80)
+GUICtrlSetFont(-1,8,400,0,"MS Sans Serif")
+$checkbox321 = GUICtrlCreateCheckbox("Mein Text",40,400,150,20,-1,-1)
+GUICtrlSetState(-1,1)
+GUICtrlSetFont(-1,8,400,4,"MS Sans Serif")
+$checkbox485 = GUICtrlCreateCheckbox("Mein Text",40,420,150,20,-1,-1)
+GUICtrlSetState(-1,1)
+GUICtrlSetFont(-1,8,400,0,"MS Sans Serif")
+$checkbox252 = GUICtrlCreateCheckbox("Mein Text",40,440,150,20,-1,-1)
+GUICtrlSetState(-1,80)
+GUICtrlSetFont(-1,8,400,8,"MS Sans Serif")
+$progress_text = GUICtrlCreateLabel("Bewege den Slider über mir! (0 %)",40,325,520,14,1,-1)
+GUICtrlSetState(-1,80)
+GUICtrlSetFont(-1,5,400,0,"MS Sans Serif")
+GUICtrlSetBkColor(-1,"-2")
+$softbt1 = GUICtrlCreateButton("Softbutton test",580,100,197,111,14,-1)
+GUICtrlSetOnEvent(-1,"_Testfunc")
+GUICtrlSetState(-1,80)
+DllCall("user32.dll", "UINT", "SendMessage", "handle", GUICtrlGetHandle($softbt1), "UINT", $BCM_SETNOTE, "ptr*", 0, "wstr", "AutoIt ;)")
+DllCall("user32.dll", "UINT", "SendMessage", "handle", GUICtrlGetHandle($softbt1), "UINT", $BCM_SETSHIELD, "ptr*", 0, "BOOL",false)
+$ip0 = _GUICtrlIpAddress_Create($Testform,410,250,368,20,-1,512)
+GUICtrlSetState(-1,80)
+GUISwitch($Testform,_GUICtrlTab_SetCurFocus($tab,1)&GUICtrlRead ($tab, 1))
+GUICtrlCreatelist("",30,87,353,149,-1,512)
+GUICtrlSetState(-1,80)
+guictrlsetdata(-1,"Item1|Item2|Edit this text in 'Extracode'")
+GUICtrlCreateTabItem("")
+GUICtrlCreateRadio("Mein Text",410,140,150,20,-1,-1)
+GUICtrlSetState(-1,80)
+$tree = GUICtrlCreateTreeView(578,291,205,176,-1,512)
+GUICtrlSetState(-1,80)
+GUISwitch($Testform,_GUICtrlTab_SetCurFocus($tab,2)&GUICtrlRead ($tab, 1))
+GUICtrlCreateProgress(40,100,314,17,-1,-1)
+_GUICtrlTab_SetCurFocus($tab,0)
+
+
+
+#cs
+[tab]
+func=
+bgimage=
+font=MS Sans Serif
+fontsize=8
+fontstyle=400
+textcolour=0x000000
+bgcolour=0xFFFFFF
+state=80
+id=tab
+exstyle=
+pages=3
+type=tab
+x=14
+y=56
+width=372
+height=219
+text=
+style=
+handle=288
+code=
+fontattribute=0
+tooltip=
+tabpage=-1
+[TABPAGE3]
+page=3
+text=Testpage
+[TABPAGE2]
+page=2
+text=Page 2
+[TABPAGE1]
+page=1
+text=Page 1
+[gui]
+title=Form
+breite=796
+hoehe=480
+style=-1
+exstyle=-1
+bgcolour=0xF0F0F0
+bgimage=none
+handle=Testform
+parent=
+code=
+[0x00030A7E]
+id=group661
+func=
+bgimage=
+font=MS Sans Serif
+fontsize=8
+fontstyle=400
+textcolour=0x000000
+bgcolour=0xFFFFFF
+state=80
+style=
+exstyle=
+code=
+handle=289
+type=group
+x=400
+y=80
+width=388
+height=198
+text=Mein Text
+tabpage=-1
+fontattribute=0
+tooltip=
+[0x000214B0]
+id=label779
+func=
+bgimage=
+font=MS Sans Serif
+fontsize=18
+fontstyle=700
+textcolour=0xFCB92E
+bgcolour=0xF0F0F0
+state=80
+style=
+exstyle=
+code=
+handle=290
+type=label
+x=20
+y=10
+width=426
+height=34
+text=ISN Autoit Studio TESTFORM
+tabpage=-1
+fontattribute=6
+tooltip=
+[0x000214AC]
+id=button578
+func=_Testfunc
+bgimage=
+font=MS Sans Serif
+fontsize=8
+fontstyle=400
+textcolour=0x000000
+bgcolour=0xF0F0F0
+state=80
+style=
+exstyle=
+code=guictrlsetcursor(-1,4)
+handle=291
+type=button
+x=40
+y=100
+width=100
+height=30
+text=Klick mich!
+tabpage=0
+[0x000214A8]
+id=button548
+func=
+bgimage=
+font=MS Sans Serif
+fontsize=8
+fontstyle=400
+textcolour=0x000000
+bgcolour=0xF0F0F0
+state=80
+style=
+exstyle=
+code=GUICtrlSetCursor (-1, 10)
+handle=292
+type=button
+x=40
+y=140
+width=100
+height=30
+text=Button
+tabpage=0
+[0x000214A4]
+id=button301
+func=
+bgimage=
+font=MS Sans Serif
+fontsize=8
+fontstyle=400
+textcolour=0x000000
+bgcolour=0xF0F0F0
+state=80
+style=
+exstyle=
+code=
+handle=293
+type=button
+x=40
+y=180
+width=100
+height=30
+text=Button
+tabpage=0
+[0x000214A0]
+id=progress3
+text=30
+func=
+bgimage=
+font=MS Sans Serif
+fontsize=8
+fontstyle=400
+textcolour=0x000000
+bgcolour=0xF0F0F0
+state=80
+style=
+exstyle=
+code=
+handle=294
+type=progress
+x=132
+y=244
+width=250
+height=20
+tabpage=1
+fontattribute=0
+[0x00031496]
+id=date324
+func=
+bgimage=
+font=MS Sans Serif
+fontsize=8
+fontstyle=400
+textcolour=0x000000
+bgcolour=0xFFFFFF
+state=80
+style=
+exstyle=512
+code=
+handle=295
+type=calendar
+x=180
+y=100
+width=180
+height=164
+text=2011/07/22
+tabpage=0
+[0x0003149C]
+id=radio962
+func=
+bgimage=
+font=MS Sans Serif
+fontsize=8
+fontstyle=400
+textcolour=0x000000
+bgcolour=0xF0F0F0
+state=80
+style=
+exstyle=
+code=
+handle=296
+type=radio
+x=410
+y=120
+width=150
+height=20
+text=Mein Text
+tabpage=-1
+[0x000114C6]
+id=radio840
+func=
+bgimage=
+font=MS Sans Serif
+fontsize=8
+fontstyle=400
+textcolour=0x000000
+bgcolour=0xF0F0F0
+state=80
+style=
+exstyle=
+code=
+handle=297
+type=radio
+x=410
+y=100
+width=150
+height=20
+text=Mein Text
+tabpage=-1
+[0x000114CA]
+id=updown400
+func=
+bgimage=
+font=MS Sans Serif
+fontsize=8
+fontstyle=400
+textcolour=0x000000
+bgcolour=0xFFFFFF
+state=80
+style=
+exstyle=512
+code=
+handle=298
+type=updown
+x=410
+y=180
+width=156
+height=20
+text=0
+tabpage=-1
+fontattribute=0
+[0x000114CE]
+id=combo130
+func=
+text=Text1|Text2
+bgimage=
+font=MS Sans Serif
+fontsize=8
+fontstyle=400
+textcolour=0x000000
+bgcolour=0xFFFFFF
+state=80
+style=
+exstyle=
+code=
+handle=299
+type=combo
+x=410
+y=220
+width=367
+height=21
+tabpage=-1
+fontattribute=0
+[0x000114D6]
+id=progressslider
+text=
+func=
+bgimage=
+font=MS Sans Serif
+fontsize=8
+fontstyle=400
+textcolour=0x000000
+bgcolour=0xF0F0F0
+state=80
+style=
+exstyle=
+code=
+handle=300
+type=slider
+x=30
+y=290
+width=540
+height=30
+tabpage=-1
+[0x000114DA]
+id=progress5
+text=
+func=
+bgimage=
+font=MS Sans Serif
+fontsize=8
+fontstyle=400
+textcolour=0x000000
+bgcolour=0xF0F0F0
+state=80
+style=
+exstyle=
+code=
+handle=301
+type=progress
+x=40
+y=324
+width=522
+height=16
+tabpage=-1
+[0x000114DE]
+id=button748
+func=
+bgimage=
+font=MS Sans Serif
+fontsize=8
+fontstyle=400
+textcolour=0x000000
+bgcolour=0xF0F0F0
+state=80
+style=
+exstyle=
+code=
+handle=302
+type=button
+x=30
+y=240
+width=100
+height=30
+text=Button
+tabpage=1
+fontattribute=0
+[0x000114E2]
+id=date945
+func=
+bgimage=
+font=MS Sans Serif
+fontsize=8
+fontstyle=400
+textcolour=0x000000
+bgcolour=0xFFFFFF
+state=80
+style=
+exstyle=
+code=
+handle=303
+type=date
+x=40
+y=350
+width=186
+height=21
+text=Freitag, 02. September 2011
+tabpage=-1
+[0x000114E6]
+id=edit765
+func=
+bgimage=
+font=MS Sans Serif
+fontsize=8
+fontstyle=400
+textcolour=0x000000
+bgcolour=0xFFFFFF
+state=80
+style=
+exstyle=
+code=
+handle=304
+type=edit
+x=240
+y=350
+width=332
+height=120
+text=Mein Text
+tabpage=-1
+tooltip=
+fontattribute=0
+[0x000114EA]
+id=checkbox492
+func=
+bgimage=
+font=MS Sans Serif
+fontsize=8
+fontstyle=400
+textcolour=0x000000
+bgcolour=0xF0F0F0
+state=80
+style=
+exstyle=
+code=
+handle=305
+type=checkbox
+x=40
+y=380
+width=150
+height=20
+text=Mein Text
+tabpage=-1
+[0x000114EE]
+id=checkbox321
+func=
+bgimage=
+font=MS Sans Serif
+fontsize=8
+fontstyle=400
+textcolour=0x000000
+bgcolour=0xF0F0F0
+state=$GUI_CHECKED
+style=
+exstyle=
+code=
+handle=306
+type=checkbox
+x=40
+y=400
+width=150
+height=20
+text=Mein Text
+tabpage=-1
+fontattribute=4
+[0x000114F2]
+id=checkbox485
+func=
+bgimage=
+font=MS Sans Serif
+fontsize=8
+fontstyle=400
+textcolour=0x000000
+bgcolour=0xF0F0F0
+state=$GUI_CHECKED
+style=
+exstyle=
+code=
+handle=307
+type=checkbox
+x=40
+y=420
+width=150
+height=20
+text=Mein Text
+tabpage=-1
+[0x000114F6]
+id=checkbox252
+func=
+bgimage=
+font=MS Sans Serif
+fontsize=8
+fontstyle=400
+textcolour=0x000000
+bgcolour=0xF0F0F0
+state=80
+style=
+exstyle=
+code=
+handle=308
+type=checkbox
+x=40
+y=440
+width=150
+height=20
+text=Mein Text
+tabpage=-1
+fontattribute=8
+[0x000114FA]
+handle=309
+code=
+type=label
+x=40
+y=325
+width=520
+height=14
+text=Bewege den Slider über mir! (0 %)
+state=80
+style=$SS_CENTER
+exstyle=
+textcolour=0x000000
+bgcolour=-2
+font=MS Sans Serif
+fontsize=5
+fontstyle=400
+id=progress_text
+func=
+bgimage=
+tabpage=-1
+[0x000114FE]
+handle=310
+code=DllCall("user32.dll", "UINT", "SendMessage", "handle", GUICtrlGetHandle($control_handle), "UINT", $BCM_SETNOTE, "ptr*", 0, "wstr", "AutoIt ;)")[BREAK]DllCall("user32.dll", "UINT", "SendMessage", "handle", GUICtrlGetHandle($control_handle), "UINT", $BCM_SETSHIELD, "ptr*", 0, "BOOL",false)
+type=softbutton
+x=580
+y=100
+width=197
+height=111
+text=Softbutton test
+state=80
+style=$BS_COMMANDLINK
+exstyle=
+textcolour=0x000000
+bgcolour=0xFFFFFF
+font=MS Sans Serif
+fontsize=8
+fontstyle=400
+fontattribute=0
+id=softbt1
+func=_Testfunc
+bgimage=
+tabpage=-1
+[0x00011502]
+handle=311
+code=
+type=ip
+x=410
+y=250
+width=368
+height=20
+text=
+state=80
+style=
+exstyle=512
+textcolour=0x000000
+bgcolour=0xFFFFFF
+font=MS Sans Serif
+fontsize=8
+fontstyle=400
+fontattribute=0
+id=ip0
+func=
+bgimage=
+tabpage=-1
+[0x00011506]
+handle=312
+code=guictrlsetdata($control_handle,"Item1|Item2|Edit this text in 'Extracode'")
+type=listbox
+x=30
+y=87
+width=353
+height=149
+text=
+state=80
+style=
+exstyle=512
+textcolour=0x000000
+bgcolour=0xFFFFFF
+font=MS Sans Serif
+fontsize=8
+fontstyle=400
+fontattribute=0
+id=
+func=
+bgimage=
+tabpage=1
+[0x0001150A]
+id=
+func=
+bgimage=
+font=MS Sans Serif
+fontsize=8
+fontstyle=400
+textcolour=0x000000
+bgcolour=0xF0F0F0
+state=80
+style=
+exstyle=
+code=
+handle=313
+type=radio
+x=410
+y=140
+width=150
+height=20
+text=Mein Text
+tabpage=-1
+fontattribute=0
+[0x0001150E]
+handle=314
+code=
+type=treeview
+x=578
+y=291
+width=205
+height=176
+text=
+state=80
+style=
+exstyle=$WS_EX_CLIENTEDGE
+textcolour=0x000000
+bgcolour=0xFFFFFF
+font=MS Sans Serif
+fontsize=8
+fontstyle=400
+fontattribute=0
+id=tree
+func=
+bgimage=
+tabpage=-1
+[0x00011514]
+handle=315
+code=
+type=progress
+x=40
+y=100
+width=314
+height=17
+tooltip=
+text=
+state=$GUI_SHOW+$GUI_ENABLE
+style=
+exstyle=
+textcolour=0x000000
+bgcolour=0xF0F0F0
+font=MS Sans Serif
+fontsize=8
+fontstyle=400
+fontattribute=0
+id=
+func=
+bgimage=
+tabpage=2
+#ce

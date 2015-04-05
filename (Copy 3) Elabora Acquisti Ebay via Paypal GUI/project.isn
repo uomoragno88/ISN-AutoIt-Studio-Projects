@@ -1,0 +1,24 @@
+[ISNAUTOITSTUDIO]
+mainfile=Elabora Acquisti Ebay via Paypal GUI.au3
+compile_exename=CSV ebay parse
+name=(Copy 3) Elabora Acquisti Ebay via Paypal GUI
+date=02.04.2015
+author=Stefano
+comment=
+studioversion=0.97 BETA
+version=1.0
+time=175303196
+projectopened=46
+lastusedfiles=\Forms\GUI_Form.isf|\Elabora Acquisti Ebay via Paypal GUI.au3|\Elabora Acquisti Ebay via Paypal GUI.exe|\Debug\CSV ebay parse.Debug Script.au3|\Elabora Ordini Ebay e Amazon GUI.au3|\Elabora Ordini Ebay e Amazon GUI.exe|\GUI_Form.au3|\CSV ebay parse.au3|\p5.au3|\Forms\p5.isf|\project.isn
+opened=
+opened_tabs=H:\ISN AutoIt Studio\Projects\Elabora Acquisti Ebay via Paypal GUI\Elabora Acquisti Ebay via Paypal GUI.au3|
+lastopendate=02.04.2015 16:36
+use_changelog_manager=false
+[ISNPROJECT_CHANGELOGDATA]
+items=0104201515003750|
+text[0104201515003750]=gestire i fornitori per acquisti estranei alla gestione dell'e-commerce
+date[0104201515003750]=2015/04/01
+editor[0104201515003750]=S522733
+version[0104201515003750]=1.0
+subject[0104201515003750]=gestire fornitori
+time[0104201515003750]=0

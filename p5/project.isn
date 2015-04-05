@@ -1,0 +1,17 @@
+[ISNAUTOITSTUDIO]
+name=p5
+mainfile=p5.au3
+author=Stefano
+time=22063551
+date=14.03.2015
+comment=
+studioversion=0.97 BETA
+version=1.0
+projectopened=32
+lastusedfiles=\Forms\p5.isf|\p5.au3|\Dbug.au3|\test.au3|\test_debug.au3|\Dbug.au3.txt|\prova.au3|H:\ISN AutoIt Studio\autoit_3_3_12\install\Include\WinAPI.au3|H:\ISN AutoIt Studio\autoit_3_3_12\install\Include\UDFGlobalID.au3|H:\ISN AutoIt Studio\autoit_3_3_12\install\Include\GuiButton.au3|H:\ISN AutoIt Studio\autoit_3_3_12\install\Include\WindowsConstants.au3
+opened=
+opened_tabs=H:\ISN AutoIt Studio\Projects\p5\p5.au3|
+lastopendate=04.04.2015 22:06
+use_changelog_manager=false
+[chiudi]
+comment=chiude il form[BREAK]
