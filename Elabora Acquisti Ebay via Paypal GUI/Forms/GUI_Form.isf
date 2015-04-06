@@ -147,7 +147,7 @@ xpos=-1
 ypos=-1
 center_gui=true
 title_textmode=normal
-[0x00051C62]
+[0x00011DDE]
 handle=453
 locked=0
 resize=
@@ -174,7 +174,7 @@ bgimage=
 order=1
 tabpage=-1
 textmode=text
-[0x00051D16]
+[0x00011DE2]
 handle=454
 locked=0
 resize=
@@ -201,7 +201,7 @@ bgimage=
 order=2
 tabpage=-1
 textmode=text
-[0x00051D1A]
+[0x00011DE6]
 handle=455
 locked=0
 resize=
@@ -228,7 +228,7 @@ bgimage=
 order=4
 tabpage=-1
 textmode=text
-[0x00051D1E]
+[0x00011DEA]
 handle=456
 locked=0
 resize=
@@ -255,7 +255,7 @@ bgimage=
 order=5
 tabpage=-1
 textmode=text
-[0x00061D22]
+[0x00011DEE]
 handle=457
 locked=0
 resize=
@@ -282,7 +282,7 @@ bgimage=
 tabpage=-1
 textmode=text
 order=6
-[0x00041D10]
+[0x00011DF2]
 handle=458
 locked=0
 resize=
@@ -309,7 +309,7 @@ bgimage=
 order=3
 tabpage=-1
 textmode=text
-[0x00041D0C]
+[0x00011DF6]
 handle=459
 locked=0
 resize=
@@ -336,7 +336,7 @@ bgimage=
 tabpage=-1
 textmode=text
 order=7
-[0x00041D08]
+[0x00011DFA]
 handle=460
 locked=0
 resize=
@@ -363,7 +363,7 @@ bgimage=
 tabpage=-1
 textmode=text
 order=8
-[0x00041D04]
+[0x00011DFE]
 handle=461
 locked=0
 resize=
@@ -390,7 +390,7 @@ bgimage=Images\spedizione.jpg
 order=12
 tabpage=-1
 textmode=text
-[0x00041D00]
+[0x00011E02]
 handle=462
 locked=0
 resize=
@@ -417,7 +417,7 @@ bgimage=Images\test_images.jpg
 order=13
 tabpage=-1
 textmode=text
-[0x00041CFC]
+[0x00011E06]
 handle=463
 locked=0
 resize=
@@ -444,7 +444,7 @@ bgimage=
 tabpage=-1
 textmode=text
 order=15
-[0x00041CF8]
+[0x00011E0A]
 handle=464
 locked=0
 resize=
@@ -471,7 +471,7 @@ bgimage=
 tabpage=-1
 textmode=text
 order=16
-[0x00041CF4]
+[0x00011E0E]
 handle=465
 locked=0
 resize=
@@ -498,7 +498,7 @@ bgimage=Images\paypal.jpg
 order=15
 tabpage=-1
 textmode=text
-[0x00041CF0]
+[0x00011E12]
 handle=466
 locked=0
 resize=
@@ -525,7 +525,7 @@ bgimage=
 order=15
 tabpage=-1
 textmode=text
-[0x00041CEC]
+[0x00011E16]
 handle=467
 locked=0
 resize=
@@ -552,7 +552,7 @@ bgimage=
 order=16
 tabpage=-1
 textmode=text
-[0x00041CE8]
+[0x00011E1A]
 handle=468
 locked=0
 resize=
@@ -579,7 +579,7 @@ bgimage=
 tabpage=-1
 textmode=text
 order=17
-[0x00041CE4]
+[0x00011E1E]
 handle=469
 locked=0
 resize=
@@ -606,7 +606,7 @@ bgimage=
 tabpage=-1
 textmode=text
 order=18
-[0x002D1C66]
+[0x00011E22]
 handle=470
 locked=0
 resize=
@@ -633,7 +633,7 @@ bgimage=
 tabpage=-1
 textmode=text
 order=19
-[0x002D1C68]
+[0x00011E26]
 handle=471
 locked=0
 resize=
@@ -660,7 +660,7 @@ bgimage=
 tabpage=-1
 textmode=text
 order=20
-[0x002D1C76]
+[0x00011E2A]
 handle=472
 locked=0
 resize=
@@ -687,7 +687,7 @@ bgimage=
 tabpage=-1
 textmode=text
 order=21
-[0x00081C12]
+[0x00011E2E]
 handle=473
 locked=0
 resize=
@@ -714,7 +714,7 @@ bgimage=
 tabpage=-1
 textmode=text
 order=21
-[0x002C1C6E]
+[0x00011E32]
 handle=474
 locked=0
 resize=
@@ -741,7 +741,7 @@ bgimage=
 tabpage=-1
 textmode=text
 order=22
-[0x002B1C78]
+[0x00011E36]
 handle=475
 locked=0
 resize=
@@ -768,7 +768,7 @@ bgimage=
 tabpage=-1
 textmode=text
 order=23
-[0x00071C7E]
+[0x00011E3A]
 handle=476
 locked=0
 resize=
@@ -795,7 +795,7 @@ bgimage=
 tabpage=-1
 textmode=text
 order=24
-[0x00071C82]
+[0x00011E3E]
 handle=477
 locked=0
 resize=
@@ -822,7 +822,7 @@ bgimage=
 tabpage=-1
 textmode=text
 order=25
-[0x00071C86]
+[0x00011E42]
 handle=478
 locked=0
 resize=
@@ -849,7 +849,7 @@ bgimage=
 order=26
 tabpage=-1
 textmode=text
-[0x00071C8A]
+[0x00011E46]
 handle=479
 locked=0
 resize=
@@ -876,7 +876,7 @@ bgimage=
 order=27
 tabpage=-1
 textmode=text
-[0x00071C8E]
+[0x00011E4A]
 handle=480
 locked=0
 resize=
@@ -903,7 +903,7 @@ bgimage=
 order=28
 tabpage=-1
 textmode=text
-[0x00071C92]
+[0x00011E4E]
 handle=481
 locked=0
 resize=
@@ -930,7 +930,7 @@ bgimage=
 order=29
 tabpage=-1
 textmode=text
-[0x00081CA0]
+[0x00011E52]
 handle=482
 locked=0
 resize=
@@ -957,7 +957,7 @@ bgimage=
 order=30
 tabpage=-1
 textmode=text
-[0x00081C9C]
+[0x00011E56]
 handle=483
 locked=0
 resize=
@@ -984,7 +984,7 @@ bgimage=
 tabpage=-1
 textmode=text
 order=31
-[0x00081C98]
+[0x00011E5A]
 handle=484
 locked=0
 resize=
@@ -1011,7 +1011,7 @@ bgimage=
 tabpage=-1
 textmode=text
 order=32
-[0x00081C94]
+[0x00011E5E]
 handle=485
 locked=0
 resize=
@@ -1038,7 +1038,7 @@ bgimage=
 tabpage=-1
 textmode=text
 order=33
-[0x00061CA6]
+[0x00011E62]
 handle=486
 locked=0
 resize=
@@ -1065,7 +1065,7 @@ bgimage=
 tabpage=-1
 textmode=text
 order=34
-[0x00051CAA]
+[0x00011E66]
 handle=487
 locked=0
 resize=
@@ -1092,7 +1092,7 @@ bgimage=
 order=35
 tabpage=-1
 textmode=text
-[0x00051CAE]
+[0x00011E6A]
 handle=488
 locked=0
 resize=
@@ -1119,7 +1119,7 @@ bgimage=
 order=36
 tabpage=-1
 textmode=text
-[0x00051CB2]
+[0x00011E6E]
 handle=489
 locked=0
 resize=
@@ -1146,7 +1146,7 @@ bgimage=
 order=37
 tabpage=-1
 textmode=text
-[0x00051CB6]
+[0x00011E72]
 handle=490
 locked=0
 resize=
@@ -1173,7 +1173,7 @@ bgimage=
 order=38
 tabpage=-1
 textmode=text
-[0x00051CBA]
+[0x00011E76]
 handle=491
 locked=0
 resize=
@@ -1200,7 +1200,7 @@ bgimage=
 tabpage=-1
 textmode=text
 order=39
-[0x00051CBE]
+[0x00011E7A]
 handle=492
 locked=0
 resize=
@@ -1227,7 +1227,7 @@ bgimage=
 order=40
 tabpage=-1
 textmode=text
-[0x00051CC2]
+[0x00011E7E]
 handle=493
 locked=0
 resize=
@@ -1254,7 +1254,7 @@ bgimage=
 tabpage=-1
 textmode=text
 order=41
-[0x000D1CD6]
+[0x00011E82]
 handle=494
 locked=0
 resize=
@@ -1281,7 +1281,7 @@ bgimage=
 tabpage=-1
 textmode=text
 order=42
-[0x000D1CDA]
+[0x00011E86]
 handle=495
 locked=0
 resize=
@@ -1308,7 +1308,7 @@ bgimage=
 tabpage=-1
 textmode=text
 order=44
-[0x000D1CDE]
+[0x00011E8A]
 handle=496
 locked=0
 resize=
@@ -1335,7 +1335,7 @@ bgimage=
 order=46
 tabpage=-1
 textmode=text
-[0x000D1CE2]
+[0x00011E8E]
 handle=497
 locked=0
 resize=
@@ -1362,7 +1362,7 @@ bgimage=
 order=47
 tabpage=-1
 textmode=text
-[0x00191CC6]
+[0x00011E92]
 handle=498
 locked=0
 resize=
@@ -1389,7 +1389,7 @@ bgimage=
 order=48
 tabpage=-1
 textmode=text
-[0x00191CCA]
+[0x00011E96]
 handle=499
 locked=0
 resize=
@@ -1416,7 +1416,7 @@ bgimage=
 tabpage=-1
 textmode=text
 order=49
-[0x00191CCE]
+[0x00011E9A]
 handle=500
 locked=0
 resize=
@@ -1443,7 +1443,7 @@ bgimage=
 tabpage=-1
 textmode=text
 order=48
-[0x00191CD2]
+[0x00011E9E]
 handle=501
 locked=0
 resize=

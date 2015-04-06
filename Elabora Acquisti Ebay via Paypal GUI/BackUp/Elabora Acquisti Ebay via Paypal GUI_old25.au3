@@ -21,13 +21,17 @@ Global $oMyError = ObjEvent("AutoIt.Error", "MyErrFunc")
 _ExtMsgBoxSet(0, 0, Default, Default, 11, "Calibri")
 
 Global $s_provenienza
-$s_provenienza = "PAYPAL"
 Global $s_ambiente
+Global $s_versione
+
+$s_provenienza = "PAYPAL"
 $s_ambiente = "PRODUZIONE"
+$s_versione = "versione 0.97"
 
 GUICtrlSetState($hPaypal_Image, $GUI_SHOW)
 GUICtrlSetState($hProduzione_Image, $GUI_SHOW)
 GUICtrlSetState($hTest_Image, $GUI_HIDE)
+GUICtrlSetData($hVersione, $s_versione)
 
 ;Options
 Opt("GUIOnEventMode", 1) ;Enable OnEvent functions notifications.
@@ -125,35 +129,26 @@ Func Tratta_Paypal($GUI_Form)
 	$HowManyColumns = UBound($ItemArray, 2)
 ;~ ======================
 	
-	; determino se esiste almeno un record relativo a pagamenti
-	; inviati per acquisto merce pagat con paypal
-	; il file cvs scaricato è con i dati più recenti in alto
-	; per cui lo leggo in senso inverso
-	Local $s_work, $i_row, $i_max_row
-	Local $i_almeno1, $s_work_tipo, $s_work_cod_oggetto
-	$i_max_row = $ItemLines - 1
-	$i_almeno1 = 0
-	
-	For $i_row = $i_max_row To 1 Step -1
-		$s_works_tipo = $ItemArray[$i_row][4]
-		$s_work_cod_oggetto = $ItemArray[$i_row][17]
-		Select
-			Case $s_works_tipo = "Pagamento con procedura rapida inviato"
-				If $s_work_cod_oggetto <> "" Then ; e' un acquisto ebay
-					$i_almeno1 = 1
-					ExitLoop
-				EndIf
-		EndSelect
-	Next
-	
-	If $i_almeno1 Then
-	Else
-		$sMsg = "Non ci sono acquisti da registrare! Elaborazione abortita"
-		$iRetValue = _ExtMsgBox($EMB_ICONSTOP, "OK", "Errore", $sMsg)
-		Exit
-	EndIf
-	
-	; tratto gli ACQUISTI
+	; le colonne possono variare come ordine
+	; determino i vari indici per le colonne utilizzate
+	; sulla base delle intestazioni presenti in riga 1
+	; attenzione la "Data" e' l'unica intstazione non preceduto da uno spazio
+	$iIndex_Data = _ArraySearch($ItemArray, "Data", 0, 0, 0, 0, 1, 0, True)
+	$iIndex_Nome = _ArraySearch($ItemArray, " Nome", 0, 0, 0, 0, 1, 0, True)
+	$iIndex_Tipo = _ArraySearch($ItemArray, " Tipo", 0, 0, 0, 0, 1, 0, True)
+	$iIndex_Codice_oggetto = _ArraySearch($ItemArray, " Codice oggetto", 0, 0, 0, 0, 1, 0, True)
+	$iIndex_Tariffa = _ArraySearch($ItemArray, " Tariffa", 0, 0, 0, 0, 1, 0, True)
+	$iIndex_Valuta = _ArraySearch($ItemArray, " Valuta", 0, 0, 0, 0, 1, 0, True)
+	$iIndex_Netto = _ArraySearch($ItemArray, " Netto", 0, 0, 0, 0, 1, 0, True)
+	$iIndex_Codice_transazione_di_riferimento = _ArraySearch($ItemArray, " Codice transazione di riferimento", 0, 0, 0, 0, 1, 0, True)
+	$iIndex_Codice_transazione = _ArraySearch($ItemArray, " Codice transazione", 0, 0, 0, 0, 1, 0, True)
+	$iIndex_Indirizzo_email = _ArraySearch($ItemArray, " Indirizzo email destinatario", 0, 0, 0, 0, 1, 0, True)
+	$iIndex_URL_oggetto = _ArraySearch($ItemArray, " URL oggetto", 0, 0, 0, 0, 1, 0, True)
+	$iIndex_Titolo_oggetto = _ArraySearch($ItemArray, " Titolo oggetto", 0, 0, 0, 0, 1, 0, True)
+
+	Global $i_sw_PBL
+	Global $i_sw_EUR
+	Global $i_sw_acq
 	Global $s_work_ID_transazione
 	Global $s_work_ID_transazione_di_riferimento
 	Global $s_work_Data
@@ -180,17 +175,91 @@ Func Tratta_Paypal($GUI_Form)
 	Local $a_riepilogo_acquisti[20]
 	Local $i_contatore_acquisti
 	$i_contatore_acquisti = 0
+		
+	; determino se esiste almeno un record relativo a pagamenti
+	; inviati per acquisto merce pagata con paypal
+	; il file cvs scaricato è con i dati più recenti in alto
+	; per cui lo leggo in senso inverso
+	Local $s_work, $i_row, $i_max_row
+	Local $i_almeno1, $s_work_tipo, $s_work_cod_oggetto, $s_work_fornitore
+	$i_max_row = $ItemLines - 1
+	$i_almeno1 = 0
+	
+	For $i_row = $i_max_row To 1 Step -1
+		$s_works_tipo = $ItemArray[$i_row][$iIndex_Tipo]
+		$s_work_cod_oggetto = $ItemArray[$i_row][$iIndex_Codice_oggetto]
+		$s_work_fornitore = $ItemArray[$i_row][$iIndex_Nome]
+		Select
+			Case $s_works_tipo = "Pagamento express inviato"
+				If $s_work_cod_oggetto <> "" Then ; e' un acquisto ebay
+					$i_almeno1 = 1
+;~ 					ExitLoop
+					; vedo se il fornitore e' censito
+					$s_work_fornitore = "'" & $s_work_fornitore & "'"
+					$s_query = "SELECT * FROM FORNITORI WHERE COD_FORNITORE =" & $s_work_fornitore & ""
+					$s_ACQUISTI_FORNITORE = RicercaID_Fornitore($s_dbname, $s_query, $o_Con)
+					if @error Then
+					$s_work_Email = $ItemArray[$i_row][$iIndex_Indirizzo_email]
+					GUICtrlSetData($h_FORNITORE_DATA, $ItemArray[$i_row][$iIndex_Nome])
+					; Switch to GetMessage mode
+					Local $iOnEventMode = Opt("GUIOnEventMode", 0), $iMsg
+					While 1
+						$iMsg = GUIGetMsg() ; Variable needed to check which "Copy" button was pressed
+						Switch $iMsg
+							Case $hProsegui
+;~ 								ExitLoop
+							Case $h_Apri_URL
+;~ 								ExitLoop
+							Case $hSalta
+;~ 								ExitLoop
+							Case $hChiudi
+								Exit
+							Case $hCopia
+;~ 								ExitLoop
+							Case $hInserisci
+								$s_query = "SELECT * FROM FORNITORI"
+								$i_cod_ritorno = RegistraFornitore($s_dbname, $s_query, $o_Con)
+								If Not $i_cod_ritorno Then
+									$sMsg = "Errore in fase registrazione fornitore! Elaborazione abortita"
+									$iRetValue = _ExtMsgBox($EMB_ICONSTOP, "OK", "Errore", $sMsg)
+									Exit
+								EndIf
+								If $i_cod_ritorno Then
+									$sMsg = "Nuovo fornitore censito."
+									$iRetValue = _ExtMsgBox($EMB_ICONINFO, "OK", "Avviso", $sMsg)
+									ExitLoop
+								EndIf
+						EndSwitch
+					WEnd
+					; Clear up
+					Opt("GUIOnEventMode", 1) ; Reset original GUI mode
+					
+				EndIf	
+				EndIf				
+
+		EndSelect
+	Next
+	
+	If $i_almeno1 Then
+	Else
+		$sMsg = "Non ci sono acquisti da registrare! Elaborazione abortita"
+		$iRetValue = _ExtMsgBox($EMB_ICONSTOP, "OK", "Errore", $sMsg)
+		Exit
+	EndIf
+	
+	; tratto gli ACQUISTI
+
 
 	For $i_row = $i_max_row To 1 Step -1
-		$s_works_tipo = $ItemArray[$i_row][4]
-		$s_works_tariffe = $ItemArray[$i_row][8]
+		$s_works_tipo = $ItemArray[$i_row][$iIndex_Tipo]
+		$s_works_tariffe = $ItemArray[$i_row][$iIndex_Tariffa]
 		$s_works_tariffe = StringReplace($s_works_tariffe, ",", ".")
-		$s_work_cod_oggetto = $ItemArray[$i_row][17]
+		$s_work_cod_oggetto = $ItemArray[$i_row][$iIndex_Codice_oggetto]
 		Select
 			Case $s_works_tipo = "Conversione di valuta"
-				$s_work_ID_transazione_di_riferimento = $ItemArray[$i_row][31]
-				$s_work_Valuta = $ItemArray[$i_row][6]
-				$s_work_Importo_netto = $ItemArray[$i_row][9]
+				$s_work_ID_transazione_di_riferimento = $ItemArray[$i_row][$iIndex_Codice_transazione_di_riferimento]
+				$s_work_Valuta = $ItemArray[$i_row][$iIndex_Valuta]
+				$s_work_Importo_netto = $ItemArray[$i_row][$iIndex_Netto]
 				Select
 					Case $s_work_Valuta = "EUR"
 						$s_ACQUISTI_CTV_ACQ_EURO = StringReplace($s_work_Importo_netto, "-", "")
@@ -198,44 +267,66 @@ Func Tratta_Paypal($GUI_Form)
 						$s_ACQUISTI_VALUTA = $s_work_Valuta
 						$s_ACQUISTI_IMPORTO_ACQ_VALUTA = $s_work_Importo_netto
 				EndSelect
-			Case $s_works_tipo = "Pagamento con procedura rapida inviato"
-				If $ItemArray[$i_row][3] = "Pitney Bowes Limited" Then
+			Case $s_works_tipo = "Pagamento express inviato"
+				If $ItemArray[$i_row][$iIndex_Nome] = "Pitney Bowes Limited" Then
+					$i_sw_PBL = 1
 					$i_sw_acq = 1
 				ElseIf $s_work_cod_oggetto <> "" Then
 					$i_sw_acq = 1
+					$i_sw_PBL = 0
 				Else
 					$i_sw_acq = 0
+					$i_sw_PBL = 0
 				EndIf
 				
 				If $i_sw_acq Then
-					$s_work_ID_transazione = $ItemArray[$i_row][12]
-					If $s_work_ID_transazione = $s_work_ID_transazione_di_riferimento Then
-					Else
-						$sMsg = "Disallineamento record di input! Elaborazione abortita"
-						$iRetValue = _ExtMsgBox($EMB_ICONSTOP, "OK", "Errore", $sMsg)
-					EndIf
-					$s_work_Nome = $ItemArray[$i_row][3]
-					$s_work_Email = $ItemArray[$i_row][11]
-					$s_work_URL_oggetto = $ItemArray[$i_row][27]
-					$s_ACQUISTI_DOC_DI_CARICO_DATA = $ItemArray[$i_row][28]
-					$s_ACQUISTI_DATA_ACQUISTO = $ItemArray[$i_row][28]
-					$s_ACQUISTI_DATA_PAGAMENTO = $ItemArray[$i_row][28]
-					$s_ACQUISTI_DESCRIZIONE = $ItemArray[$i_row][16]
-					$s_ACQUISTI_FORNITORE = $ItemArray[$i_row][3]
-					$s_ACQUISTI_CODICE_UNIVOCO_PAYPAL = $ItemArray[$i_row][12]
-					$s_ACQUISTI_PAGAMENTO_A_MEZZO = "PAYPAL"
-					; vedi se Pitney Bowes Limited
+					$s_work_Valuta = $ItemArray[$i_row][$iIndex_Valuta]
 					Select
-						Case $s_ACQUISTI_DESCRIZIONE = ""
-							$s_ACQUISTI_FORNITORE = $ItemArray[$i_row][3]
-							$s_ACQUISTI_DESCRIZIONE = "S.& H."
-							$s_ACQUISTI_DOC_DI_CARICO_DATA = $ItemArray[$i_row][0]
-							$s_ACQUISTI_DATA_ACQUISTO = $ItemArray[$i_row][0]
-							$s_ACQUISTI_DATA_PAGAMENTO = $ItemArray[$i_row][0]
-							If $s_ACQUISTI_FORNITORE = "Pitney Bowes Limited" Then
+						Case $s_work_Valuta = "EUR"
+							$i_sw_EUR = 1
+							$s_work_Importo_netto = $ItemArray[$i_row][$iIndex_Netto]
+							$s_ACQUISTI_CTV_ACQ_EURO = StringReplace($s_work_Importo_netto, "-", "")
+							$s_ACQUISTI_VALUTA = $s_work_Valuta
+							$s_ACQUISTI_IMPORTO_ACQ_VALUTA = $s_ACQUISTI_CTV_ACQ_EURO
+						Case Else
+							$i_sw_EUR = 0
+					EndSelect
+				EndIf
+
+				If $i_sw_acq Then
+					Select
+						Case Not $i_sw_EUR
+							$s_work_ID_transazione = $ItemArray[$i_row][$iIndex_Codice_transazione]
+							If $s_work_ID_transazione = $s_work_ID_transazione_di_riferimento Then
 							Else
 								$sMsg = "Disallineamento record di input! Elaborazione abortita"
 								$iRetValue = _ExtMsgBox($EMB_ICONSTOP, "OK", "Errore", $sMsg)
+								Exit
+							EndIf
+					EndSelect
+					$s_work_Nome = $ItemArray[$i_row][$iIndex_Nome]
+					$s_work_Email = $ItemArray[$i_row][$iIndex_Indirizzo_email]
+					$s_work_URL_oggetto = $ItemArray[$i_row][$iIndex_URL_oggetto]
+					$s_ACQUISTI_DOC_DI_CARICO_DATA = $ItemArray[$i_row][$iIndex_Data]
+					$s_ACQUISTI_DATA_ACQUISTO = $ItemArray[$i_row][$iIndex_Data]
+					$s_ACQUISTI_DATA_PAGAMENTO = $ItemArray[$i_row][$iIndex_Data]
+					$s_ACQUISTI_DESCRIZIONE = $ItemArray[$i_row][$iIndex_Titolo_oggetto]
+					$s_ACQUISTI_FORNITORE = $ItemArray[$i_row][$iIndex_Nome]
+					$s_ACQUISTI_CODICE_UNIVOCO_PAYPAL = $ItemArray[$i_row][$iIndex_Codice_transazione]
+					$s_ACQUISTI_PAGAMENTO_A_MEZZO = "PAYPAL"
+					; vedi se Pitney Bowes Limited
+					Select
+						Case $i_sw_PBL
+							$s_ACQUISTI_FORNITORE = $ItemArray[$i_row][$iIndex_Nome]
+							$s_ACQUISTI_DESCRIZIONE = "S.& H."
+							$s_ACQUISTI_DOC_DI_CARICO_DATA = $ItemArray[$i_row][$iIndex_Data]
+							$s_ACQUISTI_DATA_ACQUISTO = $ItemArray[$i_row][$iIndex_Data]
+							$s_ACQUISTI_DATA_PAGAMENTO = $ItemArray[$i_row][$iIndex_Data]
+							If $i_sw_PBL Then
+							Else
+								$sMsg = "Disallineamento record di input! Elaborazione abortita"
+								$iRetValue = _ExtMsgBox($EMB_ICONSTOP, "OK", "Errore", $sMsg)
+								Exit
 							EndIf
 					EndSelect
 					; recupero dati dall'ultimo record inserito
@@ -268,12 +359,12 @@ Func Tratta_Paypal($GUI_Form)
 					GUICtrlSetData($h_DOCUMENTO_DI_CARICO_DATA, $s_ACQUISTI_DOC_DI_CARICO_NUMERO)
 					GUICtrlSetData($h_DOCUMENTO_DI_CARICO_DATA_DATA, $s_ACQUISTI_DATA_ACQUISTO)
 					GUICtrlSetData($h_DESCRIZIONE_DATA, $s_ACQUISTI_DESCRIZIONE)
-;~ 					GUICtrlSetData($h_NUMERO_PEZZI, $s_work_ID_ACQ)
-						If $ItemArray[$i_row][3] = "Pitney Bowes Limited" Then
+					If $i_sw_PBL Then
 						GUICtrlSetData($h_NUMERO_PEZZI, 1)
-						EndIf
+					EndIf
 					GUICtrlSetData($h_DATA_ACQUISTO_DATA, $s_ACQUISTI_DATA_ACQUISTO)
-					GUICtrlSetData($h_FORNITORE_DATA, $ItemArray[$i_row][3])
+					GUICtrlSetData($h_FORNITORE_DATA, $ItemArray[$i_row][$iIndex_Nome])
+					; inserire colorazione se fornitore non censito
 					GUICtrlSetData($h_VALUTA_DATA, $s_ACQUISTI_VALUTA)
 					GUICtrlSetData($h_IMP_IN_VALUTA_DATA, $s_ACQUISTI_IMPORTO_ACQ_VALUTA)
 					GUICtrlSetData($h_SHE_IN_VALUTA_DATA, $s_ACQUISTI_SEH_ACQ_VALUTA)
@@ -292,6 +383,8 @@ Func Tratta_Paypal($GUI_Form)
 							Case $h_Apri_URL
 								ShellExecute($s_work_URL_oggetto)
 								ContinueLoop
+							Case $hSalta
+								ExitLoop
 							Case $hChiudi
 								Exit
 							Case $hCopia
@@ -319,7 +412,7 @@ Func Tratta_Paypal($GUI_Form)
 								EndIf
 								If $i_cod_ritorno Then
 ;~ 								aggiorna contatore acquisti elaborati
-									$a_riepilogo_acquisti[$i_contatore_acquisti + 1] = $s_work_ID_ACQ
+									$a_riepilogo_acquisti[$i_contatore_acquisti + 1] = $s_work_ID_ACQ & " - " & $s_ACQUISTI_DESCRIZIONE
 									$i_contatore_acquisti = $i_contatore_acquisti + 1
 ;~ 									azzera numero pezzi
 									GUICtrlSetData($h_NUMERO_PEZZI, "")
@@ -366,7 +459,7 @@ Func Tratta_Paypal($GUI_Form)
 	GUICtrlSetData($h_CTV_IN_EURO_DATA, "")
 	GUICtrlSetData($h_CODICE_PAYPAL_DATA, "")
 	GUICtrlSetData($h_DATA_PAGAMENTO_DATA, "")
-	GUICtrlSetData($h_MEZZO_PAGAMENTO_DATA, "")	
+	GUICtrlSetData($h_MEZZO_PAGAMENTO_DATA, "")
 
 ;~ 	Exit
 EndFunc   ;==>Tratta_Paypal
@@ -428,6 +521,9 @@ Func RegistraAcquisto($s_dbname, $_query, ByRef $o_adoCon, $i_adoMDB = 1)
 		$o_adoRs.Fields("CODICE_UNIVOCO_PAYPAL") = $s_ACQUISTI_CODICE_UNIVOCO_PAYPAL
 		$o_adoRs.Fields("DATA_PAGAMENTO") = $s_ACQUISTI_DATA_PAGAMENTO
 		$o_adoRs.Fields("PAGAMENTO_A_MEZZO") = "1"
+		If $i_sw_PBL Then
+			$o_adoRs.Fields("NOTE") = $s_ACQUISTI_DESCRIZIONE
+		EndIf
 		$o_adoRs.Update
 
 	EndWith
@@ -496,6 +592,17 @@ Func IncrementaID_ACQ($s_ACQUISTI_ID_ACQ, $s_ACQUISTI_DATA_ACQUISTO)
 			$sMsg = "Sono stati impostati i dati per un nuovo anno contabile"
 			$iRetValue = _ExtMsgBox($EMB_ICONINFO, "OK", "Informazione", $sMsg)
 	EndSelect
+	
+	local $i_lung
+	$i_lung = StringLen($s_workID_mese)
+	If $i_lung < 2 Then
+		$s_workID_mese = "0" & $s_workID_mese
+	EndIf
+	$i_lung = StringLen($s_workID_prog)
+	If $i_lung < 2 Then
+		$s_workID_prog = "0" & $s_workID_prog
+	EndIf
+	
 	$s_workID = $s_workID_anno & $s_workID_mese & $s_workID_prog
 	Return $s_workID
 	
@@ -518,8 +625,8 @@ Func RicercaID_Fornitore($s_dbname, $_query, ByRef $o_adoCon, $i_adoMDB = 1)
 	$o_adoRs.Open($_query, $o_adoCon)
 	With $o_adoRs
 		If Not $o_adoRs.RecordCount Then
-			$sMsg = "Il fornitore non è censito. Elaborazione abortita"
-			$iRetValue = _ExtMsgBox($EMB_ICONSTOP, "OK", "Errore", $sMsg)
+			$sMsg = "Il fornitore non e' censito!"
+			$iRetValue = _ExtMsgBox($EMB_ICONINFO, "OK", "Attenzione", $sMsg)
 			Return SetError(1, 0, 0)
 		EndIf
 
@@ -579,6 +686,9 @@ Func RegistraMovimento($s_dbname, $_query, ByRef $o_adoCon, $i_adoMDB = 1)
 		$o_adoRs.Fields("CAUSALE") = "ACE"
 		$o_adoRs.Fields("IMP_DARE") = $s_ACQUISTI_CTV_ACQ_EURO
 		$o_adoRs.Fields("RIFERIMENTO_ACQ") = $s_work_ID_ACQ
+		If $i_sw_PBL Then
+			$o_adoRs.Fields("NOTE") = "S.& H."
+		EndIf
 		$o_adoRs.Update
 
 	EndWith
@@ -586,3 +696,33 @@ Func RegistraMovimento($s_dbname, $_query, ByRef $o_adoCon, $i_adoMDB = 1)
 	If $i_NeedToCloseInFunc Then $o_adoCon.Close
 	Return 1
 EndFunc   ;==>RegistraMovimento
+
+Func RegistraFornitore($s_dbname, $_query, ByRef $o_adoCon, $i_adoMDB = 1)
+	If Not IsObj($o_adoCon) Then
+		AccessConnectConn($s_dbname, $o_adoCon)
+		$i_NeedToCloseInFunc = 1
+	Else
+		$i_NeedToCloseInFunc = 0
+	EndIf
+	$o_adoRs = ObjCreate("ADODB.Recordset")
+	$o_adoRs.CursorType = $adOpenKeyset
+	$o_adoRs.LockType = $adLockOptimistic
+	$o_adoRs.Open($_query, $o_adoCon)
+	With $o_adoRs
+		If Not $o_adoRs.RecordCount Then
+			$sMsg = "Tabella FORNITORI vuota. Elaborazione abortita"
+			$iRetValue = _ExtMsgBox($EMB_ICONSTOP, "OK", "Errore", $sMsg)
+			Return SetError(1, 0, 0)
+		EndIf
+		$o_adoRs.AddNew
+		$o_adoRs.Fields("COD FORNITORE") = 
+		$o_adoRs.Fields("NICK_FORNITORE") = 
+		$o_adoRs.Fields("NOME") = 
+		$o_adoRs.Fields("EMAIL FORNITORE") = 
+		$o_adoRs.Update
+
+	EndWith
+	$o_adoRs.Close
+	If $i_NeedToCloseInFunc Then $o_adoCon.Close
+	Return 1
+EndFunc   ;==>RegistraAcquisto

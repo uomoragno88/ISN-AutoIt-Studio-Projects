@@ -145,36 +145,7 @@ Func Tratta_Paypal($GUI_Form)
 	$iIndex_Indirizzo_email = _ArraySearch($ItemArray, " Indirizzo email destinatario", 0, 0, 0, 0, 1, 0, True)
 	$iIndex_URL_oggetto = _ArraySearch($ItemArray, " URL oggetto", 0, 0, 0, 0, 1, 0, True)
 	$iIndex_Titolo_oggetto = _ArraySearch($ItemArray, " Titolo oggetto", 0, 0, 0, 0, 1, 0, True)
-	
-	; determino se esiste almeno un record relativo a pagamenti
-	; inviati per acquisto merce pagata con paypal
-	; il file cvs scaricato è con i dati più recenti in alto
-	; per cui lo leggo in senso inverso
-	Local $s_work, $i_row, $i_max_row
-	Local $i_almeno1, $s_work_tipo, $s_work_cod_oggetto
-	$i_max_row = $ItemLines - 1
-	$i_almeno1 = 0
-	
-	For $i_row = $i_max_row To 1 Step -1
-		$s_works_tipo = $ItemArray[$i_row][$iIndex_Tipo]
-		$s_work_cod_oggetto = $ItemArray[$i_row][$iIndex_Codice_oggetto]
-		Select
-			Case $s_works_tipo = "Pagamento express inviato"
-				If $s_work_cod_oggetto <> "" Then ; e' un acquisto ebay
-					$i_almeno1 = 1
-					ExitLoop
-				EndIf
-		EndSelect
-	Next
-	
-	If $i_almeno1 Then
-	Else
-		$sMsg = "Non ci sono acquisti da registrare! Elaborazione abortita"
-		$iRetValue = _ExtMsgBox($EMB_ICONSTOP, "OK", "Errore", $sMsg)
-		Exit
-	EndIf
-	
-	; tratto gli ACQUISTI
+
 	Global $i_sw_PBL
 	Global $i_sw_EUR
 	Global $i_sw_acq
@@ -204,7 +175,84 @@ Func Tratta_Paypal($GUI_Form)
 	Local $a_riepilogo_acquisti[20]
 	Local $i_contatore_acquisti
 	$i_contatore_acquisti = 0
+	
+	; determino se esiste almeno un record relativo a pagamenti
+	; inviati per acquisto merce pagata con paypal
+	; il file cvs scaricato è con i dati più recenti in alto
+	; per cui lo leggo in senso inverso
+	Local $s_work, $i_row, $i_max_row
+	Local $i_almeno1, $s_work_tipo, $s_work_cod_oggetto, $s_work_fornitore
+	$i_max_row = $ItemLines - 1
+	$i_almeno1 = 0
+	
+	For $i_row = $i_max_row To 1 Step -1
+		$s_works_tipo = $ItemArray[$i_row][$iIndex_Tipo]
+		$s_work_cod_oggetto = $ItemArray[$i_row][$iIndex_Codice_oggetto]
+		$s_work_fornitore = $ItemArray[$i_row][$iIndex_Nome]
+		Select
+			Case $s_works_tipo = "Pagamento express inviato"
+				If $s_work_cod_oggetto <> "" Then ; e' un acquisto ebay
+					$i_almeno1 = 1
+;~ 					ExitLoop
+					; vedo se il fornitore e' censito
+					$s_work_fornitore = "'" & $s_work_fornitore & "'"
+					$s_query = "SELECT * FROM FORNITORI WHERE COD_FORNITORE =" & $s_work_fornitore & ""
+					$s_ACQUISTI_FORNITORE = RicercaID_Fornitore($s_dbname, $s_query, $o_Con)
+					if @error Then
+						$s_work_Email = $ItemArray[$i_row][$iIndex_Indirizzo_email]
+						GUICtrlSetData($h_FORNITORE_DATA, $ItemArray[$i_row][$iIndex_Nome])
+						GUICtrlSetColor($h_FORNITORE_DATA, "0xFF0000")
+						; Switch to GetMessage mode
+						Local $iOnEventMode = Opt("GUIOnEventMode", 0), $iMsg
+						While 1
+							$iMsg = GUIGetMsg() ; Variable needed to check which "Copy" button was pressed
+							Switch $iMsg
+								Case $hProsegui
+;~ 								ExitLoop
+								Case $h_Apri_URL
+;~ 								ExitLoop
+								Case $hSalta
+;~ 								ExitLoop
+								Case $hChiudi
+									Exit
+								Case $hCopia
+;~ 								ExitLoop
+								Case $hInserisci
+									$s_query = "SELECT * FROM FORNITORI"
+									$s_work_nome = StringReplace($s_work_fornitore, "'", "")
+									$i_cod_ritorno = RegistraFornitore($s_dbname, $s_query, $o_Con)
+									If Not $i_cod_ritorno Then
+										$sMsg = "Errore in fase registrazione fornitore! Elaborazione abortita"
+										$iRetValue = _ExtMsgBox($EMB_ICONSTOP, "OK", "Errore", $sMsg)
+										Exit
+									EndIf
+									If $i_cod_ritorno Then
+										$sMsg = "Nuovo fornitore censito."
+										$iRetValue = _ExtMsgBox($EMB_ICONINFO, "OK", "Avviso", $sMsg)
+										;ripristino valori iniziali
+										GUICtrlSetData($h_FORNITORE_DATA, "")
+										GUICtrlSetColor($h_FORNITORE_DATA, "0x000000")
+										ExitLoop
+									EndIf
+							EndSwitch
+						WEnd
+						; Clear up
+						Opt("GUIOnEventMode", 1) ; Reset original GUI mode
+						
+					EndIf
+				EndIf
 
+		EndSelect
+	Next
+	
+	If $i_almeno1 Then
+	Else
+		$sMsg = "Non ci sono acquisti da registrare! Elaborazione abortita"
+		$iRetValue = _ExtMsgBox($EMB_ICONSTOP, "OK", "Errore", $sMsg)
+		Exit
+	EndIf
+	
+	; tratto gli ACQUISTI
 	For $i_row = $i_max_row To 1 Step -1
 		$s_works_tipo = $ItemArray[$i_row][$iIndex_Tipo]
 		$s_works_tariffe = $ItemArray[$i_row][$iIndex_Tariffa]
@@ -651,3 +699,33 @@ Func RegistraMovimento($s_dbname, $_query, ByRef $o_adoCon, $i_adoMDB = 1)
 	If $i_NeedToCloseInFunc Then $o_adoCon.Close
 	Return 1
 EndFunc   ;==>RegistraMovimento
+
+Func RegistraFornitore($s_dbname, $_query, ByRef $o_adoCon, $i_adoMDB = 1)
+	If Not IsObj($o_adoCon) Then
+		AccessConnectConn($s_dbname, $o_adoCon)
+		$i_NeedToCloseInFunc = 1
+	Else
+		$i_NeedToCloseInFunc = 0
+	EndIf
+	$o_adoRs = ObjCreate("ADODB.Recordset")
+	$o_adoRs.CursorType = $adOpenKeyset
+	$o_adoRs.LockType = $adLockOptimistic
+	$o_adoRs.Open($_query, $o_adoCon)
+	With $o_adoRs
+		If Not $o_adoRs.RecordCount Then
+			$sMsg = "Tabella FORNITORI vuota. Elaborazione abortita"
+			$iRetValue = _ExtMsgBox($EMB_ICONSTOP, "OK", "Errore", $sMsg)
+			Return SetError(1, 0, 0)
+		EndIf
+		$o_adoRs.AddNew
+		$o_adoRs.Fields("COD_FORNITORE") = $s_work_nome
+		$o_adoRs.Fields("NICK_FORNITORE") = $s_work_nome
+		$o_adoRs.Fields("NOME") = $s_work_nome
+		$o_adoRs.Fields("EMAIL_FORNITORE") = $s_work_Email
+		$o_adoRs.Update
+
+	EndWith
+	$o_adoRs.Close
+	If $i_NeedToCloseInFunc Then $o_adoCon.Close
+	Return 1
+EndFunc   ;==>RegistraFornitore
