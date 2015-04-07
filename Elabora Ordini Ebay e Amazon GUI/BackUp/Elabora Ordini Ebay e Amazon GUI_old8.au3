@@ -569,7 +569,7 @@ Func Tratta_Ebay($GUI_Form, $hArea_Comunicazioni)
 			Local $s_email_url
 			$s_email_url = 'http://k2b-email.ebay.it/ws/eBayISAPI.dll?MyEbayEmailBuyer&urlstack=5508|Period_Last122Days|Status_WaitShipment|currentpage_SCSold|&itemId=' _
 					 & $s_Numero_Oggetto & '&transactionId=' & $s_ID_Transazione & ''
-			;eseguo FF o chrome in base al ID venditore
+			;eseguo FF o chrome in base al ID venditore		
 			;ShellExecute($s_email_url)
 			If $s_venditore = "ILGRANDEBLEK77" Then
 				ShellExecute("firefox", $s_email_url)
