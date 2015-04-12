@@ -32,3 +32,4 @@ ShellExecute("firefox", $s_email_url)
 ;~ 					 & $s_Numero_Oggetto & '&transactionId=' & $s_ID_Transazione & ''
 
 ;~ ShellExecute("chrome", $s_email_url)#include "Forms\p2.isf"
+#include "pippo.au3"
