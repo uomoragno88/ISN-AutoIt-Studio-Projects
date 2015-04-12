@@ -3,6 +3,7 @@
 #################
 BackUp/
 Debug/
+Exe/
 *.exe
 *.lnk
 

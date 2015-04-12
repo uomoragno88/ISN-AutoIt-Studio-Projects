@@ -1,5 +1,6 @@
 #Region ;**** Directives created by AutoIt3Wrapper_GUI ****
 #AutoIt3Wrapper_Icon=Images\1427471026_73230.ico
+#AutoIt3Wrapper_Outfile=Exe\Elabora Ordini Ebay e Amazon GUI.exe
 #AutoIt3Wrapper_UseX64=n
 #EndRegion ;**** Directives created by AutoIt3Wrapper_GUI ****
 ; #AutoIt3Wrapper_UseX64=n perche' le librerie sono a 32bit
