@@ -1,6 +1,5 @@
 #Region ;**** Directives created by AutoIt3Wrapper_GUI ****
 #AutoIt3Wrapper_Icon=Images\paypal.ico
-#AutoIt3Wrapper_Outfile=Exe\Elabora Acquisti Ebay via Paypal GUI.exe
 #AutoIt3Wrapper_UseX64=n
 #EndRegion ;**** Directives created by AutoIt3Wrapper_GUI ****
 ; #AutoIt3Wrapper_UseX64=n perche' le librerie sono a 32bit

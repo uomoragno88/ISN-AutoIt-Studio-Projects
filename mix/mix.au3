@@ -3,6 +3,7 @@
 #EndRegion ;**** Directives created by AutoIt3Wrapper_GUI ****
 #Include "ColorChooser.au3"
 #Include "ColorPicker.au3"
+#include "dllcallgen.au3"
 
 Opt('MustDeclareVars', 1)
 
