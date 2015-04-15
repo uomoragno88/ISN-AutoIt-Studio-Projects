@@ -6,10 +6,10 @@ mainfile=Testprojekt.au3
 comment=Testprojekt
 version=1.0
 studioversion=0.9 BETA
-time=3863844
+time=9398125
 opened=
-projectopened=13
-lastopendate=01.04.2015 07:31
+projectopened=14
+lastopendate=13.04.2015 20:11
 testparam=
 compile_source=false
 compile_x64=false
@@ -21,7 +21,7 @@ compile_compression=normal
 icon_ruleslot1=1
 compile_exename=Testprojekt
 lastusedfiles=\Forms\Testform.isf|\Testprojekt.au3|\readme.txt|H:\ISN AutoIt Studio\autoit_3_3_12\install\Include\GUIConstantsEx.au3|||||||
-opened_tabs=H:\ISN AutoIt Studio\Projects\Testprojekt\Testprojekt.au3|H:\ISN AutoIt Studio\Projects\Testprojekt\Forms\Testform.isf|
+opened_tabs=
 [_Exit]
 comment=Diese Funktion wird ausgeführ wenn das Programm beendet wird! ;)
 [_Testfunc]

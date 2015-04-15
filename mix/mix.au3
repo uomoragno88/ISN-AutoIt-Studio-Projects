@@ -4,6 +4,7 @@
 #Include "ColorChooser.au3"
 #Include "ColorPicker.au3"
 #include "dllcallgen.au3"
+#include "ddl call prova.au3"
 
 Opt('MustDeclareVars', 1)
 
