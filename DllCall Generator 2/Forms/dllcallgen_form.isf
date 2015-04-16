@@ -5,6 +5,7 @@
 #include <WindowsConstants.au3>
 #Include <GuiButton.au3>
 #include <GuiListView.au3>
+#include <EditConstants.au3>
 
 $FormMain = GUICreate("DllCall Code Generator 2.0",825,421,-1,-1,-1,-1)
 $Label1 = GUICtrlCreateLabel("DLL Name",16,32,55,17,-1,-1)
@@ -35,7 +36,18 @@ GUICtrlSetData(-1,"Input/ByVal|Output/ByRef")
 $ButtonParamAdd = GUICtrlCreateButton("Add Parameter",24,213,91,25,-1,-1)
 $ButtonParamDelete = GUICtrlCreateButton("Clear All",128,213,107,25,-1,-1)
 $Label9 = GUICtrlCreateLabel("Calling convention",16,112,91,17,-1,-1)
-$Label10 = GUICtrlCreateLabel("Generated AutoIt code:",409,8,115,17,-1,-1)
+$Label10 = GUICtrlCreateLabel("Generated AutoIt code:",399,189,115,17,-1,-1)
+$EditCode = GUICtrlCreateEdit("",398,210,401,160,3147776,-1)
+$ButtonTest = GUICtrlCreateButton("Test Code",344,381,107,25,-1,-1)
+$ButtonCopy = GUICtrlCreateButton("Copy to Clipboard",464,381,107,25,-1,-1)
+$ButtonCapture = GUICtrlCreateButton("Capture from MSDN",586,381,107,25,-1,-1)
+$ButtonGenonly = GUICtrlCreateButton("Nothing Else",704,381,107,25,-1,-1)
+$ComboOutput = GUICtrlCreateCombo("",98,383,121,25,67,-1)
+GUICtrlSetData(-1,"ConsoleWrite|MsgBox|$vDllCallReturn only")
+$Label11 = GUICtrlCreateLabel("Output method:",16,387,77,17,-1,-1)
+$Label12 = GUICtrlCreateLabel("Generate code and:",232,387,99,17,-1,-1)
+GUICtrlCreateLabel("Insert MSDN page",399,8,115,17,-1,-1)
+$InputFromMSDNPage = GUICtrlCreateEdit("",398,29,401,150,3145728,-1)
 
 
 
@@ -57,7 +69,7 @@ xpos=-1
 ypos=-1
 center_gui=true
 title_textmode=normal
-[0x00C7202A]
+[0x00031F4E]
 handle=459
 locked=0
 resize=
@@ -84,7 +96,7 @@ bgimage=
 order=0
 tabpage=-1
 textmode=text
-[0x000B1F22]
+[0x00031F52]
 handle=460
 locked=0
 resize=
@@ -111,7 +123,7 @@ bgimage=
 order=2
 tabpage=-1
 textmode=text
-[0x001C208E]
+[0x00031F56]
 handle=461
 locked=0
 resize=
@@ -138,7 +150,7 @@ bgimage=
 order=3
 tabpage=-1
 textmode=text
-[0x001D201E]
+[0x00031F5A]
 handle=462
 locked=0
 resize=
@@ -165,7 +177,7 @@ bgimage=
 order=4
 tabpage=-1
 textmode=text
-[0x00771F84]
+[0x00031F5E]
 handle=463
 locked=0
 resize=
@@ -192,7 +204,7 @@ bgimage=
 order=5
 tabpage=-1
 textmode=text
-[0x010B20A4]
+[0x00031F62]
 handle=464
 locked=0
 resize=
@@ -219,7 +231,7 @@ bgimage=
 order=6
 tabpage=-1
 textmode=text
-[0x00162064]
+[0x00031F66]
 handle=465
 locked=0
 resize=
@@ -246,7 +258,7 @@ bgimage=
 order=7
 tabpage=-1
 textmode=text
-[0x00191F50]
+[0x00031F6A]
 handle=466
 locked=0
 resize=
@@ -273,7 +285,7 @@ bgimage=
 order=8
 tabpage=-1
 textmode=text
-[0x000F09F4]
+[0x00031F6E]
 handle=467
 locked=0
 resize=
@@ -300,7 +312,7 @@ bgimage=
 order=9
 tabpage=-1
 textmode=text
-[0x019420B0]
+[0x00031F78]
 handle=468
 locked=0
 resize=
@@ -327,7 +339,7 @@ bgimage=
 order=10
 tabpage=-1
 textmode=text
-[0x000B1F44]
+[0x00031E5C]
 handle=469
 locked=0
 resize=
@@ -354,7 +366,7 @@ bgimage=
 order=11
 tabpage=-1
 textmode=text
-[0x00D51DCC]
+[0x00031F76]
 handle=470
 locked=0
 resize=
@@ -381,7 +393,7 @@ bgimage=
 order=12
 tabpage=-1
 textmode=text
-[0x00B91DD0]
+[0x00051FD2]
 handle=471
 locked=0
 resize=
@@ -408,7 +420,7 @@ bgimage=
 order=13
 tabpage=-1
 textmode=text
-[0x00121F28]
+[0x00051FCA]
 handle=472
 locked=0
 resize=
@@ -435,7 +447,7 @@ bgimage=
 order=14
 tabpage=-1
 textmode=text
-[0x0019189C]
+[0x00041FDA]
 handle=473
 locked=0
 resize=
@@ -462,7 +474,7 @@ bgimage=
 order=15
 tabpage=-1
 textmode=text
-[0x003105B2]
+[0x00041FE2]
 handle=474
 locked=0
 resize=
@@ -489,7 +501,7 @@ bgimage=
 order=16
 tabpage=-1
 textmode=text
-[0x000A1F7A]
+[0x00031FBE]
 handle=475
 locked=0
 resize=
@@ -516,7 +528,7 @@ bgimage=
 tabpage=-1
 order=17
 textmode=text
-[0x000B1F5E]
+[0x00031F9A]
 handle=476
 locked=0
 resize=
@@ -543,7 +555,7 @@ bgimage=
 order=18
 tabpage=-1
 textmode=text
-[0x000C1DB6]
+[0x00031F8A]
 handle=477
 locked=0
 resize=
@@ -570,7 +582,7 @@ bgimage=
 order=19
 tabpage=-1
 textmode=text
-[0x001D2050]
+[0x00152004]
 handle=478
 locked=0
 resize=
@@ -597,7 +609,7 @@ bgimage=
 tabpage=-1
 textmode=text
 order=20
-[0x00E520A6]
+[0x00031F80]
 handle=479
 locked=0
 resize=
@@ -624,14 +636,14 @@ bgimage=
 order=21
 tabpage=-1
 textmode=text
-[0x00081862]
-handle=488
+[0x00031F90]
+handle=480
 locked=0
 resize=
 code=
 type=label
-x=409
-y=8
+x=399
+y=189
 width=115
 height=17
 text=Generated AutoIt code:
@@ -651,4 +663,274 @@ bgimage=
 order=22
 tabpage=-1
 textmode=text
+[0x00031FA0]
+handle=481
+locked=0
+resize=
+code=
+type=edit
+x=398
+y=210
+width=401
+height=160
+text=
+tooltip=
+state=$GUI_SHOW+$GUI_ENABLE
+style=$ES_READONLY+$WS_VSCROLL+$WS_HSCROLL
+exstyle=
+textcolour=0x000000
+bgcolour=
+font=MS Sans Serif
+fontsize=8
+fontstyle=400
+fontattribute=0
+id=EditCode
+func=
+bgimage=
+order=23
+tabpage=-1
+textmode=text
+[0x00031FA4]
+handle=482
+locked=0
+resize=
+code=
+type=button
+x=344
+y=381
+width=107
+height=25
+text=Test Code
+tooltip=
+state=$GUI_SHOW+$GUI_ENABLE
+style=
+exstyle=
+textcolour=0x000000
+bgcolour=
+font=MS Sans Serif
+fontsize=8
+fontstyle=400
+fontattribute=0
+id=ButtonTest
+func=
+bgimage=
+order=24
+tabpage=-1
+textmode=text
+[0x00031FB0]
+handle=483
+locked=0
+resize=
+code=
+type=button
+x=464
+y=381
+width=107
+height=25
+text=Copy to Clipboard
+tooltip=
+state=$GUI_SHOW+$GUI_ENABLE
+style=
+exstyle=
+textcolour=0x000000
+bgcolour=
+font=MS Sans Serif
+fontsize=8
+fontstyle=400
+fontattribute=0
+id=ButtonCopy
+func=
+bgimage=
+tabpage=-1
+textmode=text
+order=25
+[0x00031FC0]
+handle=484
+locked=0
+resize=
+code=
+type=button
+x=586
+y=381
+width=107
+height=25
+text=Capture from MSDN
+tooltip=
+state=$GUI_SHOW+$GUI_ENABLE
+style=
+exstyle=
+textcolour=0x000000
+bgcolour=
+font=MS Sans Serif
+fontsize=8
+fontstyle=400
+fontattribute=0
+id=ButtonCapture
+func=
+bgimage=
+tabpage=-1
+textmode=text
+order=26
+[0x00031FCE]
+handle=485
+locked=0
+resize=
+code=
+type=button
+x=704
+y=381
+width=107
+height=25
+text=Nothing Else
+tooltip=
+state=$GUI_SHOW+$GUI_ENABLE
+style=
+exstyle=
+textcolour=0x000000
+bgcolour=
+font=MS Sans Serif
+fontsize=8
+fontstyle=400
+fontattribute=0
+id=ButtonGenonly
+func=
+bgimage=
+tabpage=-1
+textmode=text
+order=27
+[0x000D0B6E]
+handle=486
+locked=0
+resize=
+code=
+type=combo
+x=98
+y=383
+width=121
+height=25
+text=ConsoleWrite|MsgBox|$vDllCallReturn only
+tooltip=
+state=$GUI_SHOW+$GUI_ENABLE
+style=$CBS_AUTOHSCROLL+$CBS_DROPDOWNLIST
+exstyle=
+textcolour=0x000000
+bgcolour=
+font=MS Sans Serif
+fontsize=8
+fontstyle=400
+fontattribute=0
+id=ComboOutput
+func=
+bgimage=
+order=28
+tabpage=-1
+textmode=text
+[0x000D1FF0]
+handle=487
+locked=0
+resize=
+code=
+type=label
+x=16
+y=387
+width=77
+height=17
+text=Output method:
+tooltip=
+state=$GUI_SHOW+$GUI_ENABLE
+style=
+exstyle=
+textcolour=0x000000
+bgcolour=
+font=MS Sans Serif
+fontsize=8
+fontstyle=400
+fontattribute=0
+id=Label11
+func=
+bgimage=
+order=29
+tabpage=-1
+textmode=text
+[0x00250B92]
+handle=488
+locked=0
+resize=
+code=
+type=label
+x=232
+y=387
+width=99
+height=17
+text=Generate code and:
+tooltip=
+state=$GUI_SHOW+$GUI_ENABLE
+style=
+exstyle=
+textcolour=0x000000
+bgcolour=
+font=MS Sans Serif
+fontsize=8
+fontstyle=400
+fontattribute=0
+id=Label12
+func=
+bgimage=
+tabpage=-1
+textmode=text
+order=30
+[0x00061FCC]
+handle=489
+locked=0
+resize=
+code=
+type=label
+x=399
+y=8
+width=115
+height=17
+text=Insert MSDN page
+tooltip=
+state=$GUI_SHOW+$GUI_ENABLE
+style=
+exstyle=
+textcolour=0x000000
+bgcolour=
+font=MS Sans Serif
+fontsize=8
+fontstyle=400
+fontattribute=0
+id=
+func=
+bgimage=
+tabpage=-1
+textmode=text
+order=31
+[0x00051FD0]
+handle=490
+locked=0
+resize=
+code=
+type=edit
+x=398
+y=29
+width=401
+height=150
+text=
+tooltip=
+state=$GUI_SHOW+$GUI_ENABLE
+style=$WS_VSCROLL+$WS_HSCROLL
+exstyle=
+textcolour=0x000000
+bgcolour=
+font=MS Sans Serif
+fontsize=8
+fontstyle=400
+fontattribute=0
+id=InputFromMSDNPage
+func=
+bgimage=
+tabpage=-1
+textmode=text
+order=32
 #ce
