@@ -7,4 +7,5 @@ Exe/
 Release/
 *.exe
 *.lnk
+*_tmp_debug_*
 
