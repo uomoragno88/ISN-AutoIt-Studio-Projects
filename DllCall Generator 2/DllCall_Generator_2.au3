@@ -1,3 +1,8 @@
+;thanks to toasterking for the original script "DllCall Code Generator"
+;http://www.autoitscript.com/forum/topic/158296-dllcall-code-generator/?hl=%2Bdll+%2Bcall+%2Bgenerator
+;
+;DllCall Generator 2
+;
 #include <ComboConstants.au3>
 #include <EditConstants.au3>
 #include <GUIConstantsEx.au3>
@@ -6,7 +11,15 @@
 #include <WindowsConstants.au3>
 #include "Forms\dllcallgen_form.isf"
 
+Opt("MustDeclareVars", 1) ;0=no, 1=require pre-declare
+;if use debug disable "MustDeclareVars"
+
 Global $aParams[1][3]
+Local $nMsg
+Local $sDllCallOut
+Local $nExit
+Local $ireturncode
+
 GUICtrlSetData($ComboParamByref, "Input/ByVal")
 GUICtrlSetData($ComboOutput, "ConsoleWrite")
 GUICtrlSetData($ComboCallConv, "stdcall")
@@ -73,7 +86,7 @@ While 1
 			Sleep(1000)
 			ToolTip("")
 		Case $ButtonCapture
-			_CaptureFromMSDN()
+			$ireturncode = _CaptureFromMSDN()
 		Case $InputFunc
 			If StringRight(GUICtrlRead($InputFunc), 1) == "W" Then ; Check if last character of entered function name is a capital "W"
 				GUICtrlSetState($RadioFuncUnicode, $GUI_CHECKED)
@@ -515,7 +528,8 @@ Func _ConvertTypeArch($MSDN_Type, $sArch)
 EndFunc   ;==>_ConvertTypeArch
 
 Func _CaptureFromMSDN()
-	Local $istart, $iend
+	;https://msdn.microsoft.com/en-us/library/aa364935%28VS.85%29.aspx
+	Local $istart, $iend, $ireturncode
 	Local $sMSDNPage
 	Local $sSyntax
 	Local $sParameters
@@ -531,100 +545,8 @@ Func _CaptureFromMSDN()
 	Local $iExamplesSectPresent
 	Local $iRequirementsSectPresent
 	Local $iSeealsoSectPresent
-	
-	$sMSDNPage = GUICtrlRead($InputFromMSDNPage)
-	;Verify Section
-	$istart = StringInStr($sMSDNPage, "Syntax", $STR_CASESENSE)
-	If $istart = 0 Then
-		$iSyntaxSectPresent = False
-		;messaggio di stop
-	Else
-		$iSyntaxSectPresent = True
-	EndIf
-	
-	$istart = StringInStr($sMSDNPage, "Parameters", $STR_CASESENSE)
-	If $istart = 0 Then
-		$iParametersSectPresent = False
-		;messaggio di stop
-	Else
-		$iParametersSectPresent = True
-	EndIf
-	
-	$istart = StringInStr($sMSDNPage, "Return value", $STR_CASESENSE)
-	If $istart = 0 Then
-		$iReturnvalueSectPresent = False
-		;messaggio di stop
-	Else
-		$iReturnvalueSectPresent = True
-	EndIf
-	
-	$istart = StringInStr($sMSDNPage, "Remarks", $STR_CASESENSE)
-	If $istart = 0 Then
-		$iRemarksSectPresent = False
-	Else
-		$iRemarksSectPresent = True
-	EndIf
-
-	$istart = StringInStr($sMSDNPage, "Examples", $STR_CASESENSE)
-	If $istart = 0 Then
-		$iExamplesSectPresent = False
-	Else
-		$iExamplesSectPresent = True
-	EndIf
-
-	$istart = StringInStr($sMSDNPage, "Requirements", $STR_CASESENSE)
-	If $istart = 0 Then
-		$iRequirementsSectPresent = False
-		;messaggio di stop
-	Else
-		$iRequirementsSectPresent = True
-	EndIf
-	
-	$istart = StringInStr($sMSDNPage, "See also", $STR_CASESENSE)
-	If $istart = 0 Then
-		$iSeealsoSectPresent = False
-		;messaggio di stop
-	Else
-		$iSeealsoSectPresent = True
-	EndIf
-	
-	;Syntax
-	$istart = StringInStr($sMSDNPage, "Syntax", $STR_CASESENSE)
-	$iend = StringInStr($sMSDNPage, "Parameters", $STR_CASESENSE)
-	$sSyntax = StringMid($sMSDNPage, $istart, $iend - $istart - 1)
-	;Parameters
-	$istart = StringInStr($sMSDNPage, "Parameters", $STR_CASESENSE)
-	$iend = StringInStr($sMSDNPage, "Return value", $STR_CASESENSE)
-	$sParameters = StringMid($sMSDNPage, $istart, $iend - $istart - 1)
-	;Return value
-	$istart = StringInStr($sMSDNPage, "Return value", $STR_CASESENSE)
-	$iend = StringInStr($sMSDNPage, "Remarks", $STR_CASESENSE)
-	$sReturnvalue = StringMid($sMSDNPage, $istart, $iend - $istart - 1)
-	;Remarks
-	If $iExamplesSectPresent Then
-		$istart = StringInStr($sMSDNPage, "Remarks", $STR_CASESENSE)
-		$iend = StringInStr($sMSDNPage, "Examples", $STR_CASESENSE)
-		$sRemarks = StringMid($sMSDNPage, $istart, $iend - $istart - 1)
-	Else
-		$istart = StringInStr($sMSDNPage, "Remarks", $STR_CASESENSE)
-		$iend = StringInStr($sMSDNPage, "Requirements", $STR_CASESENSE)
-		$sRemarks = StringMid($sMSDNPage, $istart, $iend - $istart - 1)
-	EndIf
-	;Examples
-	If $iExamplesSectPresent Then
-		$istart = StringInStr($sMSDNPage, "Examples", $STR_CASESENSE)
-		$iend = StringInStr($sMSDNPage, "Requirements", $STR_CASESENSE)
-		$sExamples = StringMid($sMSDNPage, $istart, $iend - $istart - 1)
-	EndIf
-	;Requirements
-	$istart = StringInStr($sMSDNPage, "Requirements", $STR_CASESENSE)
-	$iend = StringInStr($sMSDNPage, "See also", $STR_CASESENSE)
-	$sRequirements = StringMid($sMSDNPage, $istart, $iend - $istart - 1)
-	_CaptureRequirementsSect($sRequirements)
-EndFunc   ;==>_CaptureFromMSDN
-
-Func _CaptureRequirementsSect($sRequirements)
-	Local $istart, $iend
+	Local $sReturnType
+	Local $sFunctionName
 	Local $sDLL
 	Local $iDLLSectPresent
 	Local $sUnicodeandANSI
@@ -632,8 +554,149 @@ Func _CaptureRequirementsSect($sRequirements)
 	Local $sUnicodeName
 	Local $sANSIName
 	Local $awork, $swork
+	
+	$sMSDNPage = GUICtrlRead($InputFromMSDNPage)
+	;Verify Section
+	$istart = StringInStr($sMSDNPage, "Syntax" & @CRLF, $STR_CASESENSE)
+	If $istart = 0 Then
+		$iSyntaxSectPresent = False
+;~ 		$ireturncode = False
+		Return SetError(1, 0, 0)
+		;messaggio di stop
+	Else
+		$iSyntaxSectPresent = True
+	EndIf
+	
+	$istart = StringInStr($sMSDNPage, "Parameters" & @CRLF, $STR_CASESENSE)
+	If $istart = 0 Then
+		$iParametersSectPresent = False
+;~ 		$ireturncode = False
+		Return SetError(2, 0, 0)
+		;messaggio di stop
+	Else
+		$iParametersSectPresent = True
+	EndIf
+	
+	$istart = StringInStr($sMSDNPage, "Return value" & @CRLF, $STR_CASESENSE)
+	If $istart = 0 Then
+		$iReturnvalueSectPresent = False
+;~ 		$ireturncode = False
+		Return SetError(3, 0, 0)
+		;messaggio di stop
+	Else
+		$iReturnvalueSectPresent = True
+	EndIf
+	
+	$istart = StringInStr($sMSDNPage, "Remarks" & @CRLF, $STR_CASESENSE)
+	If $istart = 0 Then
+		$iRemarksSectPresent = False
+	Else
+		$iRemarksSectPresent = True
+	EndIf
 
-	$istart = StringInStr($sRequirements, "DLL", $STR_CASESENSE)
+	$istart = StringInStr($sMSDNPage, "Examples" & @CRLF, $STR_CASESENSE)
+	If $istart = 0 Then
+		$iExamplesSectPresent = False
+	Else
+		$iExamplesSectPresent = True
+	EndIf
+
+	$istart = StringInStr($sMSDNPage, "Requirements" & @CRLF, $STR_CASESENSE)
+	If $istart = 0 Then
+		$iRequirementsSectPresent = False
+;~ 		$ireturncode = False
+		Return SetError(4, 0, 0)
+		;messaggio di stop
+	Else
+		$iRequirementsSectPresent = True
+	EndIf
+	
+	$istart = StringInStr($sMSDNPage, "See also" & @CRLF, $STR_CASESENSE)
+	If $istart = 0 Then
+		$iSeealsoSectPresent = False
+	Else
+		$iSeealsoSectPresent = True
+	EndIf
+	
+	;Syntax Section
+	$istart = StringInStr($sMSDNPage, "Syntax" & @CRLF, $STR_CASESENSE)
+	$iend = StringInStr($sMSDNPage, "Parameters" & @CRLF, $STR_CASESENSE)
+	$sSyntax = StringMid($sMSDNPage, $istart, $iend - $istart - 1)
+	Local $aparamfromMSDN
+	Local $iparamrow, $ifirstparamrow, $ilastparamrow
+	$aparamfromMSDN = StringSplit($sSyntax, @CRLF, $STR_ENTIRESPLIT)
+	For $iparamrow = 1 To $aparamfromMSDN[0]
+		Select
+;~ 			Case $aparamfromMSDN[$iparamrow] = "Syntax", "C++", @CRLF
+;~ 				ContinueCase
+			Case StringInStr($aparamfromMSDN[$iparamrow], "WINAPI")
+				$ifirstparamrow = $aparamfromMSDN[0] - 1
+				$ilastparamrow = $aparamfromMSDN[0] - 1
+			Case StringInStr($aparamfromMSDN[$iparamrow], ");")
+				$ilastparamrow = $aparamfromMSDN[0] - 1
+		EndSelect
+	Next
+	
+
+	;first row
+	$istart = StringInStr($aparamfromMSDN[$ifirstparamrow], "WINAPI", $STR_CASESENSE)
+	$iend = StringInStr($aparamfromMSDN[$ifirstparamrow], "(", $STR_CASESENSE)
+	;Return Type
+	$sReturnType = StringLeft($aparamfromMSDN[$ifirstparamrow], $istart - 1)
+	StringStripWS($sReturnType, $STR_STRIPALL)
+	StringStripCR($sReturnType)
+	$sReturnType = StringRegExpReplace($sReturnType, "(?i)[^a-z0-9]", "")
+	;Function Name
+	$sFunctionName = StringRight($aparamfromMSDN[$ifirstparamrow], $iend - $istart)
+	$istart = StringInStr($sFunctionName, "(", $STR_CASESENSE)
+	$sFunctionName = StringLeft($sFunctionName, $istart - 1)
+	StringStripWS($sFunctionName, $STR_STRIPALL)
+	StringStripCR($sFunctionName)
+	$sFunctionName = StringRegExpReplace($sFunctionName, "(?i)[^a-z0-9]", "")
+	
+	If $ifirstparamrow < $ilastparamrow Then
+		
+	EndIf
+	
+	GUICtrlSetData($InputFunc, $sFunctionName)
+	GUICtrlSetData($InputReturnType, $sReturnType)
+	
+	;Parameters Section
+	$istart = StringInStr($sMSDNPage, "Parameters" & @CRLF, $STR_CASESENSE)
+	$iend = StringInStr($sMSDNPage, "Return value" & @CRLF, $STR_CASESENSE)
+	$sParameters = StringMid($sMSDNPage, $istart, $iend - $istart - 1)
+	;Return value Section
+	If $iRemarksSectPresent Then
+		$istart = StringInStr($sMSDNPage, "Return value" & @CRLF, $STR_CASESENSE)
+		$iend = StringInStr($sMSDNPage, "Remarks" & @CRLF, $STR_CASESENSE)
+		$sReturnvalue = StringMid($sMSDNPage, $istart, $iend - $istart - 1)
+	Else
+		$istart = StringInStr($sMSDNPage, "Return value" & @CRLF, $STR_CASESENSE)
+		$iend = StringInStr($sMSDNPage, "Examples" & @CRLF, $STR_CASESENSE)
+		$sReturnvalue = StringMid($sMSDNPage, $istart, $iend - $istart - 1)
+	EndIf
+	;Remarks Section
+	If $iExamplesSectPresent Then
+		$istart = StringInStr($sMSDNPage, "Remarks" & @CRLF, $STR_CASESENSE)
+		$iend = StringInStr($sMSDNPage, "Examples" & @CRLF, $STR_CASESENSE)
+		$sRemarks = StringMid($sMSDNPage, $istart, $iend - $istart - 1)
+	Else
+		$istart = StringInStr($sMSDNPage, "Remarks" & @CRLF, $STR_CASESENSE)
+		$iend = StringInStr($sMSDNPage, "Requirements" & @CRLF, $STR_CASESENSE)
+		$sRemarks = StringMid($sMSDNPage, $istart, $iend - $istart - 1)
+	EndIf
+	;Examples Section
+	If $iExamplesSectPresent Then
+		$istart = StringInStr($sMSDNPage, "Examples" & @CRLF, $STR_CASESENSE)
+		$iend = StringInStr($sMSDNPage, "Requirements" & @CRLF, $STR_CASESENSE)
+		$sExamples = StringMid($sMSDNPage, $istart, $iend - $istart - 1)
+	EndIf
+	;Requirements Section
+	$istart = StringInStr($sMSDNPage, "Requirements" & @CRLF, $STR_CASESENSE)
+	$iend = StringInStr($sMSDNPage, "See also" & @CRLF, $STR_CASESENSE)
+	$sRequirements = StringMid($sMSDNPage, $istart, $iend - $istart - 1)
+
+	$istart = StringInStr($sRequirements, "DLL" & @CRLF, $STR_CASESENSE)
 	If $istart = 0 Then
 		$iDLLSectPresent = False
 		;messaggio di stop
@@ -641,7 +704,7 @@ Func _CaptureRequirementsSect($sRequirements)
 		$iDLLSectPresent = True
 	EndIf
 	
-	$istart = StringInStr($sRequirements, "Unicode and ANSI names", $STR_CASESENSE)
+	$istart = StringInStr($sRequirements, "Unicode and ANSI names" & @CRLF, $STR_CASESENSE)
 	If $istart = 0 Then
 		$iUnicodeandANSISectPresent = False
 	Else
@@ -649,17 +712,40 @@ Func _CaptureRequirementsSect($sRequirements)
 	EndIf
 	
 	If $iUnicodeandANSISectPresent Then
-		$istart = StringInStr($sRequirements, "Unicode and ANSI names", $STR_CASESENSE)
+		$istart = StringInStr($sRequirements, "Unicode and ANSI names" & @CRLF, $STR_CASESENSE)
 		$iend = StringLen($sRequirements)
 		$swork = StringMid($sRequirements, $istart + 22, $iend - $istart - 1)
+		;Unicode name
+		$istart = StringInStr($swork, "(Unicode)", $STR_CASESENSE)
+		$sUnicodeName = StringLeft($swork, $istart - 1)
+		StringStripWS($sUnicodeName, $STR_STRIPALL)
+		StringStripCR($sUnicodeName)
+		$sUnicodeName = StringRegExpReplace($sUnicodeName, "(?i)[^a-z0-9]", "")
+		;ANSi name
+		$istart = StringInStr($swork, "(Unicode) and", $STR_CASESENSE)
+		$iend = StringInStr($swork, "(ANSI)", $STR_CASESENSE)
+		$swork = StringMid($swork, $istart + 13, $iend)
+		$istart = StringInStr($swork, "(ANSI)", $STR_CASESENSE)
+		$sANSIName = StringLeft($swork, $istart - 1)
+		StringStripWS($sANSIName, $STR_STRIPALL)
+		StringStripCR($sANSIName)
+		$sANSIName = StringRegExpReplace($sANSIName, "(?i)[^a-z0-9]", "")
+		
+		If (GUICtrlRead($RadioFuncUnicode) = $GUI_CHECKED) Then
+			GUICtrlSetData($InputFunc, $sUnicodeName)
+		EndIf
+		If (GUICtrlRead($RadioFuncAnsi) = $GUI_CHECKED) Then
+			GUICtrlSetData($InputFunc, $sANSIName)
+		EndIf
+
 	EndIf
 
 	If $iUnicodeandANSISectPresent Then
-		$istart = StringInStr($sRequirements, "DLL", $STR_CASESENSE)
-		$iend = StringInStr($sRequirements, "Unicode and ANSI names", $STR_CASESENSE)
+		$istart = StringInStr($sRequirements, "DLL" & @CRLF, $STR_CASESENSE)
+		$iend = StringInStr($sRequirements, "Unicode and ANSI names" & @CRLF, $STR_CASESENSE)
 		$sDLL = StringMid($sRequirements, $istart + 3, $iend - $istart - 3)
 	Else
-		$istart = StringInStr($sRequirements, "DLL", $STR_CASESENSE)
+		$istart = StringInStr($sRequirements, "DLL" & @CRLF, $STR_CASESENSE)
 		$iend = StringLen($sRequirements)
 		$sDLL = StringMid($sRequirements, $istart + 3, $iend - $istart - 1)
 	EndIf
@@ -669,5 +755,7 @@ Func _CaptureRequirementsSect($sRequirements)
 	$sDLL = StringRegExpReplace($sDLL, "(?i)[^a-z0-9.]", "")
 	
 	GUICtrlSetData($InputDll, $sDLL)
-EndFunc   ;==>_CaptureRequirementsSect
+	
+	$ireturncode = True
+EndFunc   ;==>_CaptureFromMSDN
 

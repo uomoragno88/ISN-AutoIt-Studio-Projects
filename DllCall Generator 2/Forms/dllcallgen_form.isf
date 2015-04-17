@@ -19,7 +19,7 @@ $Label3 = GUICtrlCreateLabel("Return Type",16,85,63,17,-1,-1)
 $InputReturnType = GUICtrlCreateInput("int",120,82,121,21,-1,512)
 $ComboCallConv = GUICtrlCreateCombo("",120,110,121,25,66,-1)
 GUICtrlSetData(-1,"stdcall|cdecl")
-$ListViewParams = GUICtrlCreatelistview("#|Type|Value|Method",16,245,362,126,32768,512)
+$ListViewParams = GUICtrlCreatelistview("#|Type|Value|Method",16,245,362,126,33280,544)
 GUICtrlSendMsg(-1, $LVM_SETCOLUMNWIDTH, 0, 50)
 GUICtrlSendMsg(-1, $LVM_SETCOLUMNWIDTH, 1, 50)
 GUICtrlSendMsg(-1, $LVM_SETCOLUMNWIDTH, 2, 50)
@@ -69,7 +69,7 @@ xpos=-1
 ypos=-1
 center_gui=true
 title_textmode=normal
-[0x00031F4E]
+[0x00031C82]
 handle=459
 locked=0
 resize=
@@ -96,7 +96,7 @@ bgimage=
 order=0
 tabpage=-1
 textmode=text
-[0x00031F52]
+[0x00051E9C]
 handle=460
 locked=0
 resize=
@@ -123,7 +123,7 @@ bgimage=
 order=2
 tabpage=-1
 textmode=text
-[0x00031F56]
+[0x00031C72]
 handle=461
 locked=0
 resize=
@@ -150,7 +150,7 @@ bgimage=
 order=3
 tabpage=-1
 textmode=text
-[0x00031F5A]
+[0x00031C7A]
 handle=462
 locked=0
 resize=
@@ -177,7 +177,7 @@ bgimage=
 order=4
 tabpage=-1
 textmode=text
-[0x00031F5E]
+[0x00031C7E]
 handle=463
 locked=0
 resize=
@@ -204,7 +204,7 @@ bgimage=
 order=5
 tabpage=-1
 textmode=text
-[0x00031F62]
+[0x00031C8C]
 handle=464
 locked=0
 resize=
@@ -231,7 +231,7 @@ bgimage=
 order=6
 tabpage=-1
 textmode=text
-[0x00031F66]
+[0x00031C90]
 handle=465
 locked=0
 resize=
@@ -258,7 +258,7 @@ bgimage=
 order=7
 tabpage=-1
 textmode=text
-[0x00031F6A]
+[0x00031C94]
 handle=466
 locked=0
 resize=
@@ -285,7 +285,7 @@ bgimage=
 order=8
 tabpage=-1
 textmode=text
-[0x00031F6E]
+[0x00031C98]
 handle=467
 locked=0
 resize=
@@ -312,7 +312,7 @@ bgimage=
 order=9
 tabpage=-1
 textmode=text
-[0x00031F78]
+[0x00031CA4]
 handle=468
 locked=0
 resize=
@@ -325,8 +325,8 @@ height=126
 text=#|Type|Value|Method
 tooltip=
 state=$GUI_SHOW+$GUI_ENABLE
-style=$LVS_NOSORTHEADER
-exstyle=$WS_EX_CLIENTEDGE
+style=$LVS_EDITLABELS+$LVS_NOSORTHEADER
+exstyle=$LVS_EX_FULLROWSELECT+$WS_EX_CLIENTEDGE
 textcolour=0x000000
 bgcolour=
 font=MS Sans Serif
@@ -339,7 +339,7 @@ bgimage=
 order=10
 tabpage=-1
 textmode=text
-[0x00031E5C]
+[0x00031CA8]
 handle=469
 locked=0
 resize=
@@ -366,7 +366,7 @@ bgimage=
 order=11
 tabpage=-1
 textmode=text
-[0x00031F76]
+[0x00041CAC]
 handle=470
 locked=0
 resize=
@@ -393,7 +393,7 @@ bgimage=
 order=12
 tabpage=-1
 textmode=text
-[0x00051FD2]
+[0x00031CB0]
 handle=471
 locked=0
 resize=
@@ -420,7 +420,7 @@ bgimage=
 order=13
 tabpage=-1
 textmode=text
-[0x00051FCA]
+[0x00031CB4]
 handle=472
 locked=0
 resize=
@@ -447,7 +447,7 @@ bgimage=
 order=14
 tabpage=-1
 textmode=text
-[0x00041FDA]
+[0x00031C2A]
 handle=473
 locked=0
 resize=
@@ -474,7 +474,7 @@ bgimage=
 order=15
 tabpage=-1
 textmode=text
-[0x00041FE2]
+[0x00031C30]
 handle=474
 locked=0
 resize=
@@ -501,7 +501,7 @@ bgimage=
 order=16
 tabpage=-1
 textmode=text
-[0x00031FBE]
+[0x00031C78]
 handle=475
 locked=0
 resize=
@@ -528,7 +528,7 @@ bgimage=
 tabpage=-1
 order=17
 textmode=text
-[0x00031F9A]
+[0x00021C6A]
 handle=476
 locked=0
 resize=
@@ -555,7 +555,7 @@ bgimage=
 order=18
 tabpage=-1
 textmode=text
-[0x00031F8A]
+[0x00021C5A]
 handle=477
 locked=0
 resize=
@@ -582,7 +582,7 @@ bgimage=
 order=19
 tabpage=-1
 textmode=text
-[0x00152004]
+[0x00021C54]
 handle=478
 locked=0
 resize=
@@ -609,7 +609,7 @@ bgimage=
 tabpage=-1
 textmode=text
 order=20
-[0x00031F80]
+[0x00021C50]
 handle=479
 locked=0
 resize=
@@ -636,7 +636,7 @@ bgimage=
 order=21
 tabpage=-1
 textmode=text
-[0x00031F90]
+[0x00021C4C]
 handle=480
 locked=0
 resize=
@@ -663,7 +663,7 @@ bgimage=
 order=22
 tabpage=-1
 textmode=text
-[0x00031FA0]
+[0x00021C58]
 handle=481
 locked=0
 resize=
@@ -690,7 +690,7 @@ bgimage=
 order=23
 tabpage=-1
 textmode=text
-[0x00031FA4]
+[0x00021C60]
 handle=482
 locked=0
 resize=
@@ -717,7 +717,7 @@ bgimage=
 order=24
 tabpage=-1
 textmode=text
-[0x00031FB0]
+[0x00021C68]
 handle=483
 locked=0
 resize=
@@ -744,7 +744,7 @@ bgimage=
 tabpage=-1
 textmode=text
 order=25
-[0x00031FC0]
+[0x00021CB6]
 handle=484
 locked=0
 resize=
@@ -771,7 +771,7 @@ bgimage=
 tabpage=-1
 textmode=text
 order=26
-[0x00031FCE]
+[0x00021CCC]
 handle=485
 locked=0
 resize=
@@ -798,7 +798,7 @@ bgimage=
 tabpage=-1
 textmode=text
 order=27
-[0x000D0B6E]
+[0x00021CC8]
 handle=486
 locked=0
 resize=
@@ -825,7 +825,7 @@ bgimage=
 order=28
 tabpage=-1
 textmode=text
-[0x000D1FF0]
+[0x00021CC0]
 handle=487
 locked=0
 resize=
@@ -852,7 +852,7 @@ bgimage=
 order=29
 tabpage=-1
 textmode=text
-[0x00250B92]
+[0x00021CBC]
 handle=488
 locked=0
 resize=
@@ -879,7 +879,7 @@ bgimage=
 tabpage=-1
 textmode=text
 order=30
-[0x00061FCC]
+[0x00021CCE]
 handle=489
 locked=0
 resize=
@@ -906,7 +906,7 @@ bgimage=
 tabpage=-1
 textmode=text
 order=31
-[0x00051FD0]
+[0x00021D08]
 handle=490
 locked=0
 resize=
