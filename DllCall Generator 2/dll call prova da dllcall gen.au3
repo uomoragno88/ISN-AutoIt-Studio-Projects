@@ -1,9 +1,9 @@
 $aDllCallReturn = DllCall("Kernel32.dll", _
 		"int","GetDiskFreeSpaceW", _
-		"wstr","c:\",_
-		"DWORD*","$lpSectorsPerCluster",_
-		"DWORD*","$lpBytesPerSector",_
-		"DWORD*","$lpNumberOfFreeClusters",_
+		"wstr","c:\", _
+		"DWORD*","$lpSectorsPerCluster", _
+		"DWORD*","$lpBytesPerSector", _
+		"DWORD*","$lpNumberOfFreeClusters", _
 		"DWORD*","$lpTotalNumberOfClusters")
 If @error Then
    Switch @error
