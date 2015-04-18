@@ -9,9 +9,10 @@
 #include <GuiListView.au3>
 #include <ListViewConstants.au3>
 #include <WindowsConstants.au3>
+#include <MsgBoxConstants.au3>
 #include "Forms\dllcallgen_form.isf"
 
-Opt("MustDeclareVars", 1) ;0=no, 1=require pre-declare
+Opt("MustDeclareVars", 0) ;0=no, 1=require pre-declare
 ;if use debug disable "MustDeclareVars"
 
 Global $aParams[1][3]
@@ -19,6 +20,8 @@ Local $nMsg
 Local $sDllCallOut
 Local $nExit
 Local $ireturncode
+Local $ilv, $fselected, $iworknumber
+Local $fsuccess
 
 GUICtrlSetData($ComboParamByref, "Input/ByVal")
 GUICtrlSetData($ComboOutput, "ConsoleWrite")
@@ -28,12 +31,12 @@ While 1
 	$nMsg = GUIGetMsg()
 	Switch $nMsg
 		Case $ButtonParamAdd
-			_ConvertType(GUICtrlRead($InputParamType)) ; Use the parameter type selected
+			ConvertType(GUICtrlRead($InputParamType)) ; Use the parameter type selected
 			If @error Then
-				If MsgBox(49, "Unrecognized Type", "Unrecognized parameter type """ & GUICtrlRead($InputParamType) & """.  Make sure you are using an MSDN return type." & @CRLF & @CRLF & "If you are certain that the parameter type is correct and you happen to know the equivalent AutoIt parameter type, click OK.  You will be prompted later for the AutoIt parameter type.", 0, $FormMain) = 2 Then ContinueLoop
+				If MsgBox($MB_ICONWARNING + $MB_OKCANCEL, "Unrecognized Type", "Unrecognized parameter type """ & GUICtrlRead($InputParamType) & """.  Make sure you are using an MSDN return type." & @CRLF & @CRLF & "If you are certain that the parameter type is correct and you happen to know the equivalent AutoIt parameter type, click OK.  You will be prompted later for the AutoIt parameter type.", 0, $FormMain) = 2 Then ContinueLoop
 			EndIf
 			If GUICtrlRead($ComboParamByref) = "Output/ByRef" And StringLeft(GUICtrlRead($InputParamValue), 1) <> "$" Then
-				MsgBox(48, "Error", "To use this parameter value as a ByRef, you must specify the name of a variable used in your AutoIt script, which must begin with a '$' symbol.", 0, $FormMain)
+				MsgBox($MB_ICONWARNING, "Error", "To use this parameter value as a ByRef, you must specify the name of a variable used in your AutoIt script, which must begin with a '$' symbol.", 0, $FormMain)
 				ContinueLoop
 			EndIf
 			; Input seems okay; proceed.
@@ -47,11 +50,42 @@ While 1
 			GUICtrlSetData($ComboParamByref, "Input/ByVal")
 			GUICtrlCreateListViewItem(UBound($aParams) - 1 & "|" & $aParams[UBound($aParams) - 1][0] & "|" & $aParams[UBound($aParams) - 1][1] & "|" & $aParams[UBound($aParams) - 1][2], $ListViewParams)
 			ControlFocus($FormMain, "", $InputParamType)
-		Case $ButtonParamDelete ; Delete all items
+			;Edit list View
+		Case $ButtonParamEdit
+			$iworknumber = GUICtrlRead($InputParamNumber)
+			If $iworknumber = "" Then ; set input box from list view row selected
+				For $ilv = 0 To UBound($aParams)
+					$fselected = _GUICtrlListView_GetItemSelected($ListViewParams, $ilv)
+					If $fselected Then
+						; set input fields and refocus
+						GUICtrlSetData($InputParamType, $aParams[$ilv + 1][0])
+						GUICtrlSetData($InputParamValue, $aParams[$ilv + 1][1])
+						GUICtrlSetData($ComboParamByref, $aParams[$ilv + 1][2])
+						GUICtrlSetData($InputParamNumber, $ilv + 1)
+						ControlFocus($FormMain, "", $InputParamType)
+					EndIf
+				Next
+			Else ;set list view row from inputbox
+				$aParams[$iworknumber - 1][0] = GUICtrlRead($InputParamType)
+				$aParams[$iworknumber - 1][1] = GUICtrlRead($InputParamValue)
+				$aParams[$iworknumber - 1][2] = GUICtrlRead($ComboParamByref)
+				; Clear input fields and refocus
+				GUICtrlSetData($InputParamNumber, "")
+				GUICtrlSetData($InputParamType, "")
+				GUICtrlSetData($InputParamValue, "")
+				GUICtrlSetData($ComboParamByref, "Input/ByVal")
+;~ 				_GUICtrlListView_SetItem($ListViewParams, $iworknumber, $iworknumber, 1)
+				$fsuccess = _GUICtrlListView_SetItemText($ListViewParams, $iworknumber, $aParams[$iworknumber - 1][0], 2)
+				$fsuccess = _GUICtrlListView_SetItemText($ListViewParams, $iworknumber, $aParams[$iworknumber - 1][1], 3)
+				$fsuccess = _GUICtrlListView_SetItemText($ListViewParams, $iworknumber, $aParams[$iworknumber - 1][2], 4)	
+				ControlFocus($FormMain, "", $InputParamType)
+			EndIf
+			; Delete all items
+		Case $ButtonParamDelete
 			_GUICtrlListView_DeleteAllItems($ListViewParams)
 			ReDim $aParams[1][3]
 		Case $ButtonTest
-			$sDllCallOut = _GenerateCode("MsgBox") ; Always use MsgBox for output when generating for testing.
+			$sDllCallOut = GenerateCode("MsgBox") ; Always use MsgBox for output when generating for testing.
 			GUICtrlSetData($EditCode, $sDllCallOut)
 			If $sDllCallOut <> "" Then
 				GUISetState(@SW_DISABLE, $FormMain)
@@ -62,9 +96,9 @@ While 1
 				If $nExit <> 0 Then
 					Switch $nExit
 						Case 1
-							MsgBox(16, "DLL Code Generator", "The AutoIt interpreter encountered an error while parsing or executing the generated code." & @CRLF & "Exit code: " & $nExit, 0, $FormMain)
+							MsgBox($MB_ICONERROR, "DLL Code Generator", "The AutoIt interpreter encountered an error while parsing or executing the generated code." & @CRLF & "Exit code: " & $nExit, 0, $FormMain)
 						Case Else
-							MsgBox(16, "DLL Code Generator", "There was a problem with the DllCall (possibly incorrect parameters).  The AutoIt interpreter ended unexpectedly." & @CRLF & "Exit code: " & $nExit, 0, $FormMain)
+							MsgBox($MB_ICONERROR, "DLL Code Generator", "There was a problem with the DllCall (possibly incorrect parameters).  The AutoIt interpreter ended unexpectedly." & @CRLF & "Exit code: " & $nExit, 0, $FormMain)
 					EndSwitch
 				EndIf
 				GUICtrlSetData($ButtonTest, "Test Code")
@@ -73,10 +107,10 @@ While 1
 				WinActivate($FormMain)
 			EndIf
 		Case $ButtonGenonly
-			$sDllCallOut = _GenerateCode(GUICtrlRead($ComboOutput))
+			$sDllCallOut = GenerateCode(GUICtrlRead($ComboOutput))
 			GUICtrlSetData($EditCode, $sDllCallOut)
 		Case $ButtonCopy
-			$sDllCallOut = _GenerateCode(GUICtrlRead($ComboOutput))
+			$sDllCallOut = GenerateCode(GUICtrlRead($ComboOutput))
 			GUICtrlSetData($EditCode, $sDllCallOut)
 			If ClipPut($sDllCallOut) Then
 				ToolTip("Copied!")
@@ -86,7 +120,7 @@ While 1
 			Sleep(1000)
 			ToolTip("")
 		Case $ButtonCapture
-			$ireturncode = _CaptureFromMSDN()
+			$ireturncode = CaptureFromMSDN()
 		Case $InputFunc
 			If StringRight(GUICtrlRead($InputFunc), 1) == "W" Then ; Check if last character of entered function name is a capital "W"
 				GUICtrlSetState($RadioFuncUnicode, $GUI_CHECKED)
@@ -97,7 +131,7 @@ While 1
 			Exit
 	EndSwitch
 WEnd
-Func _GenerateCode($sOutputType = "")
+Func GenerateCode($sOutputType = "")
 	Local $sArch, $sReturnTypeOut, $sParamTypeOut, $sDllFuncName, $sDllCallOut, $sCmdOutStart, $sCmdOutEnd, $fOutputGen
 	Switch $sOutputType
 		Case "ConsoleWrite"
@@ -116,19 +150,19 @@ Func _GenerateCode($sOutputType = "")
 	If GUICtrlRead($RadioFuncAnsi) = $GUI_CHECKED Then $sArch = "a"
 	If GUICtrlRead($RadioFuncUnicode) = $GUI_CHECKED Then $sArch = "w"
 	$sDllFuncName = GUICtrlRead($InputDll) & "/" & GUICtrlRead($InputFunc)
-	$sReturnTypeOut = _ConvertType(GUICtrlRead($InputReturnType))
+	$sReturnTypeOut = ConvertType(GUICtrlRead($InputReturnType))
 	If @error Then
 		$sReturnTypeOut = InputBox("Unrecognized Type", "Unrecognized return type """ & GUICtrlRead($InputReturnType) & """.  Make sure you are using an MSDN return type." & @CRLF & @CRLF & "If you are certain that the return type is correct and you happen to know the equivalent AutoIt return type, you may enter the AutoIt return type here.", "", "", Default, 220, Default, Default, 0, $FormMain)
 		If $sReturnTypeOut = "" Then Return SetError(1, 0, "")
 	EndIf
-	$sReturnTypeOut = _ConvertTypeArch($sReturnTypeOut, $sArch)
+	$sReturnTypeOut = ConvertTypeArch($sReturnTypeOut, $sArch)
 	If GUICtrlRead($ComboCallConv) <> "stdcall" Then $sReturnTypeOut &= ':' & GUICtrlRead($ComboCallConv)
 	$sDllCallOut = 'Local $aDllCallReturn,$vDllCallReturn'
 	$sDllCallOut = '$aDllCallReturn = DllCall("' & GUICtrlRead($InputDll) & '","' & $sReturnTypeOut & '","' & GUICtrlRead($InputFunc) & '"'
 	If UBound($aParams) > 1 Then
 		For $x = 1 To UBound($aParams) - 1
 			$sParamTypeOut = ''
-			$sParamTypeOut = _ConvertTypeArch(_ConvertType($aParams[$x][0]), $sArch)
+			$sParamTypeOut = ConvertTypeArch(ConvertType($aParams[$x][0]), $sArch)
 			If $sParamTypeOut = '' Then
 				$sParamTypeOut = InputBox("Unrecognized Type", "Unrecognized parameter type """ & $aParams[$x][0] & """.  Make sure you are using an MSDN parameter type." & @CRLF & @CRLF & "If you are certain that the parameter type is correct and you happen to know the equivalent AutoIt parameter type, you may enter the AutoIt parameter type here.", "", "", Default, 220, Default, Default, 0, $FormMain)
 				If $sParamTypeOut = "" Then Return (SetError(1, 0, ""))
@@ -184,9 +218,9 @@ Func _GenerateCode($sOutputType = "")
 		$sDllCallOut &= "EndIf" & @CRLF
 	EndIf
 	Return $sDllCallOut
-EndFunc   ;==>_GenerateCode
+EndFunc   ;==>GenerateCode
 ; Convert the MSDN variable type to AutoIt variable type
-Func _ConvertType($MSDN_Type)
+Func ConvertType($MSDN_Type)
 	Switch $MSDN_Type
 		Case 'ATOM'
 			Return 'WORD'
@@ -512,9 +546,9 @@ Func _ConvertType($MSDN_Type)
 			SetError(1)
 			Return ""
 	EndSwitch
-EndFunc   ;==>_ConvertType
+EndFunc   ;==>ConvertType
 ; Some variable types should be converted from their ANSI to Unicode types or vice versa.
-Func _ConvertTypeArch($MSDN_Type, $sArch)
+Func ConvertTypeArch($MSDN_Type, $sArch)
 	Switch $MSDN_Type
 		Case 'STR'
 			If $sArch = "a" Then Return "str"
@@ -525,9 +559,9 @@ Func _ConvertTypeArch($MSDN_Type, $sArch)
 		Case Else
 			Return $MSDN_Type
 	EndSwitch
-EndFunc   ;==>_ConvertTypeArch
+EndFunc   ;==>ConvertTypeArch
 
-Func _CaptureFromMSDN()
+Func CaptureFromMSDN()
 	;https://msdn.microsoft.com/en-us/library/aa364935%28VS.85%29.aspx
 	Local $istart, $iend, $ireturncode
 	Local $sMSDNPage
@@ -757,5 +791,5 @@ Func _CaptureFromMSDN()
 	GUICtrlSetData($InputDll, $sDLL)
 	
 	$ireturncode = True
-EndFunc   ;==>_CaptureFromMSDN
+EndFunc   ;==>CaptureFromMSDN
 
