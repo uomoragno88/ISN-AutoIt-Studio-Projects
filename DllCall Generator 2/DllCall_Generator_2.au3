@@ -66,18 +66,29 @@ While 1
 					EndIf
 				Next
 			Else ;set list view row from inputbox
-				$aParams[$iworknumber - 1][0] = GUICtrlRead($InputParamType)
-				$aParams[$iworknumber - 1][1] = GUICtrlRead($InputParamValue)
-				$aParams[$iworknumber - 1][2] = GUICtrlRead($ComboParamByref)
+			ConvertType(GUICtrlRead($InputParamType)) ; Use the parameter type selected
+			If @error Then
+				If MsgBox($MB_ICONWARNING + $MB_OKCANCEL, "Unrecognized Type", "Unrecognized parameter type """ & GUICtrlRead($InputParamType) & """.  Make sure you are using an MSDN return type." & @CRLF & @CRLF & "If you are certain that the parameter type is correct and you happen to know the equivalent AutoIt parameter type, click OK.  You will be prompted later for the AutoIt parameter type.", 0, $FormMain) = 2 Then ContinueLoop
+			EndIf
+			If GUICtrlRead($ComboParamByref) = "Output/ByRef" And StringLeft(GUICtrlRead($InputParamValue), 1) <> "$" Then
+				MsgBox($MB_ICONWARNING, "Error", "To use this parameter value as a ByRef, you must specify the name of a variable used in your AutoIt script, which must begin with a '$' symbol.", 0, $FormMain)
+				ContinueLoop
+			EndIf
+			; Input seems okay; proceed.
+				$aParams[$iworknumber][0] = GUICtrlRead($InputParamType)
+				$aParams[$iworknumber][1] = GUICtrlRead($InputParamValue)
+				$aParams[$iworknumber][2] = GUICtrlRead($ComboParamByref)
 				; Clear input fields and refocus
 				GUICtrlSetData($InputParamNumber, "")
 				GUICtrlSetData($InputParamType, "")
 				GUICtrlSetData($InputParamValue, "")
 				GUICtrlSetData($ComboParamByref, "Input/ByVal")
-;~ 				_GUICtrlListView_SetItem($ListViewParams, $iworknumber, $iworknumber, 1)
-				$fsuccess = _GUICtrlListView_SetItemText($ListViewParams, $iworknumber, $aParams[$iworknumber - 1][0], 2)
-				$fsuccess = _GUICtrlListView_SetItemText($ListViewParams, $iworknumber, $aParams[$iworknumber - 1][1], 3)
-				$fsuccess = _GUICtrlListView_SetItemText($ListViewParams, $iworknumber, $aParams[$iworknumber - 1][2], 4)	
+				;set item
+				$fsuccess = _GUICtrlListView_SetItem($ListViewParams, $iworknumber, $iworknumber - 1)
+				;set subitem
+				$fsuccess = _GUICtrlListView_SetItemText($ListViewParams, $iworknumber - 1, $aParams[$iworknumber][0], 1)
+				$fsuccess = _GUICtrlListView_SetItemText($ListViewParams, $iworknumber - 1, $aParams[$iworknumber][1], 2)
+				$fsuccess = _GUICtrlListView_SetItemText($ListViewParams, $iworknumber - 1, $aParams[$iworknumber][2], 3)	
 				ControlFocus($FormMain, "", $InputParamType)
 			EndIf
 			; Delete all items

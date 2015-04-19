@@ -26,12 +26,13 @@ Global $s_versione
 
 $s_provenienza = "PAYPAL"
 $s_ambiente = "PRODUZIONE"
-$s_versione = "versione 0.97"
+$s_versione = "versione 1.00"
+$s_data_compilazione = @YEAR & @MON & @MDAY
 
 GUICtrlSetState($hPaypal_Image, $GUI_SHOW)
 GUICtrlSetState($hProduzione_Image, $GUI_SHOW)
 GUICtrlSetState($hTest_Image, $GUI_HIDE)
-GUICtrlSetData($hVersione, $s_versione)
+GUICtrlSetData($hVersione, $s_versione & "-" & $s_data_compilazione)
 
 ;Options
 Opt("GUIOnEventMode", 1) ;Enable OnEvent functions notifications.
@@ -40,7 +41,7 @@ GUISetOnEvent($GUI_EVENT_CLOSE, "Chiudi_click", $GUI_Form) ;dialog box being clo
 
 While 1
 	Sleep(20)
-	
+
 WEnd
 
 Func Chiudi_click() ; se cliccato il tasto "chiudi"
@@ -128,7 +129,7 @@ Func Tratta_Paypal($GUI_Form)
 	$ItemLines = UBound($ItemArray)
 	$HowManyColumns = UBound($ItemArray, 2)
 ;~ ======================
-	
+
 	; le colonne possono variare come ordine
 	; determino i vari indici per le colonne utilizzate
 	; sulla base delle intestazioni presenti in riga 1
@@ -171,11 +172,11 @@ Func Tratta_Paypal($GUI_Form)
 	$s_ACQUISTI_SEH_ACQ_VALUTA = "0,00"
 	$s_CALCOLATO_TOTALE_ACQ_VALUTA = "0,00"
 	$s_CALCOLATO_TOTALE_ACQ_EURO = "0,00"
-	
+
 	Local $a_riepilogo_acquisti[20]
 	Local $i_contatore_acquisti
 	$i_contatore_acquisti = 0
-	
+
 	; determino se esiste almeno un record relativo a pagamenti
 	; inviati per acquisto merce pagata con paypal
 	; il file cvs scaricato è con i dati più recenti in alto
@@ -184,7 +185,7 @@ Func Tratta_Paypal($GUI_Form)
 	Local $i_almeno1, $s_work_tipo, $s_work_cod_oggetto, $s_work_fornitore
 	$i_max_row = $ItemLines - 1
 	$i_almeno1 = 0
-	
+
 	For $i_row = $i_max_row To 1 Step -1
 		$s_works_tipo = $ItemArray[$i_row][$iIndex_Tipo]
 		$s_work_cod_oggetto = $ItemArray[$i_row][$iIndex_Codice_oggetto]
@@ -238,20 +239,20 @@ Func Tratta_Paypal($GUI_Form)
 						WEnd
 						; Clear up
 						Opt("GUIOnEventMode", 1) ; Reset original GUI mode
-						
+
 					EndIf
 				EndIf
 
 		EndSelect
 	Next
-	
+
 	If $i_almeno1 Then
 	Else
 		$sMsg = "Non ci sono acquisti da registrare! Elaborazione abortita"
 		$iRetValue = _ExtMsgBox($EMB_ICONSTOP, "OK", "Errore", $sMsg)
 		Exit
 	EndIf
-	
+
 	; tratto gli ACQUISTI
 	For $i_row = $i_max_row To 1 Step -1
 		$s_works_tipo = $ItemArray[$i_row][$iIndex_Tipo]
@@ -281,7 +282,7 @@ Func Tratta_Paypal($GUI_Form)
 					$i_sw_acq = 0
 					$i_sw_PBL = 0
 				EndIf
-				
+
 				If $i_sw_acq Then
 					$s_work_Valuta = $ItemArray[$i_row][$iIndex_Valuta]
 					Select
@@ -425,15 +426,15 @@ Func Tratta_Paypal($GUI_Form)
 					WEnd
 					; Clear up
 					Opt("GUIOnEventMode", 1) ; Reset original GUI mode
-					
+
 				EndIf
 
 		EndSelect
 	Next
-	
+
 ;~ =========================
 	AccessCloseConn($o_Con)
-	
+
 	$a_riepilogo_acquisti[0] = "ACQUISTI AGGIORNATI=" & $i_contatore_acquisti
 
 	_ArrayDisplay($a_riepilogo_acquisti)
@@ -577,7 +578,7 @@ Func IncrementaID_ACQ($s_ACQUISTI_ID_ACQ, $s_ACQUISTI_DATA_ACQUISTO)
 	$s_workID_prog = StringRight($s_ACQUISTI_ID_ACQ, 2)
 	$S_workData_mese = StringMid($s_ACQUISTI_DATA_ACQUISTO, 4, 2)
 	$S_workData_anno = StringRight($s_ACQUISTI_DATA_ACQUISTO, 4)
-	
+
 	Select
 		case $s_workID_anno = $S_workData_anno
 			If $s_workID_mese = $S_workData_mese Then
@@ -595,7 +596,7 @@ Func IncrementaID_ACQ($s_ACQUISTI_ID_ACQ, $s_ACQUISTI_DATA_ACQUISTO)
 			$sMsg = "Sono stati impostati i dati per un nuovo anno contabile"
 			$iRetValue = _ExtMsgBox($EMB_ICONINFO, "OK", "Informazione", $sMsg)
 	EndSelect
-	
+
 	local $i_lung
 	$i_lung = StringLen($s_workID_mese)
 	If $i_lung < 2 Then
@@ -605,10 +606,10 @@ Func IncrementaID_ACQ($s_ACQUISTI_ID_ACQ, $s_ACQUISTI_DATA_ACQUISTO)
 	If $i_lung < 2 Then
 		$s_workID_prog = "0" & $s_workID_prog
 	EndIf
-	
+
 	$s_workID = $s_workID_anno & $s_workID_mese & $s_workID_prog
 	Return $s_workID
-	
+
 EndFunc   ;==>IncrementaID_ACQ
 
 Func AccessCloseConn($o_adoCon)

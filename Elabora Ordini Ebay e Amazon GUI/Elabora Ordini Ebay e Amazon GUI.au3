@@ -2,8 +2,6 @@
 #AutoIt3Wrapper_Icon=Images\1427471026_73230.ico
 #AutoIt3Wrapper_UseX64=n
 #EndRegion ;**** Directives created by AutoIt3Wrapper_GUI ****
-#AutoIt3Wrapper_Res_File_Add=H:\ISN AutoIt Studio\Projects\Elabora Ordini Ebay e Amazon GUI\Images\amazon.jpg
-#AutoIt3Wrapper_Res_File_Add=H:\ISN AutoIt Studio\Projects\Elabora Ordini Ebay e Amazon GUI\Images\ebay.jpg
 ; #AutoIt3Wrapper_UseX64=n perche' le librerie sono a 32bit
 
 Global $oMyError = ObjEvent("AutoIt.Error", "MyErrFunc")
@@ -29,12 +27,13 @@ Global $s_versione
 $s_provenienza = "EBAY"
 $s_ambiente = "PRODUZIONE"
 $s_versione = "versione 1.00"
+$s_data_compilazione = @YEAR & @MON & @MDAY
 
 GUICtrlSetState($hEbay_Image, $GUI_SHOW)
 GUICtrlSetState($hAmazon_Image, $GUI_HIDE)
 GUICtrlSetState($hProduzione_Image, $GUI_SHOW)
 GUICtrlSetState($hTest_Image, $GUI_HIDE)
-GUICtrlSetData($hVersione, $s_versione)
+GUICtrlSetData($hVersione, $s_versione & "-" & $s_data_compilazione)
 
 ;Options
 Opt("GUIOnEventMode", 1) ;Enable OnEvent functions notifications.
@@ -52,7 +51,7 @@ Func Chiudi_click() ; se cliccato il tasto "chiudi"
 EndFunc   ;==>Chiudi_click
 
 Func Produzione_click()
-	If(GUICtrlRead($hProduzione) = $GUI_CHECKED) Then
+	If (GUICtrlRead($hProduzione) = $GUI_CHECKED) Then
 		$s_ambiente = "PRODUZIONE"
 		GUICtrlSetState($hProduzione_Image, $GUI_SHOW)
 		GUICtrlSetState($hTest_Image, $GUI_HIDE)
@@ -60,7 +59,7 @@ Func Produzione_click()
 EndFunc   ;==>Produzione_click
 
 Func Test_click()
-	If(GUICtrlRead($hTest) = $GUI_CHECKED) Then
+	If (GUICtrlRead($hTest) = $GUI_CHECKED) Then
 		$s_ambiente = "TEST"
 		GUICtrlSetState($hProduzione_Image, $GUI_HIDE)
 		GUICtrlSetState($hTest_Image, $GUI_SHOW)
@@ -68,7 +67,7 @@ Func Test_click()
 EndFunc   ;==>Test_click
 
 Func Test_Banca_click()
-	If(GUICtrlRead($hTest_Banca) = $GUI_CHECKED) Then
+	If (GUICtrlRead($hTest_Banca) = $GUI_CHECKED) Then
 		$s_ambiente = "TESTBANCA"
 		GUICtrlSetState($hProduzione_Image, $GUI_HIDE)
 		GUICtrlSetState($hTest_Image, $GUI_SHOW)
@@ -76,7 +75,7 @@ Func Test_Banca_click()
 EndFunc   ;==>Test_Banca_click
 
 Func Ebay_click()
-	If(GUICtrlRead($hEbay) = $GUI_CHECKED) Then
+	If (GUICtrlRead($hEbay) = $GUI_CHECKED) Then
 		$s_provenienza = "EBAY"
 		GUICtrlSetState($hEbay_Image, $GUI_SHOW)
 		GUICtrlSetState($hAmazon_Image, $GUI_HIDE)
@@ -84,7 +83,7 @@ Func Ebay_click()
 EndFunc   ;==>Ebay_click
 
 Func Amazon_click()
-	If(GUICtrlRead($hAmazon) = $GUI_CHECKED) Then
+	If (GUICtrlRead($hAmazon) = $GUI_CHECKED) Then
 		$s_provenienza = "AMAZON"
 		GUICtrlSetState($hEbay_Image, $GUI_HIDE)
 		GUICtrlSetState($hAmazon_Image, $GUI_SHOW)
@@ -135,24 +134,24 @@ Func Tratta_Amazon($GUI_Form, $hArea_Comunicazioni)
 		$i_offset_ok = 0
 		$s_work_distinta_Amazon = ClipGet()
 		$a_distinta_Amazon = StringSplit($s_work_distinta_Amazon, @CRLF, 1)
-;~ 	_ArrayDisplay($a_distinta_Amazon)
+		;_ArrayDisplay($a_distinta_Amazon)
 		Select
-			Case $a_distinta_Amazon[0] = 24
+			Case $a_distinta_Amazon[0] = 25
 				$i_offset = 0
 				$i_offset_ok = 1
-			Case $a_distinta_Amazon[0] = 25
+			Case $a_distinta_Amazon[0] = 26
 				$i_offset = 1
 				$i_offset_ok = 1
 			Case Else
 				$i_offset_ok = 0
 		EndSelect
-		if Not $i_offset_ok Then
+		If Not $i_offset_ok Then
 			$sMsg = "Errore selezione. Riprova quindi premi OK"
 			$iRetValue = _ExtMsgBox($EMB_ICONINFO, "OK", "Copia", $sMsg)
 		EndIf
 	Until $i_offset_ok
 
-	Local $s_venditore = StringTrimLeft($a_distinta_Amazon[12 + $i_offset], 15)
+	Local $s_venditore = StringTrimLeft($a_distinta_Amazon[13 + $i_offset], 15)
 	$s_venditore = StringStripWS($s_venditore, $STR_STRIPALL)
 	$s_venditore = StringUpper($s_venditore)
 
@@ -179,11 +178,11 @@ Func Tratta_Amazon($GUI_Form, $hArea_Comunicazioni)
 	Local $s_Ebay_Altro
 	Local $s_work_mese
 
-	$a_Etichetta[0] = $a_distinta_Amazon[4]
-	$a_Etichetta[1] = $a_distinta_Amazon[5]
-	$a_Etichetta[2] = $a_distinta_Amazon[6]
-	$a_Etichetta[3] = $a_distinta_Amazon[7]
-	$a_Etichetta[4] = $a_distinta_Amazon[8]
+	$a_Etichetta[0] = $a_distinta_Amazon[5]
+	$a_Etichetta[1] = $a_distinta_Amazon[6]
+	$a_Etichetta[2] = $a_distinta_Amazon[7]
+	$a_Etichetta[3] = $a_distinta_Amazon[8]
+	$a_Etichetta[4] = $a_distinta_Amazon[9]
 
 	Local $s_work_cap = StringRight($a_Etichetta[2 + $i_offset], 5)
 	Local $s_work_resto = StringLeft($a_Etichetta[2 + $i_offset], StringLen($a_Etichetta[2 + $i_offset]) - 5)
@@ -192,7 +191,7 @@ Func Tratta_Amazon($GUI_Form, $hArea_Comunicazioni)
 		ReDim $a_Etichetta[4]
 	EndIf
 
-;~ 	Old _ArrayDisplay($a_Etichetta)
+	; 	Old _ArrayDisplay($a_Etichetta)
 	Local $s_work_etk
 	$s_work_etk = ""
 	$s_work_etk = _ArrayToString($a_Etichetta, @CRLF)
@@ -220,28 +219,28 @@ Func Tratta_Amazon($GUI_Form, $hArea_Comunicazioni)
 
 	$s_Ebay_Altro = "AMAZON"
 
-	$s_ID_Vendita = StringTrimLeft($a_distinta_Amazon[1], 19)
+	$s_ID_Vendita = StringTrimLeft($a_distinta_Amazon[2], 19)
 	$s_ID_Vendita = StringStripWS($s_ID_Vendita, $STR_STRIPALL)
 	$s_ID_Vendita = StringReplace($s_ID_Vendita, "-", "")
 
-	$s_Numero_Oggetto = StringTrimLeft($a_distinta_Amazon[15 + $i_offset], 4)
+	$s_Numero_Oggetto = StringTrimLeft($a_distinta_Amazon[16 + $i_offset], 4)
 	$s_Numero_Oggetto = StringStripWS($s_Numero_Oggetto, $STR_STRIPALL)
 	$s_Numero_Oggetto = "'" & $s_Numero_Oggetto & "'"
 
-	$s_Prezzo_Oggetto = $a_distinta_Amazon[20 + $i_offset]
+	$s_Prezzo_Oggetto = $a_distinta_Amazon[21 + $i_offset]
 	;$s_Prezzo_Oggetto = StringStripWS ($s_Prezzo_Oggetto, $STR_STRIPALL)
 	Local $a_work = StringSplit($s_Prezzo_Oggetto, "EUR ")
 	;_ArrayDisplay($a_work)
 	$s_Prezzo_Oggetto = $a_work[5]
 
-	$s_Spedizione_Oggetto = StringTrimLeft($a_distinta_Amazon[22 + $i_offset], 11)
+	$s_Spedizione_Oggetto = StringTrimLeft($a_distinta_Amazon[23 + $i_offset], 11)
 	;$s_Spedizione_Oggetto = StringStripWS ($s_Spedizione_Oggetto, $STR_STRIPALL)
 	$a_work = StringSplit($s_Spedizione_Oggetto, "EUR ")
 	;_ArrayDisplay($a_work)
 	$s_Spedizione_Oggetto = $a_work[6]
 
 	Local $a_work_QTA, $s_work_QTA
-	$s_work_QTA = $a_distinta_Amazon[14 + $i_offset]
+	$s_work_QTA = $a_distinta_Amazon[15 + $i_offset]
 	$a_work_QTA = StringSplit($s_work_QTA, @TAB, 1)
 	;_ArrayDisplay($a_work_QTA)
 	$s_Qta_Oggetto = $a_work_QTA[1]
@@ -255,7 +254,7 @@ Func Tratta_Amazon($GUI_Form, $hArea_Comunicazioni)
 		$s_Spedizione_Oggetto = $s_Spese_Unitarie
 	EndIf
 
-	$s_Data_Vendita_Oggetto = StringTrimLeft($a_distinta_Amazon[9 + $i_offset], 12)
+	$s_Data_Vendita_Oggetto = StringTrimLeft($a_distinta_Amazon[10 + $i_offset], 12)
 	$s_Data_Vendita_Oggetto = StringStripWS($s_Data_Vendita_Oggetto, $STR_STRIPALL)
 	Local $a_work = StringSplit($s_Data_Vendita_Oggetto, "/")
 	;	_ArrayDisplay($a_work)
