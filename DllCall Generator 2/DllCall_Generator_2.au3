@@ -66,15 +66,15 @@ While 1
 					EndIf
 				Next
 			Else ;set list view row from inputbox
-			ConvertType(GUICtrlRead($InputParamType)) ; Use the parameter type selected
-			If @error Then
-				If MsgBox($MB_ICONWARNING + $MB_OKCANCEL, "Unrecognized Type", "Unrecognized parameter type """ & GUICtrlRead($InputParamType) & """.  Make sure you are using an MSDN return type." & @CRLF & @CRLF & "If you are certain that the parameter type is correct and you happen to know the equivalent AutoIt parameter type, click OK.  You will be prompted later for the AutoIt parameter type.", 0, $FormMain) = 2 Then ContinueLoop
-			EndIf
-			If GUICtrlRead($ComboParamByref) = "Output/ByRef" And StringLeft(GUICtrlRead($InputParamValue), 1) <> "$" Then
-				MsgBox($MB_ICONWARNING, "Error", "To use this parameter value as a ByRef, you must specify the name of a variable used in your AutoIt script, which must begin with a '$' symbol.", 0, $FormMain)
-				ContinueLoop
-			EndIf
-			; Input seems okay; proceed.
+				ConvertType(GUICtrlRead($InputParamType)) ; Use the parameter type selected
+				If @error Then
+					If MsgBox($MB_ICONWARNING + $MB_OKCANCEL, "Unrecognized Type", "Unrecognized parameter type """ & GUICtrlRead($InputParamType) & """.  Make sure you are using an MSDN return type." & @CRLF & @CRLF & "If you are certain that the parameter type is correct and you happen to know the equivalent AutoIt parameter type, click OK.  You will be prompted later for the AutoIt parameter type.", 0, $FormMain) = 2 Then ContinueLoop
+				EndIf
+				If GUICtrlRead($ComboParamByref) = "Output/ByRef" And StringLeft(GUICtrlRead($InputParamValue), 1) <> "$" Then
+					MsgBox($MB_ICONWARNING, "Error", "To use this parameter value as a ByRef, you must specify the name of a variable used in your AutoIt script, which must begin with a '$' symbol.", 0, $FormMain)
+					ContinueLoop
+				EndIf
+				; Input seems okay; proceed.
 				$aParams[$iworknumber][0] = GUICtrlRead($InputParamType)
 				$aParams[$iworknumber][1] = GUICtrlRead($InputParamValue)
 				$aParams[$iworknumber][2] = GUICtrlRead($ComboParamByref)
@@ -88,7 +88,7 @@ While 1
 				;set subitem
 				$fsuccess = _GUICtrlListView_SetItemText($ListViewParams, $iworknumber - 1, $aParams[$iworknumber][0], 1)
 				$fsuccess = _GUICtrlListView_SetItemText($ListViewParams, $iworknumber - 1, $aParams[$iworknumber][1], 2)
-				$fsuccess = _GUICtrlListView_SetItemText($ListViewParams, $iworknumber - 1, $aParams[$iworknumber][2], 3)	
+				$fsuccess = _GUICtrlListView_SetItemText($ListViewParams, $iworknumber - 1, $aParams[$iworknumber][2], 3)
 				ControlFocus($FormMain, "", $InputParamType)
 			EndIf
 			; Delete all items
@@ -590,6 +590,7 @@ Func CaptureFromMSDN()
 	Local $iExamplesSectPresent
 	Local $iRequirementsSectPresent
 	Local $iSeealsoSectPresent
+	Local $iCommunityAdditionsPresent
 	Local $sReturnType
 	Local $sFunctionName
 	Local $sDLL
@@ -598,7 +599,7 @@ Func CaptureFromMSDN()
 	Local $iUnicodeandANSISectPresent
 	Local $sUnicodeName
 	Local $sANSIName
-	Local $awork, $swork
+	Local $awork, $swork, $arow, $ioffset
 	
 	$sMSDNPage = GUICtrlRead($InputFromMSDNPage)
 	;Verify Section
@@ -663,6 +664,13 @@ Func CaptureFromMSDN()
 		$iSeealsoSectPresent = True
 	EndIf
 	
+	$istart = StringInStr($sMSDNPage, "Community Additions" & @CRLF, $STR_CASESENSE)
+	If $istart = 0 Then
+		$iCommunityAdditionsPresent = False
+	Else
+		$iCommunityAdditionsPresent = True
+	EndIf
+	
 	;Syntax Section
 	$istart = StringInStr($sMSDNPage, "Syntax" & @CRLF, $STR_CASESENSE)
 	$iend = StringInStr($sMSDNPage, "Parameters" & @CRLF, $STR_CASESENSE)
@@ -672,36 +680,63 @@ Func CaptureFromMSDN()
 	$aparamfromMSDN = StringSplit($sSyntax, @CRLF, $STR_ENTIRESPLIT)
 	For $iparamrow = 1 To $aparamfromMSDN[0]
 		Select
-;~ 			Case $aparamfromMSDN[$iparamrow] = "Syntax", "C++", @CRLF
-;~ 				ContinueCase
-			Case StringInStr($aparamfromMSDN[$iparamrow], "WINAPI")
-				$ifirstparamrow = $aparamfromMSDN[0] - 1
-				$ilastparamrow = $aparamfromMSDN[0] - 1
+			Case StringInStr($aparamfromMSDN[$iparamrow], "(")
+				$ifirstparamrow = $iparamrow
+				$ilastparamrow = $iparamrow
 			Case StringInStr($aparamfromMSDN[$iparamrow], ");")
-				$ilastparamrow = $aparamfromMSDN[0] - 1
+				$ilastparamrow = $iparamrow
 		EndSelect
 	Next
 	
-
-	;first row
-	$istart = StringInStr($aparamfromMSDN[$ifirstparamrow], "WINAPI", $STR_CASESENSE)
-	$iend = StringInStr($aparamfromMSDN[$ifirstparamrow], "(", $STR_CASESENSE)
-	;Return Type
-	$sReturnType = StringLeft($aparamfromMSDN[$ifirstparamrow], $istart - 1)
-	StringStripWS($sReturnType, $STR_STRIPALL)
-	StringStripCR($sReturnType)
-	$sReturnType = StringRegExpReplace($sReturnType, "(?i)[^a-z0-9]", "")
-	;Function Name
-	$sFunctionName = StringRight($aparamfromMSDN[$ifirstparamrow], $iend - $istart)
-	$istart = StringInStr($sFunctionName, "(", $STR_CASESENSE)
-	$sFunctionName = StringLeft($sFunctionName, $istart - 1)
-	StringStripWS($sFunctionName, $STR_STRIPALL)
-	StringStripCR($sFunctionName)
-	$sFunctionName = StringRegExpReplace($sFunctionName, "(?i)[^a-z0-9]", "")
-	
-	If $ifirstparamrow < $ilastparamrow Then
-		
-	EndIf
+	For $iparamrow = $ifirstparamrow To $ilastparamrow
+		Select
+			Case $iparamrow = $ifirstparamrow ;first row
+				$istart = 1
+				$iend = StringInStr($aparamfromMSDN[$iparamrow], " ")
+				;Return Type
+				$sReturnType = StringLeft($aparamfromMSDN[$iparamrow], $iend - $istart)
+				StringStripWS($sReturnType, $STR_STRIPALL)
+				StringStripCR($sReturnType)
+				$sReturnType = StringRegExpReplace($sReturnType, "(?i)[^a-z0-9]", "")
+				;Function Name
+				$iend = StringInStr($aparamfromMSDN[$iparamrow], "(", $STR_CASESENSE)
+				$istart = StringInStr($aparamfromMSDN[$iparamrow], "WINAPI", $STR_CASESENSE)
+				If $istart > 0 Then
+					$sFunctionName = StringMid($aparamfromMSDN[$iparamrow], $istart + 6, $iend - ($istart + 6))
+				Else ;no WINAPI
+					$istart = StringInStr($aparamfromMSDN[$iparamrow], " ")
+					$sFunctionName = StringMid($aparamfromMSDN[$iparamrow], $istart + 1, $iend - ($istart + 1))
+				EndIf
+				StringStripWS($sFunctionName, $STR_STRIPALL)
+				StringStripCR($sFunctionName)
+				$sFunctionName = StringRegExpReplace($sFunctionName, "(?i)[^a-z0-9]", "")
+			Case $iparamrow < $ilastparamrow
+				;row next first
+				$arow = StringSplit($aparamfromMSDN[$iparamrow], " ")
+				If $arow[3] = "_In_" Then
+					ReDim $aParams[UBound($aParams) + 1][3] ; Add a "row" to the array
+					$aParams[UBound($aParams) - 1][0] = $arow[5]
+					$aParams[UBound($aParams) - 1][1] = ""
+					$aParams[UBound($aParams) - 1][2] = "Input/ByVal"
+					GUICtrlCreateListViewItem(UBound($aParams) - 1 & "|" & $aParams[UBound($aParams) - 1][0] & "|" & $aParams[UBound($aParams) - 1][1] & "|" & $aParams[UBound($aParams) - 1][2], $ListViewParams)
+				ElseIf $arow[3] = "_Out_" Then
+					ReDim $aParams[UBound($aParams) + 1][3] ; Add a "row" to the array
+					$aParams[UBound($aParams) - 1][0] = $arow[5]
+					$aParams[UBound($aParams) - 1][1] = "$" & $arow[6]
+					$aParams[UBound($aParams) - 1][2] = "Output/ByRef"
+					GUICtrlCreateListViewItem(UBound($aParams) - 1 & "|" & $aParams[UBound($aParams) - 1][0] & "|" & $aParams[UBound($aParams) - 1][1] & "|" & $aParams[UBound($aParams) - 1][2], $ListViewParams)
+				ElseIf $arow[3] = "_Inout_" Then
+					ReDim $aParams[UBound($aParams) + 1][3] ; Add a "row" to the array
+					$aParams[UBound($aParams) - 1][0] = $arow[5]
+					$aParams[UBound($aParams) - 1][1] = ""
+					$aParams[UBound($aParams) - 1][2] = "Input/ByVal"
+					GUICtrlCreateListViewItem(UBound($aParams) - 1 & "|" & $aParams[UBound($aParams) - 1][0] & "|" & $aParams[UBound($aParams) - 1][1] & "|" & $aParams[UBound($aParams) - 1][2], $ListViewParams)
+				EndIf
+			Case $iparamrow = $ilastparamrow
+				;last row
+				
+		EndSelect
+	Next
 	
 	GUICtrlSetData($InputFunc, $sFunctionName)
 	GUICtrlSetData($InputReturnType, $sReturnType)
@@ -737,10 +772,16 @@ Func CaptureFromMSDN()
 		$sExamples = StringMid($sMSDNPage, $istart, $iend - $istart - 1)
 	EndIf
 	;Requirements Section
-	$istart = StringInStr($sMSDNPage, "Requirements" & @CRLF, $STR_CASESENSE)
-	$iend = StringInStr($sMSDNPage, "See also" & @CRLF, $STR_CASESENSE)
-	$sRequirements = StringMid($sMSDNPage, $istart, $iend - $istart - 1)
-
+	If $iSeealsoSectPresent Then
+		$istart = StringInStr($sMSDNPage, "Requirements" & @CRLF, $STR_CASESENSE)
+		$iend = StringInStr($sMSDNPage, "See also" & @CRLF, $STR_CASESENSE)
+		$sRequirements = StringMid($sMSDNPage, $istart, $iend - $istart - 1)
+	Else
+		$istart = StringInStr($sMSDNPage, "Requirements" & @CRLF, $STR_CASESENSE)
+		$iend = StringInStr($sMSDNPage, "Community Additions" & @CRLF, $STR_CASESENSE)
+		$sRequirements = StringMid($sMSDNPage, $istart, $iend - $istart - 1)
+	EndIf
+	
 	$istart = StringInStr($sRequirements, "DLL" & @CRLF, $STR_CASESENSE)
 	If $istart = 0 Then
 		$iDLLSectPresent = False
@@ -794,7 +835,10 @@ Func CaptureFromMSDN()
 		$iend = StringLen($sRequirements)
 		$sDLL = StringMid($sRequirements, $istart + 3, $iend - $istart - 1)
 	EndIf
-	
+
+	;remove comment if prsent: Shlwapi.dll (version 4.71 or later)
+	$iend = StringInStr($sDLL, "dll")
+	$sDLL = StringMid($sDLL, 1, $iend + 3)
 	StringStripWS($sDLL, $STR_STRIPALL)
 	StringStripCR($sDLL)
 	$sDLL = StringRegExpReplace($sDLL, "(?i)[^a-z0-9.]", "")

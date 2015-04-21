@@ -4,6 +4,7 @@
 BackUp/
 Debug/
 Exe/
+Temp/
 Release/
 *.exe
 *.lnk
