@@ -10,10 +10,20 @@
 #include <ListViewConstants.au3>
 #include <WindowsConstants.au3>
 #include <MsgBoxConstants.au3>
+#include <misc.au3>
 #include <array.au3>
+#include <IE.au3>
+
 #include "Forms\dllcallgen_form.isf"
 
-Opt("MustDeclareVars", 0) ;0=no, 1=require pre-declare
+;from http://www.autoitscript.com/forum/topic/158186-embedded-ie-copying-content/page-3
+DllCall("ole32.dll", "long", "OleInitialize", "ptr", 0) ; add this line somewhere in your script if you plan to use clipboard this way later.
+
+Global $oIE = ObjCreate("Shell.Explorer.2")
+GUICtrlCreateObj($oIE, 280, 100, 150, 150)
+GUICtrlSetState(-1, 32) ; HIDE IE object
+
+Opt("MustDeclareVars", 1) ;0=no, 1=require pre-declare
 ;if use debug disable "MustDeclareVars"
 
 Global $aParams[1][3]
@@ -132,6 +142,10 @@ While 1
 			Sleep(1000)
 			ToolTip("")
 		Case $ButtonCapture
+			Local $sMSDNURL
+			$sMSDNURL = GUICtrlRead($hMSDNURL)
+			$oIE.navigate($sMSDNURL)
+			_IELoadWait($oIE)
 			$ireturncode = CaptureFromMSDN()
 		Case $InputFunc
 			If StringRight(GUICtrlRead($InputFunc), 1) == "W" Then ; Check if last character of entered function name is a capital "W"
@@ -574,6 +588,14 @@ Func ConvertTypeArch($MSDN_Type, $sArch)
 EndFunc   ;==>ConvertTypeArch
 
 Func CaptureFromMSDN()
+	;from http://www.autoitscript.com/forum/topic/158186-embedded-ie-copying-content/page-3
+	ControlClick("DllCall Code Generator 2.0", "", "[CLASS:Internet Explorer_Server; INSTANCE:1]")
+	Sleep(200)
+	Send("^a")
+	Sleep(200)
+	Send("^c")
+	ControlSetText("DllCall Code Generator 2.0", "", "[CLASS:Edit; INSTANCE:8]", ClipGet())
+	
 	;https://msdn.microsoft.com/en-us/library/aa364935%28VS.85%29.aspx
 	Local $istart, $iend, $ireturncode
 	Local $sMSDNPage
@@ -692,43 +714,44 @@ Func CaptureFromMSDN()
 	For $iparamrow = $ifirstparamrow To $ilastparamrow
 		Select
 			Case $iparamrow = $ifirstparamrow ;first row
-				$istart = 1
-				$iend = StringInStr($aparamfromMSDN[$iparamrow], " ")
-				;Return Type
-				$sReturnType = StringLeft($aparamfromMSDN[$iparamrow], $iend - $istart)
+				$arow = StringSplit($aparamfromMSDN[$iparamrow], " ")
+				ArrayRemoveBlanks($arow)
+				If $arow[0] = 2 Then ; no WINAPI
+					$sReturnType = $arow[1]
+					$sFunctionName = $arow[2]
+				Else ; WINAPI is present
+					$sReturnType = $arow[1]
+					$sFunctionName = $arow[3]
+				EndIf
 				StringStripWS($sReturnType, $STR_STRIPALL)
 				StringStripCR($sReturnType)
 				$sReturnType = StringRegExpReplace($sReturnType, "(?i)[^a-z0-9]", "")
-				;Function Name
-				$iend = StringInStr($aparamfromMSDN[$iparamrow], "(", $STR_CASESENSE)
-				$istart = StringInStr($aparamfromMSDN[$iparamrow], "WINAPI", $STR_CASESENSE)
-				If $istart > 0 Then
-					$sFunctionName = StringMid($aparamfromMSDN[$iparamrow], $istart + 6, $iend - ($istart + 6))
-				Else ;no WINAPI
-					$istart = StringInStr($aparamfromMSDN[$iparamrow], " ")
-					$sFunctionName = StringMid($aparamfromMSDN[$iparamrow], $istart + 1, $iend - ($istart + 1))
-				EndIf
+				$arow = StringSplit($sFunctionName, "(")
+				ArrayRemoveBlanks($arow)
+				$sFunctionName = $arow[1]
 				StringStripWS($sFunctionName, $STR_STRIPALL)
 				StringStripCR($sFunctionName)
 				$sFunctionName = StringRegExpReplace($sFunctionName, "(?i)[^a-z0-9]", "")
 			Case $iparamrow < $ilastparamrow
 				;row next first
 				$arow = StringSplit($aparamfromMSDN[$iparamrow], " ")
-				If $arow[3] = "_In_" Then
+				ArrayRemoveBlanks($arow)
+				$arow[3] = StringRegExpReplace($arow[3], "(?i)[^a-z0-9]", "")
+				If $arow[1] = "_In_" Then
 					ReDim $aParams[UBound($aParams) + 1][3] ; Add a "row" to the array
-					$aParams[UBound($aParams) - 1][0] = $arow[5]
+					$aParams[UBound($aParams) - 1][0] = $arow[2]
 					$aParams[UBound($aParams) - 1][1] = ""
 					$aParams[UBound($aParams) - 1][2] = "Input/ByVal"
 					GUICtrlCreateListViewItem(UBound($aParams) - 1 & "|" & $aParams[UBound($aParams) - 1][0] & "|" & $aParams[UBound($aParams) - 1][1] & "|" & $aParams[UBound($aParams) - 1][2], $ListViewParams)
-				ElseIf $arow[3] = "_Out_" Then
+				ElseIf $arow[1] = "_Out_" Then
 					ReDim $aParams[UBound($aParams) + 1][3] ; Add a "row" to the array
-					$aParams[UBound($aParams) - 1][0] = $arow[5]
-					$aParams[UBound($aParams) - 1][1] = "$" & $arow[6]
+					$aParams[UBound($aParams) - 1][0] = $arow[2]
+					$aParams[UBound($aParams) - 1][1] = "$" & $arow[3]
 					$aParams[UBound($aParams) - 1][2] = "Output/ByRef"
 					GUICtrlCreateListViewItem(UBound($aParams) - 1 & "|" & $aParams[UBound($aParams) - 1][0] & "|" & $aParams[UBound($aParams) - 1][1] & "|" & $aParams[UBound($aParams) - 1][2], $ListViewParams)
-				ElseIf $arow[3] = "_Inout_" Then
+				ElseIf $arow[1] = "_Inout_" Then
 					ReDim $aParams[UBound($aParams) + 1][3] ; Add a "row" to the array
-					$aParams[UBound($aParams) - 1][0] = $arow[5]
+					$aParams[UBound($aParams) - 1][0] = $arow[2]
 					$aParams[UBound($aParams) - 1][1] = ""
 					$aParams[UBound($aParams) - 1][2] = "Input/ByVal"
 					GUICtrlCreateListViewItem(UBound($aParams) - 1 & "|" & $aParams[UBound($aParams) - 1][0] & "|" & $aParams[UBound($aParams) - 1][1] & "|" & $aParams[UBound($aParams) - 1][2], $ListViewParams)
@@ -850,12 +873,15 @@ Func CaptureFromMSDN()
 EndFunc   ;==>CaptureFromMSDN
 
 Func ArrayRemoveBlanks(ByRef $arr)
-  $idx = 0
-  For $i = 0 To UBound($arr) - 1
-    If $arr[$i] <> "" Then
-      $arr[$idx] = $arr[$i]
-      $idx += 1
-    EndIf
-  Next
-  ReDim $arr[$idx]
-EndFunc ;==>ArrayRemoveBlanks
+	Local $idx
+	$idx = 0
+	For $i = 0 To UBound($arr) - 1
+		If $arr[$i] <> "" Then
+			$arr[$idx] = $arr[$i]
+			$idx += 1
+		EndIf
+	Next
+;~ 	$arr[0] = $idx - 1
+	ReDim $arr[$idx]
+	$arr[0] = $idx - 1
+EndFunc   ;==>ArrayRemoveBlanks

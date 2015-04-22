@@ -24,7 +24,6 @@ GUICtrlSendMsg(-1, $LVM_SETCOLUMNWIDTH, 0, 50)
 GUICtrlSendMsg(-1, $LVM_SETCOLUMNWIDTH, 1, 50)
 GUICtrlSendMsg(-1, $LVM_SETCOLUMNWIDTH, 2, 50)
 GUICtrlSendMsg(-1, $LVM_SETCOLUMNWIDTH, 3, 50)
-$Label4 = GUICtrlCreateLabel("For all types, use the type name specified on MSDN.",16,8,251,17,-1,-1)
 $Label5 = GUICtrlCreateLabel("Parameters:",16,136,60,17,-1,-1)
 $Label6 = GUICtrlCreateLabel("Type",24,157,28,17,-1,-1)
 $Label7 = GUICtrlCreateLabel("Value (0 for null)",152,157,80,17,-1,-1)
@@ -38,18 +37,19 @@ $ButtonParamDelete = GUICtrlCreateButton("Clear All",128,213,107,25,-1,-1)
 $Label9 = GUICtrlCreateLabel("Calling convention",16,112,91,17,-1,-1)
 $Label10 = GUICtrlCreateLabel("Generated AutoIt code:",418,189,115,17,-1,-1)
 $EditCode = GUICtrlCreateEdit("",417,210,401,160,3147776,-1)
-$ButtonTest = GUICtrlCreateButton("Test Code",344,381,107,25,-1,-1)
-$ButtonCopy = GUICtrlCreateButton("Copy to Clipboard",464,381,107,25,-1,-1)
-$ButtonCapture = GUICtrlCreateButton("Capture from MSDN",586,381,107,25,-1,-1)
+$ButtonTest = GUICtrlCreateButton("Test Code",419,379,107,25,-1,-1)
+$ButtonCopy = GUICtrlCreateButton("Copy to Clipboard",572,379,107,25,-1,-1)
+$ButtonCapture = GUICtrlCreateButton("Capture from MSDN",697,1,107,25,-1,-1)
 $ButtonGenonly = GUICtrlCreateButton("Nothing Else",704,381,107,25,-1,-1)
 $ComboOutput = GUICtrlCreateCombo("",98,383,121,25,67,-1)
 GUICtrlSetData(-1,"ConsoleWrite|MsgBox|$vDllCallReturn only")
 $Label11 = GUICtrlCreateLabel("Output method:",16,387,77,17,-1,-1)
 $Label12 = GUICtrlCreateLabel("Generate code and:",232,387,99,17,-1,-1)
-GUICtrlCreateLabel("Insert MSDN page",418,8,115,17,-1,-1)
+GUICtrlCreateLabel("MSDN URL page",16,5,115,17,-1,-1)
 $InputFromMSDNPage = GUICtrlCreateEdit("",417,29,401,150,3145728,-1)
 $ButtonParamEdit = GUICtrlCreateButton("Edit Parameter",252,213,91,25,-1,-1)
 $InputParamNumber = GUICtrlCreateInput("",2,176,15,21,-1,512)
+$hMSDNURL = GUICtrlCreateInput("",120,5,550,21,-1,512)
 
 
 
@@ -71,7 +71,7 @@ xpos=-1
 ypos=-1
 center_gui=true
 title_textmode=normal
-[0x00021CCA]
+[0x00021B9A]
 handle=459
 locked=0
 resize=
@@ -98,7 +98,7 @@ bgimage=
 order=0
 tabpage=-1
 textmode=text
-[0x00021CC6]
+[0x00021B94]
 handle=460
 locked=0
 resize=
@@ -125,7 +125,7 @@ bgimage=
 order=2
 tabpage=-1
 textmode=text
-[0x00021CC2]
+[0x00021B8C]
 handle=461
 locked=0
 resize=
@@ -152,7 +152,7 @@ bgimage=
 order=3
 tabpage=-1
 textmode=text
-[0x00081C4A]
+[0x00021B84]
 handle=462
 locked=0
 resize=
@@ -179,7 +179,7 @@ bgimage=
 order=4
 tabpage=-1
 textmode=text
-[0x00071C5C]
+[0x00021B78]
 handle=463
 locked=0
 resize=
@@ -206,7 +206,7 @@ bgimage=
 order=5
 tabpage=-1
 textmode=text
-[0x00071C4E]
+[0x00031B7C]
 handle=464
 locked=0
 resize=
@@ -233,7 +233,7 @@ bgimage=
 order=6
 tabpage=-1
 textmode=text
-[0x00071C52]
+[0x00021B72]
 handle=465
 locked=0
 resize=
@@ -260,7 +260,7 @@ bgimage=
 order=7
 tabpage=-1
 textmode=text
-[0x00081C60]
+[0x00021B6C]
 handle=466
 locked=0
 resize=
@@ -287,7 +287,7 @@ bgimage=
 order=8
 tabpage=-1
 textmode=text
-[0x00071C64]
+[0x00021B64]
 handle=467
 locked=0
 resize=
@@ -314,7 +314,7 @@ bgimage=
 order=9
 tabpage=-1
 textmode=text
-[0x00051C68]
+[0x00021B54]
 handle=468
 locked=0
 resize=
@@ -341,35 +341,8 @@ bgimage=
 order=10
 tabpage=-1
 textmode=text
-[0x00051C10]
+[0x00021B56]
 handle=469
-locked=0
-resize=
-code=
-type=label
-x=16
-y=8
-width=251
-height=17
-text=For all types, use the type name specified on MSDN.
-tooltip=
-state=$GUI_SHOW+$GUI_ENABLE
-style=
-exstyle=
-textcolour=0x000000
-bgcolour=
-font=MS Sans Serif
-fontsize=8
-fontstyle=400
-fontattribute=0
-id=Label4
-func=
-bgimage=
-order=11
-tabpage=-1
-textmode=text
-[0x00031C44]
-handle=470
 locked=0
 resize=
 code=
@@ -395,8 +368,8 @@ bgimage=
 order=12
 tabpage=-1
 textmode=text
-[0x00031C38]
-handle=471
+[0x00021B5E]
+handle=470
 locked=0
 resize=
 code=
@@ -422,8 +395,8 @@ bgimage=
 order=13
 tabpage=-1
 textmode=text
-[0x00031C2C]
-handle=472
+[0x00021B66]
+handle=471
 locked=0
 resize=
 code=
@@ -449,8 +422,8 @@ bgimage=
 order=14
 tabpage=-1
 textmode=text
-[0x00031C24]
-handle=473
+[0x00021B6E]
+handle=472
 locked=0
 resize=
 code=
@@ -476,8 +449,8 @@ bgimage=
 order=15
 tabpage=-1
 textmode=text
-[0x00031C3C]
-handle=474
+[0x00031B7E]
+handle=473
 locked=0
 resize=
 code=
@@ -503,8 +476,8 @@ bgimage=
 order=16
 tabpage=-1
 textmode=text
-[0x00021E1A]
-handle=475
+[0x00021B86]
+handle=474
 locked=0
 resize=
 code=
@@ -530,8 +503,8 @@ bgimage=
 tabpage=-1
 order=17
 textmode=text
-[0x00021E16]
-handle=476
+[0x00021B8E]
+handle=475
 locked=0
 resize=
 code=
@@ -557,8 +530,8 @@ bgimage=
 order=18
 tabpage=-1
 textmode=text
-[0x00021E0E]
-handle=477
+[0x00021BA2]
+handle=476
 locked=0
 resize=
 code=
@@ -584,8 +557,8 @@ bgimage=
 order=19
 tabpage=-1
 textmode=text
-[0x00021E08]
-handle=478
+[0x00021BAA]
+handle=477
 locked=0
 resize=
 code=
@@ -611,8 +584,8 @@ bgimage=
 tabpage=-1
 textmode=text
 order=20
-[0x00021DF6]
-handle=479
+[0x00021BB2]
+handle=478
 locked=0
 resize=
 code=
@@ -638,8 +611,8 @@ bgimage=
 order=21
 tabpage=-1
 textmode=text
-[0x00021DEE]
-handle=480
+[0x00021BBE]
+handle=479
 locked=0
 resize=
 code=
@@ -665,8 +638,8 @@ bgimage=
 order=22
 tabpage=-1
 textmode=text
-[0x00021DE8]
-handle=481
+[0x00021BCA]
+handle=480
 locked=0
 resize=
 code=
@@ -692,14 +665,14 @@ bgimage=
 order=23
 tabpage=-1
 textmode=text
-[0x00021DE2]
-handle=482
+[0x00021BD2]
+handle=481
 locked=0
 resize=
 code=
 type=button
-x=344
-y=381
+x=419
+y=379
 width=107
 height=25
 text=Test Code
@@ -719,14 +692,14 @@ bgimage=
 order=24
 tabpage=-1
 textmode=text
-[0x00021DDA]
-handle=483
+[0x00021BDA]
+handle=482
 locked=0
 resize=
 code=
 type=button
-x=464
-y=381
+x=572
+y=379
 width=107
 height=25
 text=Copy to Clipboard
@@ -746,14 +719,14 @@ bgimage=
 tabpage=-1
 textmode=text
 order=25
-[0x00021DD2]
-handle=484
+[0x00021BE2]
+handle=483
 locked=0
 resize=
 code=
 type=button
-x=586
-y=381
+x=697
+y=1
 width=107
 height=25
 text=Capture from MSDN
@@ -773,8 +746,8 @@ bgimage=
 tabpage=-1
 textmode=text
 order=26
-[0x00021DCA]
-handle=485
+[0x00031BB6]
+handle=484
 locked=0
 resize=
 code=
@@ -800,8 +773,8 @@ bgimage=
 tabpage=-1
 textmode=text
 order=27
-[0x00021DC2]
-handle=486
+[0x00021742]
+handle=485
 locked=0
 resize=
 code=
@@ -827,8 +800,8 @@ bgimage=
 order=28
 tabpage=-1
 textmode=text
-[0x00021DB2]
-handle=487
+[0x00031762]
+handle=486
 locked=0
 resize=
 code=
@@ -854,8 +827,8 @@ bgimage=
 order=29
 tabpage=-1
 textmode=text
-[0x00021D98]
-handle=488
+[0x00021758]
+handle=487
 locked=0
 resize=
 code=
@@ -881,17 +854,17 @@ bgimage=
 tabpage=-1
 textmode=text
 order=30
-[0x00021D8E]
-handle=489
+[0x00021754]
+handle=488
 locked=0
 resize=
 code=
 type=label
-x=418
-y=8
+x=16
+y=5
 width=115
 height=17
-text=Insert MSDN page
+text=MSDN URL page
 tooltip=
 state=$GUI_SHOW+$GUI_ENABLE
 style=
@@ -908,8 +881,8 @@ bgimage=
 tabpage=-1
 textmode=text
 order=31
-[0x00021D92]
-handle=490
+[0x00021750]
+handle=489
 locked=0
 resize=
 code=
@@ -935,8 +908,8 @@ bgimage=
 tabpage=-1
 textmode=text
 order=32
-[0x00021D86]
-handle=491
+[0x0002174C]
+handle=490
 locked=0
 resize=
 code=
@@ -962,8 +935,8 @@ bgimage=
 tabpage=-1
 textmode=text
 order=33
-[0x00061DA2]
-handle=500
+[0x00021748]
+handle=491
 locked=0
 resize=
 code=
@@ -987,6 +960,33 @@ id=InputParamNumber
 func=
 bgimage=
 order=34
+tabpage=-1
+textmode=text
+[0x00021744]
+handle=492
+locked=0
+resize=
+code=
+type=input
+x=120
+y=5
+width=550
+height=21
+text=
+tooltip=
+state=$GUI_SHOW+$GUI_ENABLE
+style=
+exstyle=$WS_EX_CLIENTEDGE
+textcolour=0x000000
+bgcolour=
+font=MS Sans Serif
+fontsize=8
+fontstyle=400
+fontattribute=0
+id=hMSDNURL
+func=
+bgimage=
+order=35
 tabpage=-1
 textmode=text
 #ce
