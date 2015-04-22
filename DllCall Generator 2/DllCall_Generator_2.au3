@@ -10,6 +10,7 @@
 #include <ListViewConstants.au3>
 #include <WindowsConstants.au3>
 #include <MsgBoxConstants.au3>
+#include <array.au3>
 #include "Forms\dllcallgen_form.isf"
 
 Opt("MustDeclareVars", 0) ;0=no, 1=require pre-declare
@@ -848,3 +849,13 @@ Func CaptureFromMSDN()
 	$ireturncode = True
 EndFunc   ;==>CaptureFromMSDN
 
+Func ArrayRemoveBlanks(ByRef $arr)
+  $idx = 0
+  For $i = 0 To UBound($arr) - 1
+    If $arr[$i] <> "" Then
+      $arr[$idx] = $arr[$i]
+      $idx += 1
+    EndIf
+  Next
+  ReDim $arr[$idx]
+EndFunc ;==>ArrayRemoveBlanks
