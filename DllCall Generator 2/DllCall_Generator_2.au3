@@ -10,8 +10,6 @@
 #include <ListViewConstants.au3>
 #include <WindowsConstants.au3>
 #include <MsgBoxConstants.au3>
-#include <misc.au3>
-#include <array.au3>
 #include <IE.au3>
 
 #include "Forms\dllcallgen_form.isf"
@@ -19,6 +17,7 @@
 ;from http://www.autoitscript.com/forum/topic/158186-embedded-ie-copying-content/page-3
 DllCall("ole32.dll", "long", "OleInitialize", "ptr", 0) ; add this line somewhere in your script if you plan to use clipboard this way later.
 
+; create IE object
 Global $oIE = ObjCreate("Shell.Explorer.2")
 GUICtrlCreateObj($oIE, 280, 100, 150, 150)
 GUICtrlSetState(-1, 32) ; HIDE IE object
@@ -142,6 +141,10 @@ While 1
 			Sleep(1000)
 			ToolTip("")
 		Case $ButtonCapture
+			; set variable to original state
+			_GUICtrlListView_DeleteAllItems($ListViewParams)
+			ReDim $aParams[1][3]
+			;load url
 			Local $sMSDNURL
 			$sMSDNURL = GUICtrlRead($hMSDNURL)
 			$oIE.navigate($sMSDNURL)
@@ -588,14 +591,6 @@ Func ConvertTypeArch($MSDN_Type, $sArch)
 EndFunc   ;==>ConvertTypeArch
 
 Func CaptureFromMSDN()
-	;from http://www.autoitscript.com/forum/topic/158186-embedded-ie-copying-content/page-3
-	ControlClick("DllCall Code Generator 2.0", "", "[CLASS:Internet Explorer_Server; INSTANCE:1]")
-	Sleep(200)
-	Send("^a")
-	Sleep(200)
-	Send("^c")
-	ControlSetText("DllCall Code Generator 2.0", "", "[CLASS:Edit; INSTANCE:8]", ClipGet())
-	
 	;https://msdn.microsoft.com/en-us/library/aa364935%28VS.85%29.aspx
 	Local $istart, $iend, $ireturncode
 	Local $sMSDNPage
@@ -623,8 +618,17 @@ Func CaptureFromMSDN()
 	Local $sUnicodeName
 	Local $sANSIName
 	Local $awork, $swork, $arow, $ioffset
+
+	;from http://www.autoitscript.com/forum/topic/158186-embedded-ie-copying-content/page-3
+	ControlClick("DllCall Code Generator 2.0", "", "[CLASS:Internet Explorer_Server; INSTANCE:1]")
+	Sleep(200)
+	Send("^a")
+	Sleep(200)
+	Send("^c")
+;~ 	ControlSetText("DllCall Code Generator 2.0", "", "[CLASS:Edit; INSTANCE:8]", ClipGet())
 	
-	$sMSDNPage = GUICtrlRead($InputFromMSDNPage)
+;~ 	$sMSDNPage = GUICtrlRead($InputFromMSDNPage)
+	$sMSDNPage = ClipGet()
 	;Verify Section
 	$istart = StringInStr($sMSDNPage, "Syntax" & @CRLF, $STR_CASESENSE)
 	If $istart = 0 Then
