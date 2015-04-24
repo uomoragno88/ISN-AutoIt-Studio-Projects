@@ -7,48 +7,49 @@
 #include <GuiListView.au3>
 #include <EditConstants.au3>
 
-$FormMain = GUICreate("DllCall Code Generator 2.0",825,421,-1,-1,-1,-1)
-$Label1 = GUICtrlCreateLabel("DLL Name",16,32,55,17,-1,-1)
-$InputDll = GUICtrlCreateInput("user32.dll",120,29,121,21,-1,512)
-$Label2 = GUICtrlCreateLabel("Function Name",16,59,76,17,-1,-1)
-$InputFunc = GUICtrlCreateInput("",120,56,121,21,-1,512)
-$RadioFuncAnsi = GUICtrlCreateRadio("ANSI",256,57,49,17,-1,-1)
-$RadioFuncUnicode = GUICtrlCreateRadio("Unicode",312,56,73,17,-1,-1)
+$FormMain = GUICreate("DllCall Code Generator 2.0",825,466,-1,-1,-1,-1)
+$Label1 = GUICtrlCreateLabel("DLL Name",20,78,55,17,-1,-1)
+$InputDll = GUICtrlCreateInput("user32.dll",124,74,121,21,-1,512)
+$Label2 = GUICtrlCreateLabel("Function Name",20,105,76,17,-1,-1)
+$InputFunc = GUICtrlCreateInput("",124,102,121,21,-1,512)
+$RadioFuncAnsi = GUICtrlCreateRadio("ANSI",260,103,49,17,-1,-1)
+$RadioFuncUnicode = GUICtrlCreateRadio("Unicode",316,102,73,17,-1,-1)
 GUICtrlSetState(-1,81)
-$Label3 = GUICtrlCreateLabel("Return Type",16,85,63,17,-1,-1)
-$InputReturnType = GUICtrlCreateInput("int",120,82,121,21,-1,512)
-$ComboCallConv = GUICtrlCreateCombo("",120,110,121,25,66,-1)
+$Label3 = GUICtrlCreateLabel("Return Type",20,131,63,17,-1,-1)
+$InputReturnType = GUICtrlCreateInput("int",124,128,121,21,-1,512)
+$ComboCallConv = GUICtrlCreateCombo("",124,156,121,25,66,-1)
 GUICtrlSetData(-1,"stdcall|cdecl")
-$ListViewParams = GUICtrlCreatelistview("#|Type|Value|Method",16,245,362,126,33280,544)
+$ListViewParams = GUICtrlCreatelistview("#|Type|Value|Method",20,291,362,126,33280,544)
 GUICtrlSendMsg(-1, $LVM_SETCOLUMNWIDTH, 0, 50)
 GUICtrlSendMsg(-1, $LVM_SETCOLUMNWIDTH, 1, 50)
 GUICtrlSendMsg(-1, $LVM_SETCOLUMNWIDTH, 2, 50)
 GUICtrlSendMsg(-1, $LVM_SETCOLUMNWIDTH, 3, 50)
-$Label5 = GUICtrlCreateLabel("Parameters:",16,136,60,17,-1,-1)
-$Label6 = GUICtrlCreateLabel("Type",24,157,28,17,-1,-1)
-$Label7 = GUICtrlCreateLabel("Value (0 for null)",152,157,80,17,-1,-1)
-$Label8 = GUICtrlCreateLabel("Method",280,157,39,17,-1,-1)
-$InputParamType = GUICtrlCreateInput("",24,176,121,21,-1,512)
-$InputParamValue = GUICtrlCreateInput("",152,176,122,21,-1,512)
-$ComboParamByref = GUICtrlCreateCombo("",280,176,89,25,67,-1)
+$Label5 = GUICtrlCreateLabel("Parameters:",20,182,60,17,-1,-1)
+$Label6 = GUICtrlCreateLabel("Type",28,203,28,17,-1,-1)
+$Label7 = GUICtrlCreateLabel("Value (0 for null)",156,203,80,17,-1,-1)
+$Label8 = GUICtrlCreateLabel("Method",284,203,39,17,-1,-1)
+$InputParamType = GUICtrlCreateInput("",28,222,121,21,-1,512)
+$InputParamValue = GUICtrlCreateInput("",156,222,122,21,-1,512)
+$ComboParamByref = GUICtrlCreateCombo("",284,222,89,25,67,-1)
 GUICtrlSetData(-1,"Input/ByVal|Output/ByRef")
-$ButtonParamAdd = GUICtrlCreateButton("Add Parameter",24,213,91,25,-1,-1)
-$ButtonParamDelete = GUICtrlCreateButton("Clear All",128,213,107,25,-1,-1)
-$Label9 = GUICtrlCreateLabel("Calling convention",16,112,91,17,-1,-1)
-$Label10 = GUICtrlCreateLabel("Generated AutoIt code:",418,189,115,17,-1,-1)
-$EditCode = GUICtrlCreateEdit("",417,210,401,160,3147776,-1)
-$ButtonTest = GUICtrlCreateButton("Test Code",419,379,107,25,-1,-1)
-$ButtonCopy = GUICtrlCreateButton("Copy to Clipboard",572,379,107,25,-1,-1)
-$ButtonCapture = GUICtrlCreateButton("Capture from MSDN",697,1,107,25,-1,-1)
-$ButtonGenonly = GUICtrlCreateButton("Nothing Else",704,381,107,25,-1,-1)
-$ComboOutput = GUICtrlCreateCombo("",98,383,121,25,67,-1)
+$ButtonParamAdd = GUICtrlCreateButton("Add Parameter",28,259,91,25,-1,-1)
+$ButtonParamDelete = GUICtrlCreateButton("Clear All",132,259,107,25,-1,-1)
+$Label9 = GUICtrlCreateLabel("Calling convention",20,158,91,17,-1,-1)
+$Label10 = GUICtrlCreateLabel("Generated AutoIt code:",422,235,115,17,-1,-1)
+$EditCode = GUICtrlCreateEdit("",421,256,401,160,3147776,-1)
+$ButtonTest = GUICtrlCreateButton("Test Code",423,425,107,25,-1,-1)
+$ButtonCopy = GUICtrlCreateButton("Copy to Clipboard",576,425,107,25,-1,-1)
+$ButtonCapture = GUICtrlCreateButton("Capture from MSDN",704,1,107,25,-1,-1)
+$ButtonGenonly = GUICtrlCreateButton("Nothing Else",708,427,107,25,-1,-1)
+$ComboOutput = GUICtrlCreateCombo("",102,429,121,25,67,-1)
 GUICtrlSetData(-1,"ConsoleWrite|MsgBox|$vDllCallReturn only")
-$Label11 = GUICtrlCreateLabel("Output method:",16,387,77,17,-1,-1)
-$Label12 = GUICtrlCreateLabel("Generate code and:",232,387,99,17,-1,-1)
+$Label11 = GUICtrlCreateLabel("Output method:",20,433,77,17,-1,-1)
+$Label12 = GUICtrlCreateLabel("Generate code and:",236,433,99,17,-1,-1)
 GUICtrlCreateLabel("MSDN URL page",16,5,115,17,-1,-1)
-$InputFromMSDNPage = GUICtrlCreateEdit("",417,29,401,150,3145728,-1)
-$ButtonParamEdit = GUICtrlCreateButton("Edit Parameter",252,213,91,25,-1,-1)
-$InputParamNumber = GUICtrlCreateInput("",2,176,15,21,-1,512)
+$InputFromMSDNPage = GUICtrlCreateEdit("",421,78,401,150,3145728,-1)
+$ButtonParamEdit = GUICtrlCreateButton("Edit Parameter",256,259,91,25,-1,-1)
+$InputParamNumber = GUICtrlCreateInput("",5,224,15,21,-1,512)
+$hMsgBar = GUICtrlCreateLabel("",20,40,600,17,-1,-1)
 $hMSDNURL = GUICtrlCreateInput("",120,5,550,21,-1,512)
 
 
@@ -59,7 +60,7 @@ Handle_deklaration=
 Handle_deklaration_const=false
 title=DllCall Code Generator 2.0
 breite=825
-hoehe=421
+hoehe=466
 style=-1
 exstyle=-1
 bgcolour=0xF0F0F0
@@ -71,14 +72,14 @@ xpos=-1
 ypos=-1
 center_gui=true
 title_textmode=normal
-[0x00021B9A]
+[0x00011DFE]
 handle=459
 locked=0
 resize=
 code=
 type=label
-x=16
-y=32
+x=20
+y=78
 width=55
 height=17
 text=DLL Name
@@ -98,14 +99,14 @@ bgimage=
 order=0
 tabpage=-1
 textmode=text
-[0x00021B94]
+[0x00011E02]
 handle=460
 locked=0
 resize=
 code=
 type=input
-x=120
-y=29
+x=124
+y=74
 width=121
 height=21
 text=user32.dll
@@ -125,14 +126,14 @@ bgimage=
 order=2
 tabpage=-1
 textmode=text
-[0x00021B8C]
+[0x00011E06]
 handle=461
 locked=0
 resize=
 code=
 type=label
-x=16
-y=59
+x=20
+y=105
 width=76
 height=17
 text=Function Name
@@ -152,14 +153,14 @@ bgimage=
 order=3
 tabpage=-1
 textmode=text
-[0x00021B84]
+[0x00011E0A]
 handle=462
 locked=0
 resize=
 code=
 type=input
-x=120
-y=56
+x=124
+y=102
 width=121
 height=21
 text=
@@ -179,14 +180,14 @@ bgimage=
 order=4
 tabpage=-1
 textmode=text
-[0x00021B78]
+[0x00011E0E]
 handle=463
 locked=0
 resize=
 code=
 type=radio
-x=256
-y=57
+x=260
+y=103
 width=49
 height=17
 text=ANSI
@@ -206,14 +207,14 @@ bgimage=
 order=5
 tabpage=-1
 textmode=text
-[0x00031B7C]
+[0x00011E12]
 handle=464
 locked=0
 resize=
 code=
 type=radio
-x=312
-y=56
+x=316
+y=102
 width=73
 height=17
 text=Unicode
@@ -233,14 +234,14 @@ bgimage=
 order=6
 tabpage=-1
 textmode=text
-[0x00021B72]
+[0x00011E16]
 handle=465
 locked=0
 resize=
 code=
 type=label
-x=16
-y=85
+x=20
+y=131
 width=63
 height=17
 text=Return Type
@@ -260,14 +261,14 @@ bgimage=
 order=7
 tabpage=-1
 textmode=text
-[0x00021B6C]
+[0x00011E1A]
 handle=466
 locked=0
 resize=
 code=
 type=input
-x=120
-y=82
+x=124
+y=128
 width=121
 height=21
 text=int
@@ -287,14 +288,14 @@ bgimage=
 order=8
 tabpage=-1
 textmode=text
-[0x00021B64]
+[0x00011E1E]
 handle=467
 locked=0
 resize=
 code=
 type=combo
-x=120
-y=110
+x=124
+y=156
 width=121
 height=25
 text=stdcall|cdecl
@@ -314,14 +315,14 @@ bgimage=
 order=9
 tabpage=-1
 textmode=text
-[0x00021B54]
+[0x00011E26]
 handle=468
 locked=0
 resize=
 code=GUICtrlSendMsg(-1, $LVM_SETCOLUMNWIDTH, 0, 50)[BREAK]GUICtrlSendMsg(-1, $LVM_SETCOLUMNWIDTH, 1, 50)[BREAK]GUICtrlSendMsg(-1, $LVM_SETCOLUMNWIDTH, 2, 50)[BREAK]GUICtrlSendMsg(-1, $LVM_SETCOLUMNWIDTH, 3, 50)
 type=listview
-x=16
-y=245
+x=20
+y=291
 width=362
 height=126
 text=#|Type|Value|Method
@@ -341,14 +342,14 @@ bgimage=
 order=10
 tabpage=-1
 textmode=text
-[0x00021B56]
+[0x00011E2E]
 handle=469
 locked=0
 resize=
 code=
 type=label
-x=16
-y=136
+x=20
+y=182
 width=60
 height=17
 text=Parameters:
@@ -368,14 +369,14 @@ bgimage=
 order=12
 tabpage=-1
 textmode=text
-[0x00021B5E]
+[0x00011E32]
 handle=470
 locked=0
 resize=
 code=
 type=label
-x=24
-y=157
+x=28
+y=203
 width=28
 height=17
 text=Type
@@ -395,14 +396,14 @@ bgimage=
 order=13
 tabpage=-1
 textmode=text
-[0x00021B66]
+[0x00011E36]
 handle=471
 locked=0
 resize=
 code=
 type=label
-x=152
-y=157
+x=156
+y=203
 width=80
 height=17
 text=Value (0 for null)
@@ -422,14 +423,14 @@ bgimage=
 order=14
 tabpage=-1
 textmode=text
-[0x00021B6E]
+[0x00011E3A]
 handle=472
 locked=0
 resize=
 code=
 type=label
-x=280
-y=157
+x=284
+y=203
 width=39
 height=17
 text=Method
@@ -449,14 +450,14 @@ bgimage=
 order=15
 tabpage=-1
 textmode=text
-[0x00031B7E]
+[0x00011E3E]
 handle=473
 locked=0
 resize=
 code=
 type=input
-x=24
-y=176
+x=28
+y=222
 width=121
 height=21
 text=
@@ -476,14 +477,14 @@ bgimage=
 order=16
 tabpage=-1
 textmode=text
-[0x00021B86]
+[0x00011E42]
 handle=474
 locked=0
 resize=
 code=
 type=input
-x=152
-y=176
+x=156
+y=222
 width=122
 height=21
 text=
@@ -503,14 +504,14 @@ bgimage=
 tabpage=-1
 order=17
 textmode=text
-[0x00021B8E]
+[0x00011E46]
 handle=475
 locked=0
 resize=
 code=
 type=combo
-x=280
-y=176
+x=284
+y=222
 width=89
 height=25
 text=Input/ByVal|Output/ByRef
@@ -530,14 +531,14 @@ bgimage=
 order=18
 tabpage=-1
 textmode=text
-[0x00021BA2]
+[0x00011E4E]
 handle=476
 locked=0
 resize=
 code=
 type=button
-x=24
-y=213
+x=28
+y=259
 width=91
 height=25
 text=Add Parameter
@@ -557,14 +558,14 @@ bgimage=
 order=19
 tabpage=-1
 textmode=text
-[0x00021BAA]
+[0x00011E52]
 handle=477
 locked=0
 resize=
 code=
 type=button
-x=128
-y=213
+x=132
+y=259
 width=107
 height=25
 text=Clear All
@@ -584,14 +585,14 @@ bgimage=
 tabpage=-1
 textmode=text
 order=20
-[0x00021BB2]
+[0x00011E56]
 handle=478
 locked=0
 resize=
 code=
 type=label
-x=16
-y=112
+x=20
+y=158
 width=91
 height=17
 text=Calling convention
@@ -611,14 +612,14 @@ bgimage=
 order=21
 tabpage=-1
 textmode=text
-[0x00021BBE]
+[0x00011E5A]
 handle=479
 locked=0
 resize=
 code=
 type=label
-x=418
-y=189
+x=422
+y=235
 width=115
 height=17
 text=Generated AutoIt code:
@@ -638,14 +639,14 @@ bgimage=
 order=22
 tabpage=-1
 textmode=text
-[0x00021BCA]
+[0x00011E5E]
 handle=480
 locked=0
 resize=
 code=
 type=edit
-x=417
-y=210
+x=421
+y=256
 width=401
 height=160
 text=
@@ -665,14 +666,14 @@ bgimage=
 order=23
 tabpage=-1
 textmode=text
-[0x00021BD2]
+[0x00011E62]
 handle=481
 locked=0
 resize=
 code=
 type=button
-x=419
-y=379
+x=423
+y=425
 width=107
 height=25
 text=Test Code
@@ -692,14 +693,14 @@ bgimage=
 order=24
 tabpage=-1
 textmode=text
-[0x00021BDA]
+[0x00011E66]
 handle=482
 locked=0
 resize=
 code=
 type=button
-x=572
-y=379
+x=576
+y=425
 width=107
 height=25
 text=Copy to Clipboard
@@ -719,13 +720,13 @@ bgimage=
 tabpage=-1
 textmode=text
 order=25
-[0x00021BE2]
+[0x00011E6A]
 handle=483
 locked=0
 resize=
 code=
 type=button
-x=697
+x=704
 y=1
 width=107
 height=25
@@ -746,14 +747,14 @@ bgimage=
 tabpage=-1
 textmode=text
 order=26
-[0x00031BB6]
+[0x00011E6E]
 handle=484
 locked=0
 resize=
 code=
 type=button
-x=704
-y=381
+x=708
+y=427
 width=107
 height=25
 text=Nothing Else
@@ -773,14 +774,14 @@ bgimage=
 tabpage=-1
 textmode=text
 order=27
-[0x00021742]
+[0x00011E72]
 handle=485
 locked=0
 resize=
 code=
 type=combo
-x=98
-y=383
+x=102
+y=429
 width=121
 height=25
 text=ConsoleWrite|MsgBox|$vDllCallReturn only
@@ -800,14 +801,14 @@ bgimage=
 order=28
 tabpage=-1
 textmode=text
-[0x00031762]
+[0x00011E7A]
 handle=486
 locked=0
 resize=
 code=
 type=label
-x=16
-y=387
+x=20
+y=433
 width=77
 height=17
 text=Output method:
@@ -827,14 +828,14 @@ bgimage=
 order=29
 tabpage=-1
 textmode=text
-[0x00021758]
+[0x00011E7E]
 handle=487
 locked=0
 resize=
 code=
 type=label
-x=232
-y=387
+x=236
+y=433
 width=99
 height=17
 text=Generate code and:
@@ -854,7 +855,7 @@ bgimage=
 tabpage=-1
 textmode=text
 order=30
-[0x00021754]
+[0x00011E82]
 handle=488
 locked=0
 resize=
@@ -881,14 +882,14 @@ bgimage=
 tabpage=-1
 textmode=text
 order=31
-[0x00021750]
+[0x00011E86]
 handle=489
 locked=0
 resize=
 code=
 type=edit
-x=417
-y=29
+x=421
+y=78
 width=401
 height=150
 text=
@@ -908,14 +909,14 @@ bgimage=
 tabpage=-1
 textmode=text
 order=32
-[0x0002174C]
+[0x00011E8A]
 handle=490
 locked=0
 resize=
 code=
 type=button
-x=252
-y=213
+x=256
+y=259
 width=91
 height=25
 text=Edit Parameter
@@ -935,14 +936,14 @@ bgimage=
 tabpage=-1
 textmode=text
 order=33
-[0x00021748]
+[0x00021E90]
 handle=491
 locked=0
 resize=
 code=
 type=input
-x=2
-y=176
+x=5
+y=224
 width=15
 height=21
 text=
@@ -962,7 +963,7 @@ bgimage=
 order=34
 tabpage=-1
 textmode=text
-[0x00021744]
+[0x00011E92]
 handle=492
 locked=0
 resize=
@@ -989,4 +990,31 @@ bgimage=
 order=35
 tabpage=-1
 textmode=text
+[0x00101EB0]
+handle=493
+locked=0
+resize=
+code=
+type=label
+x=20
+y=40
+width=600
+height=17
+text=
+tooltip=
+state=$GUI_SHOW+$GUI_ENABLE
+style=
+exstyle=
+textcolour=0x000000
+bgcolour=
+font=MS Sans Serif
+fontsize=8
+fontstyle=400
+fontattribute=0
+id=hMsgBar
+func=
+bgimage=
+tabpage=-1
+textmode=text
+order=35
 #ce

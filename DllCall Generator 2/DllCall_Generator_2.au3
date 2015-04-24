@@ -1,7 +1,7 @@
-;thanks to toasterking for the original script "DllCall Code Generator"
-;http://www.autoitscript.com/forum/topic/158296-dllcall-code-generator/?hl=%2Bdll+%2Bcall+%2Bgenerator
+; thanks to toasterking for the original script "DllCall Code Generator"
+; http://www.autoitscript.com/forum/topic/158296-dllcall-code-generator/?hl=%2Bdll+%2Bcall+%2Bgenerator
 ;
-;DllCall Generator 2
+; DllCall Generator 2
 ;
 #include <ComboConstants.au3>
 #include <EditConstants.au3>
@@ -14,16 +14,17 @@
 
 #include "Forms\dllcallgen_form.isf"
 
-;from http://www.autoitscript.com/forum/topic/158186-embedded-ie-copying-content/page-3
-DllCall("ole32.dll", "long", "OleInitialize", "ptr", 0) ; add this line somewhere in your script if you plan to use clipboard this way later.
+; from http://www.autoitscript.com/forum/topic/158186-embedded-ie-copying-content/page-3
+; add this line somewhere in your script if you plan to use clipboard this way later.
+DllCall("ole32.dll", "long", "OleInitialize", "ptr", 0)
 
 ; create IE object
 Global $oIE = ObjCreate("Shell.Explorer.2")
-GUICtrlCreateObj($oIE, 280, 100, 150, 150)
+GUICtrlCreateObj($oIE, 280, 100, 350, 350)
 GUICtrlSetState(-1, 32) ; HIDE IE object
 
-Opt("MustDeclareVars", 1) ;0=no, 1=require pre-declare
 ;if use debug disable "MustDeclareVars"
+Opt("MustDeclareVars", 0) ;0=no, 1=require pre-declare
 
 Global $aParams[1][3]
 Local $nMsg
@@ -59,8 +60,14 @@ While 1
 			GUICtrlSetData($InputParamValue, "")
 			GUICtrlSetData($ComboParamByref, "Input/ByVal")
 			GUICtrlCreateListViewItem(UBound($aParams) - 1 & "|" & $aParams[UBound($aParams) - 1][0] & "|" & $aParams[UBound($aParams) - 1][1] & "|" & $aParams[UBound($aParams) - 1][2], $ListViewParams)
+			;
+			_GUICtrlListView_SetColumnWidth($ListViewParams, 0, $LVSCW_AUTOSIZE)
+			_GUICtrlListView_SetColumnWidth($ListViewParams, 1, $LVSCW_AUTOSIZE)
+			_GUICtrlListView_SetColumnWidth($ListViewParams, 2, $LVSCW_AUTOSIZE)
+			_GUICtrlListView_SetColumnWidth($ListViewParams, 3, $LVSCW_AUTOSIZE)
+			;
 			ControlFocus($FormMain, "", $InputParamType)
-			;Edit list View
+			; Edit list View
 		Case $ButtonParamEdit
 			$iworknumber = GUICtrlRead($InputParamNumber)
 			If $iworknumber = "" Then ; set input box from list view row selected
@@ -75,7 +82,7 @@ While 1
 						ControlFocus($FormMain, "", $InputParamType)
 					EndIf
 				Next
-			Else ;set list view row from inputbox
+			Else ; set list view row from inputbox
 				ConvertType(GUICtrlRead($InputParamType)) ; Use the parameter type selected
 				If @error Then
 					If MsgBox($MB_ICONWARNING + $MB_OKCANCEL, "Unrecognized Type", "Unrecognized parameter type """ & GUICtrlRead($InputParamType) & """.  Make sure you are using an MSDN return type." & @CRLF & @CRLF & "If you are certain that the parameter type is correct and you happen to know the equivalent AutoIt parameter type, click OK.  You will be prompted later for the AutoIt parameter type.", 0, $FormMain) = 2 Then ContinueLoop
@@ -93,12 +100,18 @@ While 1
 				GUICtrlSetData($InputParamType, "")
 				GUICtrlSetData($InputParamValue, "")
 				GUICtrlSetData($ComboParamByref, "Input/ByVal")
-				;set item
+				; set item
 				$fsuccess = _GUICtrlListView_SetItem($ListViewParams, $iworknumber, $iworknumber - 1)
-				;set subitem
+				; set subitem
 				$fsuccess = _GUICtrlListView_SetItemText($ListViewParams, $iworknumber - 1, $aParams[$iworknumber][0], 1)
 				$fsuccess = _GUICtrlListView_SetItemText($ListViewParams, $iworknumber - 1, $aParams[$iworknumber][1], 2)
 				$fsuccess = _GUICtrlListView_SetItemText($ListViewParams, $iworknumber - 1, $aParams[$iworknumber][2], 3)
+				;
+				_GUICtrlListView_SetColumnWidth($ListViewParams, 0, $LVSCW_AUTOSIZE)
+				_GUICtrlListView_SetColumnWidth($ListViewParams, 1, $LVSCW_AUTOSIZE)
+				_GUICtrlListView_SetColumnWidth($ListViewParams, 2, $LVSCW_AUTOSIZE)
+				_GUICtrlListView_SetColumnWidth($ListViewParams, 3, $LVSCW_AUTOSIZE)
+				;
 				ControlFocus($FormMain, "", $InputParamType)
 			EndIf
 			; Delete all items
@@ -142,14 +155,17 @@ While 1
 			ToolTip("")
 		Case $ButtonCapture
 			; set variable to original state
+			GUICtrlSetData($hMsgBar, "")
 			_GUICtrlListView_DeleteAllItems($ListViewParams)
 			ReDim $aParams[1][3]
-			;load url
+			; load url
+			GUICtrlSetData($hMsgBar, "Loading web page ...")
 			Local $sMSDNURL
 			$sMSDNURL = GUICtrlRead($hMSDNURL)
 			$oIE.navigate($sMSDNURL)
 			_IELoadWait($oIE)
 			$ireturncode = CaptureFromMSDN()
+			GUICtrlSetData($hMsgBar, "Done!")
 		Case $InputFunc
 			If StringRight(GUICtrlRead($InputFunc), 1) == "W" Then ; Check if last character of entered function name is a capital "W"
 				GUICtrlSetState($RadioFuncUnicode, $GUI_CHECKED)
@@ -591,8 +607,8 @@ Func ConvertTypeArch($MSDN_Type, $sArch)
 EndFunc   ;==>ConvertTypeArch
 
 Func CaptureFromMSDN()
-	;https://msdn.microsoft.com/en-us/library/aa364935%28VS.85%29.aspx
-	Local $istart, $iend, $ireturncode
+	; https://msdn.microsoft.com/en-us/library/aa364935%28VS.85%29.aspx
+	Local $istart, $iend, $ireturncode, $iprestart
 	Local $sMSDNPage
 	Local $sSyntax
 	Local $sParameters
@@ -619,17 +635,19 @@ Func CaptureFromMSDN()
 	Local $sANSIName
 	Local $awork, $swork, $arow, $ioffset
 
-	;from http://www.autoitscript.com/forum/topic/158186-embedded-ie-copying-content/page-3
+	; from http://www.autoitscript.com/forum/topic/158186-embedded-ie-copying-content/page-3
 	ControlClick("DllCall Code Generator 2.0", "", "[CLASS:Internet Explorer_Server; INSTANCE:1]")
 	Sleep(200)
 	Send("^a")
 	Sleep(200)
 	Send("^c")
 ;~ 	ControlSetText("DllCall Code Generator 2.0", "", "[CLASS:Edit; INSTANCE:8]", ClipGet())
-	
 ;~ 	$sMSDNPage = GUICtrlRead($InputFromMSDNPage)
 	$sMSDNPage = ClipGet()
-	;Verify Section
+
+	#Region verify if section is present
+	; Verify Section
+	GUICtrlSetData($hMsgBar, "Parsing section ...")
 	$istart = StringInStr($sMSDNPage, "Syntax" & @CRLF, $STR_CASESENSE)
 	If $istart = 0 Then
 		$iSyntaxSectPresent = False
@@ -638,9 +656,10 @@ Func CaptureFromMSDN()
 		;messaggio di stop
 	Else
 		$iSyntaxSectPresent = True
+		$iprestart = $istart
 	EndIf
 	
-	$istart = StringInStr($sMSDNPage, "Parameters" & @CRLF, $STR_CASESENSE)
+	$istart = StringInStr($sMSDNPage, "Parameters" & @CRLF, $STR_CASESENSE, 1, $iprestart)
 	If $istart = 0 Then
 		$iParametersSectPresent = False
 ;~ 		$ireturncode = False
@@ -648,9 +667,10 @@ Func CaptureFromMSDN()
 		;messaggio di stop
 	Else
 		$iParametersSectPresent = True
+		$iprestart = $istart
 	EndIf
 	
-	$istart = StringInStr($sMSDNPage, "Return value" & @CRLF, $STR_CASESENSE)
+	$istart = StringInStr($sMSDNPage, "Return value" & @CRLF, $STR_CASESENSE, 1, $iprestart)
 	If $istart = 0 Then
 		$iReturnvalueSectPresent = False
 ;~ 		$ireturncode = False
@@ -658,23 +678,26 @@ Func CaptureFromMSDN()
 		;messaggio di stop
 	Else
 		$iReturnvalueSectPresent = True
+		$iprestart = $istart
 	EndIf
 	
-	$istart = StringInStr($sMSDNPage, "Remarks" & @CRLF, $STR_CASESENSE)
+	$istart = StringInStr($sMSDNPage, "Remarks" & @CRLF, $STR_CASESENSE, 1, $iprestart)
 	If $istart = 0 Then
 		$iRemarksSectPresent = False
 	Else
 		$iRemarksSectPresent = True
+		$iprestart = $istart
 	EndIf
 
-	$istart = StringInStr($sMSDNPage, "Examples" & @CRLF, $STR_CASESENSE)
+	$istart = StringInStr($sMSDNPage, "Examples" & @CRLF, $STR_CASESENSE, 1, $iprestart)
 	If $istart = 0 Then
 		$iExamplesSectPresent = False
 	Else
 		$iExamplesSectPresent = True
+		$iprestart = $istart
 	EndIf
 
-	$istart = StringInStr($sMSDNPage, "Requirements" & @CRLF, $STR_CASESENSE)
+	$istart = StringInStr($sMSDNPage, "Requirements" & @CRLF, $STR_CASESENSE, 1, $iprestart)
 	If $istart = 0 Then
 		$iRequirementsSectPresent = False
 ;~ 		$ireturncode = False
@@ -682,25 +705,30 @@ Func CaptureFromMSDN()
 		;messaggio di stop
 	Else
 		$iRequirementsSectPresent = True
+		$iprestart = $istart
 	EndIf
 	
-	$istart = StringInStr($sMSDNPage, "See also" & @CRLF, $STR_CASESENSE)
+	$istart = StringInStr($sMSDNPage, "See also" & @CRLF, $STR_CASESENSE, 1, $iprestart)
 	If $istart = 0 Then
 		$iSeealsoSectPresent = False
 	Else
 		$iSeealsoSectPresent = True
+		$iprestart = $istart
 	EndIf
 	
-	$istart = StringInStr($sMSDNPage, "Community Additions" & @CRLF, $STR_CASESENSE)
+	$istart = StringInStr($sMSDNPage, "Community Additions" & @CRLF, $STR_CASESENSE, 1, $iprestart)
 	If $istart = 0 Then
 		$iCommunityAdditionsPresent = False
 	Else
 		$iCommunityAdditionsPresent = True
 	EndIf
-	
-	;Syntax Section
+	#EndRegion verify if section is present
+
+	#Region parse Syntax Section
+	; Syntax Section
 	$istart = StringInStr($sMSDNPage, "Syntax" & @CRLF, $STR_CASESENSE)
-	$iend = StringInStr($sMSDNPage, "Parameters" & @CRLF, $STR_CASESENSE)
+	$iprestart = $istart
+	$iend = StringInStr($sMSDNPage, "Parameters" & @CRLF, $STR_CASESENSE, 1, $iprestart)
 	$sSyntax = StringMid($sMSDNPage, $istart, $iend - $istart - 1)
 	Local $aparamfromMSDN
 	Local $iparamrow, $ifirstparamrow, $ilastparamrow
@@ -717,7 +745,7 @@ Func CaptureFromMSDN()
 	
 	For $iparamrow = $ifirstparamrow To $ilastparamrow
 		Select
-			Case $iparamrow = $ifirstparamrow ;first row
+			Case $iparamrow = $ifirstparamrow ; first row
 				$arow = StringSplit($aparamfromMSDN[$iparamrow], " ")
 				ArrayRemoveBlanks($arow)
 				If $arow[0] = 2 Then ; no WINAPI
@@ -729,7 +757,7 @@ Func CaptureFromMSDN()
 				EndIf
 				StringStripWS($sReturnType, $STR_STRIPALL)
 				StringStripCR($sReturnType)
-				$sReturnType = StringRegExpReplace($sReturnType, "(?i)[^a-z0-9]", "")
+				$sReturnType = StringRegExpReplace($sReturnType, "(?i)[^a-z0-9_]", "")
 				$arow = StringSplit($sFunctionName, "(")
 				ArrayRemoveBlanks($arow)
 				$sFunctionName = $arow[1]
@@ -737,11 +765,11 @@ Func CaptureFromMSDN()
 				StringStripCR($sFunctionName)
 				$sFunctionName = StringRegExpReplace($sFunctionName, "(?i)[^a-z0-9]", "")
 			Case $iparamrow < $ilastparamrow
-				;row next first
+				; row next first
 				$arow = StringSplit($aparamfromMSDN[$iparamrow], " ")
 				ArrayRemoveBlanks($arow)
 				$arow[3] = StringRegExpReplace($arow[3], "(?i)[^a-z0-9]", "")
-				If $arow[1] = "_In_" Then
+				If $arow[1] = "_In_" Or $arow[1] = "_In_opt_" Then
 					ReDim $aParams[UBound($aParams) + 1][3] ; Add a "row" to the array
 					$aParams[UBound($aParams) - 1][0] = $arow[2]
 					$aParams[UBound($aParams) - 1][1] = ""
@@ -759,6 +787,12 @@ Func CaptureFromMSDN()
 					$aParams[UBound($aParams) - 1][1] = ""
 					$aParams[UBound($aParams) - 1][2] = "Input/ByVal"
 					GUICtrlCreateListViewItem(UBound($aParams) - 1 & "|" & $aParams[UBound($aParams) - 1][0] & "|" & $aParams[UBound($aParams) - 1][1] & "|" & $aParams[UBound($aParams) - 1][2], $ListViewParams)
+				ElseIf $arow[1] = "_Reserved_" Then ; reserved for future use. It must be NULL.
+					ReDim $aParams[UBound($aParams) + 1][3] ; Add a "row" to the array
+					$aParams[UBound($aParams) - 1][0] = $arow[2]
+					$aParams[UBound($aParams) - 1][1] = "0"
+					$aParams[UBound($aParams) - 1][2] = "Input/ByVal"
+					GUICtrlCreateListViewItem(UBound($aParams) - 1 & "|" & $aParams[UBound($aParams) - 1][0] & "|" & $aParams[UBound($aParams) - 1][1] & "|" & $aParams[UBound($aParams) - 1][2], $ListViewParams)
 				EndIf
 			Case $iparamrow = $ilastparamrow
 				;last row
@@ -768,45 +802,73 @@ Func CaptureFromMSDN()
 	
 	GUICtrlSetData($InputFunc, $sFunctionName)
 	GUICtrlSetData($InputReturnType, $sReturnType)
-	
-	;Parameters Section
-	$istart = StringInStr($sMSDNPage, "Parameters" & @CRLF, $STR_CASESENSE)
-	$iend = StringInStr($sMSDNPage, "Return value" & @CRLF, $STR_CASESENSE)
+	#EndRegion parse Syntax Section
+
+	#Region parse Parameters Section
+	; Parameters Section
+	Local $apar1, $apar1index
+	$istart = StringInStr($sMSDNPage, "Parameters" & @CRLF, $STR_CASESENSE, 1, $iprestart)
+	$iprestart = $istart
+	$iend = StringInStr($sMSDNPage, "Return value" & @CRLF, $STR_CASESENSE, 1, $iprestart)
+	$iprestart = $istart
 	$sParameters = StringMid($sMSDNPage, $istart, $iend - $istart - 1)
-	;Return value Section
+	; parse for pointer to structure
+	If UBound($aParams) > 1 Then  ; with parameters
+	$apar1 = StringSplit($sParameters, @CRLF, $STR_ENTIRESPLIT)
+	$apar1index = _ArrayFindAll($apar1, "]", Default, Default, Default, 1) ; 1 same StringInStr
+	EndIf
+	#EndRegion parse Parameters Section
+
+	; Return value Section
 	If $iRemarksSectPresent Then
-		$istart = StringInStr($sMSDNPage, "Return value" & @CRLF, $STR_CASESENSE)
-		$iend = StringInStr($sMSDNPage, "Remarks" & @CRLF, $STR_CASESENSE)
+		$istart = StringInStr($sMSDNPage, "Return value" & @CRLF, $STR_CASESENSE, 1, $iprestart)
+		$iprestart = $istart
+		$iend = StringInStr($sMSDNPage, "Remarks" & @CRLF, $STR_CASESENSE, 1, $iprestart)
+		$iprestart = $istart
 		$sReturnvalue = StringMid($sMSDNPage, $istart, $iend - $istart - 1)
 	Else
-		$istart = StringInStr($sMSDNPage, "Return value" & @CRLF, $STR_CASESENSE)
-		$iend = StringInStr($sMSDNPage, "Examples" & @CRLF, $STR_CASESENSE)
+		$istart = StringInStr($sMSDNPage, "Return value" & @CRLF, $STR_CASESENSE, 1, $iprestart)
+		$iprestart = $istart
+		$iend = StringInStr($sMSDNPage, "Examples" & @CRLF, $STR_CASESENSE, 1, $iprestart)
+		$iprestart = $istart
 		$sReturnvalue = StringMid($sMSDNPage, $istart, $iend - $istart - 1)
 	EndIf
-	;Remarks Section
+	; Remarks Section
 	If $iExamplesSectPresent Then
-		$istart = StringInStr($sMSDNPage, "Remarks" & @CRLF, $STR_CASESENSE)
-		$iend = StringInStr($sMSDNPage, "Examples" & @CRLF, $STR_CASESENSE)
+		$istart = StringInStr($sMSDNPage, "Remarks" & @CRLF, $STR_CASESENSE, 1, $iprestart)
+		$iprestart = $istart
+		$iend = StringInStr($sMSDNPage, "Examples" & @CRLF, $STR_CASESENSE, 1, $iprestart)
+		$iprestart = $istart
 		$sRemarks = StringMid($sMSDNPage, $istart, $iend - $istart - 1)
 	Else
-		$istart = StringInStr($sMSDNPage, "Remarks" & @CRLF, $STR_CASESENSE)
-		$iend = StringInStr($sMSDNPage, "Requirements" & @CRLF, $STR_CASESENSE)
+		$istart = StringInStr($sMSDNPage, "Remarks" & @CRLF, $STR_CASESENSE, 1, $iprestart)
+		$iprestart = $istart
+		$iend = StringInStr($sMSDNPage, "Requirements" & @CRLF, $STR_CASESENSE, 1, $iprestart)
+		$iprestart = $istart
 		$sRemarks = StringMid($sMSDNPage, $istart, $iend - $istart - 1)
 	EndIf
-	;Examples Section
+	; Examples Section
 	If $iExamplesSectPresent Then
-		$istart = StringInStr($sMSDNPage, "Examples" & @CRLF, $STR_CASESENSE)
-		$iend = StringInStr($sMSDNPage, "Requirements" & @CRLF, $STR_CASESENSE)
+		$istart = StringInStr($sMSDNPage, "Examples" & @CRLF, $STR_CASESENSE, 1, $iprestart)
+		$iprestart = $istart
+		$iend = StringInStr($sMSDNPage, "Requirements" & @CRLF, $STR_CASESENSE, 1, $iprestart)
+		$iprestart = $istart
 		$sExamples = StringMid($sMSDNPage, $istart, $iend - $istart - 1)
 	EndIf
-	;Requirements Section
+
+	#Region parse Requirements Section
+	; Requirements Section
 	If $iSeealsoSectPresent Then
-		$istart = StringInStr($sMSDNPage, "Requirements" & @CRLF, $STR_CASESENSE)
-		$iend = StringInStr($sMSDNPage, "See also" & @CRLF, $STR_CASESENSE)
+		$istart = StringInStr($sMSDNPage, "Requirements" & @CRLF, $STR_CASESENSE, 1, $iprestart)
+		$iprestart = $istart
+		$iend = StringInStr($sMSDNPage, "See also" & @CRLF, $STR_CASESENSE, 1, $iprestart)
+		$iprestart = $istart
 		$sRequirements = StringMid($sMSDNPage, $istart, $iend - $istart - 1)
 	Else
-		$istart = StringInStr($sMSDNPage, "Requirements" & @CRLF, $STR_CASESENSE)
-		$iend = StringInStr($sMSDNPage, "Community Additions" & @CRLF, $STR_CASESENSE)
+		$istart = StringInStr($sMSDNPage, "Requirements" & @CRLF, $STR_CASESENSE, 1, $iprestart)
+		$iprestart = $istart
+		$iend = StringInStr($sMSDNPage, "Community Additions" & @CRLF, $STR_CASESENSE, 1, $iprestart)
+		$iprestart = $istart
 		$sRequirements = StringMid($sMSDNPage, $istart, $iend - $istart - 1)
 	EndIf
 	
@@ -829,13 +891,13 @@ Func CaptureFromMSDN()
 		$istart = StringInStr($sRequirements, "Unicode and ANSI names" & @CRLF, $STR_CASESENSE)
 		$iend = StringLen($sRequirements)
 		$swork = StringMid($sRequirements, $istart + 22, $iend - $istart - 1)
-		;Unicode name
+		; Unicode name
 		$istart = StringInStr($swork, "(Unicode)", $STR_CASESENSE)
 		$sUnicodeName = StringLeft($swork, $istart - 1)
 		StringStripWS($sUnicodeName, $STR_STRIPALL)
 		StringStripCR($sUnicodeName)
 		$sUnicodeName = StringRegExpReplace($sUnicodeName, "(?i)[^a-z0-9]", "")
-		;ANSi name
+		; ANSi name
 		$istart = StringInStr($swork, "(Unicode) and", $STR_CASESENSE)
 		$iend = StringInStr($swork, "(ANSI)", $STR_CASESENSE)
 		$swork = StringMid($swork, $istart + 13, $iend)
@@ -864,7 +926,7 @@ Func CaptureFromMSDN()
 		$sDLL = StringMid($sRequirements, $istart + 3, $iend - $istart - 1)
 	EndIf
 
-	;remove comment if prsent: Shlwapi.dll (version 4.71 or later)
+	; remove comment if prsent: Shlwapi.dll (version 4.71 or later)
 	$iend = StringInStr($sDLL, "dll")
 	$sDLL = StringMid($sDLL, 1, $iend + 3)
 	StringStripWS($sDLL, $STR_STRIPALL)
@@ -872,6 +934,7 @@ Func CaptureFromMSDN()
 	$sDLL = StringRegExpReplace($sDLL, "(?i)[^a-z0-9.]", "")
 	
 	GUICtrlSetData($InputDll, $sDLL)
+	#EndRegion parse Requirements Section
 	
 	$ireturncode = True
 EndFunc   ;==>CaptureFromMSDN
@@ -885,7 +948,6 @@ Func ArrayRemoveBlanks(ByRef $arr)
 			$idx += 1
 		EndIf
 	Next
-;~ 	$arr[0] = $idx - 1
 	ReDim $arr[$idx]
 	$arr[0] = $idx - 1
 EndFunc   ;==>ArrayRemoveBlanks
