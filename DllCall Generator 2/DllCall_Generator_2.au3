@@ -12,16 +12,17 @@
 #include <MsgBoxConstants.au3>
 #include <IE.au3>
 
+#Region GUI
 #include "Forms\dllcallgen_form.isf"
-
-; from http://www.autoitscript.com/forum/topic/158186-embedded-ie-copying-content/page-3
-; add this line somewhere in your script if you plan to use clipboard this way later.
-DllCall("ole32.dll", "long", "OleInitialize", "ptr", 0)
-
 ; create IE object
 Global $oIE = ObjCreate("Shell.Explorer.2")
 GUICtrlCreateObj($oIE, 280, 100, 350, 350)
 GUICtrlSetState(-1, 32) ; HIDE IE object
+#EndRegion GUI
+
+; from http://www.autoitscript.com/forum/topic/158186-embedded-ie-copying-content/page-3
+; add this line somewhere in your script if you plan to use clipboard this way later.
+DllCall("ole32.dll", "long", "OleInitialize", "ptr", 0)
 
 ;if use debug disable "MustDeclareVars"
 Opt("MustDeclareVars", 0) ;0=no, 1=require pre-declare
@@ -806,16 +807,22 @@ Func CaptureFromMSDN()
 
 	#Region parse Parameters Section
 	; Parameters Section
-	Local $apar1, $apar1index
+	Local $ipointerstart, $istructurestart, $indx, $aparnnote
 	$istart = StringInStr($sMSDNPage, "Parameters" & @CRLF, $STR_CASESENSE, 1, $iprestart)
 	$iprestart = $istart
 	$iend = StringInStr($sMSDNPage, "Return value" & @CRLF, $STR_CASESENSE, 1, $iprestart)
 	$iprestart = $istart
 	$sParameters = StringMid($sMSDNPage, $istart, $iend - $istart - 1)
 	; parse for pointer to structure
-	If UBound($aParams) > 1 Then  ; with parameters
-	$apar1 = StringSplit($sParameters, @CRLF, $STR_ENTIRESPLIT)
-	$apar1index = _ArrayFindAll($apar1, "]", Default, Default, Default, 1) ; 1 same StringInStr
+	If UBound($aParams) > 1 Then ; with parameters
+		$aparnnote = StringSplit($sParameters, "]" & @CRLF, $STR_ENTIRESPLIT)
+		For $indx = 2 To ($aparnnote[0])
+			$ipointerstart = StringInStr($aparnnote[$indx], "pointer to a" ,$STR_CASESENSE)
+			$istructurestart = StringInStr($aparnnote[$indx], "structure " ,$STR_CASESENSE)
+			If $ipointerstart > 0 And $istructurestart > 0 Then
+				; setta flag struttura e parse structure page
+			EndIf
+		Next
 	EndIf
 	#EndRegion parse Parameters Section
 
