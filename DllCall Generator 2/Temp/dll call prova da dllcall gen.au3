@@ -23,6 +23,7 @@ If @error Then
    $vDllCallReturn = ""
 Else
    $vDllCallReturn = $aDllCallReturn[0]
+	$pippo = $aDllCallReturn[1]
    $lpSectorsPerCluster = $aDllCallReturn[2]
    $lpBytesPerSector = $aDllCallReturn[3]
    $lpNumberOfFreeClusters = $aDllCallReturn[4]

@@ -817,8 +817,8 @@ Func CaptureFromMSDN()
 	If UBound($aParams) > 1 Then ; with parameters
 		$aparnnote = StringSplit($sParameters, "]" & @CRLF, $STR_ENTIRESPLIT)
 		For $indx = 2 To ($aparnnote[0])
-			$ipointerstart = StringInStr($aparnnote[$indx], "pointer to a" ,$STR_CASESENSE)
-			$istructurestart = StringInStr($aparnnote[$indx], "structure " ,$STR_CASESENSE)
+			$ipointerstart = StringInStr($aparnnote[$indx], "pointer to a", $STR_CASESENSE)
+			$istructurestart = StringInStr($aparnnote[$indx], "structure ", $STR_CASESENSE)
 			If $ipointerstart > 0 And $istructurestart > 0 Then
 				; setta flag struttura e parse structure page
 			EndIf

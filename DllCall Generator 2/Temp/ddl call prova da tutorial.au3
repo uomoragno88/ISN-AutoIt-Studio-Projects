@@ -8,10 +8,10 @@ Local $TotalNumberOfClusters
 $calldata = DllCall("Kernel32.dll", _
 		"int", "GetDiskFreeSpaceW", _
 		"wstr", "C:\", _
-		"dword*", $SectorsPerCluster, _
-		"dword*", $BytesPerSector, _
-		"dword*", $NumberOfFreeClusters, _
-		"dword*", $TotalNumberOfClusters)
+		"ptr", $SectorsPerCluster, _
+		"ptr", $BytesPerSector, _
+		"ptr", $NumberOfFreeClusters, _
+		"ptr", $TotalNumberOfClusters)
 
 
 $SectorsPerCluster = $calldata[2]
