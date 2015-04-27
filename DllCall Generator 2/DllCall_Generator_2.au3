@@ -35,7 +35,7 @@ Local $ireturncode
 Local $ilv, $fselected, $iworknumber
 Local $fsuccess
 
-GUICtrlSetData($ComboParamByref, "Input/ByVal")
+GUICtrlSetData($ComboParamByref, "ByVal")
 GUICtrlSetData($ComboOutput, "ConsoleWrite")
 GUICtrlSetData($ComboCallConv, "stdcall")
 GUISetState(@SW_SHOW)
@@ -47,8 +47,9 @@ While 1
 			If @error Then
 				If MsgBox($MB_ICONWARNING + $MB_OKCANCEL, "Unrecognized Type", "Unrecognized parameter type """ & GUICtrlRead($InputParamType) & """.  Make sure you are using an MSDN return type." & @CRLF & @CRLF & "If you are certain that the parameter type is correct and you happen to know the equivalent AutoIt parameter type, click OK.  You will be prompted later for the AutoIt parameter type.", 0, $FormMain) = 2 Then ContinueLoop
 			EndIf
-			If GUICtrlRead($ComboParamByref) = "Output/ByRef" And StringLeft(GUICtrlRead($InputParamValue), 1) <> "$" Then
-				MsgBox($MB_ICONWARNING, "Error", "To use this parameter value as a ByRef, you must specify the name of a variable used in your AutoIt script, which must begin with a '$' symbol.", 0, $FormMain)
+;~ 			If GUICtrlRead($ComboParamByref) = "ByRef" And StringLeft(GUICtrlRead($InputParamValue), 1) <> "$" Then
+			If StringLeft(GUICtrlRead($InputParamValue), 1) <> "$" Then
+				MsgBox($MB_ICONWARNING, "Error", "To use this parameter you must specify the name of a variable used in your AutoIt script, which must begin with a '$' symbol.", 0, $FormMain)
 				ContinueLoop
 			EndIf
 			; Input seems okay; proceed.
@@ -59,7 +60,7 @@ While 1
 			; Clear input fields and refocus
 			GUICtrlSetData($InputParamType, "")
 			GUICtrlSetData($InputParamValue, "")
-			GUICtrlSetData($ComboParamByref, "Input/ByVal")
+			GUICtrlSetData($ComboParamByref, "ByVal")
 			GUICtrlCreateListViewItem(UBound($aParams) - 1 & "|" & $aParams[UBound($aParams) - 1][0] & "|" & $aParams[UBound($aParams) - 1][1] & "|" & $aParams[UBound($aParams) - 1][2], $ListViewParams)
 			;
 			_GUICtrlListView_SetColumnWidth($ListViewParams, 0, $LVSCW_AUTOSIZE)
@@ -88,8 +89,9 @@ While 1
 				If @error Then
 					If MsgBox($MB_ICONWARNING + $MB_OKCANCEL, "Unrecognized Type", "Unrecognized parameter type """ & GUICtrlRead($InputParamType) & """.  Make sure you are using an MSDN return type." & @CRLF & @CRLF & "If you are certain that the parameter type is correct and you happen to know the equivalent AutoIt parameter type, click OK.  You will be prompted later for the AutoIt parameter type.", 0, $FormMain) = 2 Then ContinueLoop
 				EndIf
-				If GUICtrlRead($ComboParamByref) = "Output/ByRef" And StringLeft(GUICtrlRead($InputParamValue), 1) <> "$" Then
-					MsgBox($MB_ICONWARNING, "Error", "To use this parameter value as a ByRef, you must specify the name of a variable used in your AutoIt script, which must begin with a '$' symbol.", 0, $FormMain)
+;~ 			If GUICtrlRead($ComboParamByref) = "ByRef" And StringLeft(GUICtrlRead($InputParamValue), 1) <> "$" Then
+				If StringLeft(GUICtrlRead($InputParamValue), 1) <> "$" Then
+					MsgBox($MB_ICONWARNING, "Error", "To use this parameter you must specify the name of a variable used in your AutoIt script, which must begin with a '$' symbol.", 0, $FormMain)
 					ContinueLoop
 				EndIf
 				; Input seems okay; proceed.
@@ -100,7 +102,7 @@ While 1
 				GUICtrlSetData($InputParamNumber, "")
 				GUICtrlSetData($InputParamType, "")
 				GUICtrlSetData($InputParamValue, "")
-				GUICtrlSetData($ComboParamByref, "Input/ByVal")
+				GUICtrlSetData($ComboParamByref, "ByVal")
 				; set item
 				$fsuccess = _GUICtrlListView_SetItem($ListViewParams, $iworknumber, $iworknumber - 1)
 				; set subitem
@@ -119,28 +121,28 @@ While 1
 		Case $ButtonParamDelete
 			_GUICtrlListView_DeleteAllItems($ListViewParams)
 			ReDim $aParams[1][3]
-		Case $ButtonTest
-			$sDllCallOut = GenerateCode("MsgBox") ; Always use MsgBox for output when generating for testing.
-			GUICtrlSetData($EditCode, $sDllCallOut)
-			If $sDllCallOut <> "" Then
-				GUISetState(@SW_DISABLE, $FormMain)
-				GUICtrlSetData($ButtonTest, "Executing...")
-				FileDelete(@TempDir & "\DllCallExec.au3")
-				FileWrite(@TempDir & "\DllCallExec.au3", $sDllCallOut); Write code to temporary file to be executed.
-				$nExit = RunWait(@AutoItExe & ' /AutoIt3ExecuteScript "' & @TempDir & '\DllCallExec.au3"', @TempDir) ; Execute the temporary file.
-				If $nExit <> 0 Then
-					Switch $nExit
-						Case 1
-							MsgBox($MB_ICONERROR, "DLL Code Generator", "The AutoIt interpreter encountered an error while parsing or executing the generated code." & @CRLF & "Exit code: " & $nExit, 0, $FormMain)
-						Case Else
-							MsgBox($MB_ICONERROR, "DLL Code Generator", "There was a problem with the DllCall (possibly incorrect parameters).  The AutoIt interpreter ended unexpectedly." & @CRLF & "Exit code: " & $nExit, 0, $FormMain)
-					EndSwitch
-				EndIf
-				GUICtrlSetData($ButtonTest, "Test Code")
-				GUISetState(@SW_ENABLE, $FormMain)
-				FileDelete(@TempDir & "\DllCallExec.au3")
-				WinActivate($FormMain)
-			EndIf
+;~ 		Case $ButtonTest
+;~ 			$sDllCallOut = GenerateCode("MsgBox") ; Always use MsgBox for output when generating for testing.
+;~ 			GUICtrlSetData($EditCode, $sDllCallOut)
+;~ 			If $sDllCallOut <> "" Then
+;~ 				GUISetState(@SW_DISABLE, $FormMain)
+;~ 				GUICtrlSetData($ButtonTest, "Executing...")
+;~ 				FileDelete(@TempDir & "\DllCallExec.au3")
+;~ 				FileWrite(@TempDir & "\DllCallExec.au3", $sDllCallOut); Write code to temporary file to be executed.
+;~ 				$nExit = RunWait(@AutoItExe & ' /AutoIt3ExecuteScript "' & @TempDir & '\DllCallExec.au3"', @TempDir) ; Execute the temporary file.
+;~ 				If $nExit <> 0 Then
+;~ 					Switch $nExit
+;~ 						Case 1
+;~ 							MsgBox($MB_ICONERROR, "DLL Code Generator", "The AutoIt interpreter encountered an error while parsing or executing the generated code." & @CRLF & "Exit code: " & $nExit, 0, $FormMain)
+;~ 						Case Else
+;~ 							MsgBox($MB_ICONERROR, "DLL Code Generator", "There was a problem with the DllCall (possibly incorrect parameters).  The AutoIt interpreter ended unexpectedly." & @CRLF & "Exit code: " & $nExit, 0, $FormMain)
+;~ 					EndSwitch
+;~ 				EndIf
+;~ 				GUICtrlSetData($ButtonTest, "Test Code")
+;~ 				GUISetState(@SW_ENABLE, $FormMain)
+;~ 				FileDelete(@TempDir & "\DllCallExec.au3")
+;~ 				WinActivate($FormMain)
+;~ 			EndIf
 		Case $ButtonGenonly
 			$sDllCallOut = GenerateCode(GUICtrlRead($ComboOutput))
 			GUICtrlSetData($EditCode, $sDllCallOut)
@@ -202,9 +204,18 @@ Func GenerateCode($sOutputType = "")
 		If $sReturnTypeOut = "" Then Return SetError(1, 0, "")
 	EndIf
 	$sReturnTypeOut = ConvertTypeArch($sReturnTypeOut, $sArch)
-	If GUICtrlRead($ComboCallConv) <> "stdcall" Then $sReturnTypeOut &= ':' & GUICtrlRead($ComboCallConv)
-	$sDllCallOut = 'Local $aDllCallReturn,$vDllCallReturn'
-	$sDllCallOut = '$aDllCallReturn = DllCall("' & GUICtrlRead($InputDll) & '","' & $sReturnTypeOut & '","' & GUICtrlRead($InputFunc) & '"'
+	If GUICtrlRead($ComboCallConv) <> "stdcall" Then
+		$sReturnTypeOut &= ':' & GUICtrlRead($ComboCallConv)
+	EndIf
+	
+	If UBound($aParams) > 1 Then
+		For $x = 1 To UBound($aParams) - 1
+			$sDllCallOut &= "Local " & $aParams[$x][1] & @CRLF
+		Next
+	EndIf
+	
+	$sDllCallOut &= 'Local $aDllCallReturn,$vDllCallReturn' & @CRLF
+	$sDllCallOut &= '$aDllCallReturn = DllCall("' & GUICtrlRead($InputDll) & '","' & $sReturnTypeOut & '","' & GUICtrlRead($InputFunc) & '"'
 	If UBound($aParams) > 1 Then
 		For $x = 1 To UBound($aParams) - 1
 			$sParamTypeOut = ''
@@ -215,8 +226,8 @@ Func GenerateCode($sOutputType = "")
 				If StringRight($sParamTypeOut, 1) = "*" Then $sParamTypeOut = StringTrimRight($sParamTypeOut, 1) ; If the user added an asterisk to the end of the parameter type, remove it; it will be added back later if necessary.
 			EndIf
 			$sDllCallOut &= ',"' & $sParamTypeOut
-			If $aParams[$x][2] = "Output/ByRef" Then $sDllCallOut &= '*'
-			$sDllCallOut &= '","' & $aParams[$x][1] & '"'
+			If $aParams[$x][2] = "ByRef" Then $sDllCallOut &= '*'
+			$sDllCallOut &= '", ' & $aParams[$x][1]
 		Next
 	EndIf
 	$sDllCallOut &= ')' & @CRLF
@@ -241,23 +252,23 @@ Func GenerateCode($sOutputType = "")
 			'Else' & @CRLF
 	If $fOutputGen = 1 Then $sDllCallOut &= '   '
 	$sDllCallOut &= '$vDllCallReturn = $aDllCallReturn[0]' & @CRLF
-	; Generate code to assign returned ByRef values back to their AutoIt variables.
+	; Generate code to assign returned values back to their AutoIt variables.
 	If UBound($aParams) > 1 Then
 		For $x = 1 To UBound($aParams) - 1
-			If $aParams[$x][2] = "Output/ByRef" Then
+;~ 			If $aParams[$x][2] = "ByRef" Then
 				If $fOutputGen = 1 Then $sDllCallOut &= '   '
 				$sDllCallOut &= $aParams[$x][1] & ' = $aDllCallReturn[' & $x & ']' & @CRLF
-			EndIf
+;~ 			EndIf
 		Next
 	EndIf
-	; Generate code to output values of the variables passed to the DllCall via ByRef.
+	; Generate code to output values of the variables after DLLCall
 	If $fOutputGen = 1 Then
 		$sDllCallOut &= '   ' & $sCmdOutStart
 		If UBound($aParams) > 1 Then
 			For $x = 1 To UBound($aParams) - 1
-				If $aParams[$x][2] = "Output/ByRef" Then
+;~ 				If $aParams[$x][2] = "ByRef" Then
 					$sDllCallOut &= '"' & $aParams[$x][1] & ' = " & ' & $aParams[$x][1] & ' & @CRLF & '
-				EndIf
+;~ 				EndIf
 			Next
 		EndIf
 		$sDllCallOut &= '"DllCall return value: " & $vDllCallReturn' & $sCmdOutEnd & @CRLF
@@ -773,27 +784,35 @@ Func CaptureFromMSDN()
 				If $arow[1] = "_In_" Or $arow[1] = "_In_opt_" Then
 					ReDim $aParams[UBound($aParams) + 1][3] ; Add a "row" to the array
 					$aParams[UBound($aParams) - 1][0] = $arow[2]
-					$aParams[UBound($aParams) - 1][1] = ""
-					$aParams[UBound($aParams) - 1][2] = "Input/ByVal"
-					GUICtrlCreateListViewItem(UBound($aParams) - 1 & "|" & $aParams[UBound($aParams) - 1][0] & "|" & $aParams[UBound($aParams) - 1][1] & "|" & $aParams[UBound($aParams) - 1][2], $ListViewParams)
+					$aParams[UBound($aParams) - 1][1] = "$" & $arow[3]
+					$aParams[UBound($aParams) - 1][2] = "ByVal"
+;~ 					GUICtrlCreateListViewItem(UBound($aParams) - 1 & "|" & $aParams[UBound($aParams) - 1][0] & "|" & $aParams[UBound($aParams) - 1][1] & "|" & $aParams[UBound($aParams) - 1][2], $ListViewParams)
 				ElseIf $arow[1] = "_Out_" Then
 					ReDim $aParams[UBound($aParams) + 1][3] ; Add a "row" to the array
 					$aParams[UBound($aParams) - 1][0] = $arow[2]
 					$aParams[UBound($aParams) - 1][1] = "$" & $arow[3]
-					$aParams[UBound($aParams) - 1][2] = "Output/ByRef"
-					GUICtrlCreateListViewItem(UBound($aParams) - 1 & "|" & $aParams[UBound($aParams) - 1][0] & "|" & $aParams[UBound($aParams) - 1][1] & "|" & $aParams[UBound($aParams) - 1][2], $ListViewParams)
+					If $arow[2] = "LPTSTR" Then
+						$aParams[UBound($aParams) - 1][2] = "ByVal"
+					Else
+						$aParams[UBound($aParams) - 1][2] = "ByRef"
+					EndIf
+;~ 					GUICtrlCreateListViewItem(UBound($aParams) - 1 & "|" & $aParams[UBound($aParams) - 1][0] & "|" & $aParams[UBound($aParams) - 1][1] & "|" & $aParams[UBound($aParams) - 1][2], $ListViewParams)
 				ElseIf $arow[1] = "_Inout_" Then
 					ReDim $aParams[UBound($aParams) + 1][3] ; Add a "row" to the array
 					$aParams[UBound($aParams) - 1][0] = $arow[2]
-					$aParams[UBound($aParams) - 1][1] = ""
-					$aParams[UBound($aParams) - 1][2] = "Input/ByVal"
-					GUICtrlCreateListViewItem(UBound($aParams) - 1 & "|" & $aParams[UBound($aParams) - 1][0] & "|" & $aParams[UBound($aParams) - 1][1] & "|" & $aParams[UBound($aParams) - 1][2], $ListViewParams)
+					$aParams[UBound($aParams) - 1][1] = "$" & $arow[3]
+					If $arow[2] = "LPTSTR" Then
+						$aParams[UBound($aParams) - 1][2] = "ByVal"
+					Else
+						$aParams[UBound($aParams) - 1][2] = "ByRef"
+					EndIf
+;~ 					GUICtrlCreateListViewItem(UBound($aParams) - 1 & "|" & $aParams[UBound($aParams) - 1][0] & "|" & $aParams[UBound($aParams) - 1][1] & "|" & $aParams[UBound($aParams) - 1][2], $ListViewParams)
 				ElseIf $arow[1] = "_Reserved_" Then ; reserved for future use. It must be NULL.
 					ReDim $aParams[UBound($aParams) + 1][3] ; Add a "row" to the array
 					$aParams[UBound($aParams) - 1][0] = $arow[2]
 					$aParams[UBound($aParams) - 1][1] = "0"
-					$aParams[UBound($aParams) - 1][2] = "Input/ByVal"
-					GUICtrlCreateListViewItem(UBound($aParams) - 1 & "|" & $aParams[UBound($aParams) - 1][0] & "|" & $aParams[UBound($aParams) - 1][1] & "|" & $aParams[UBound($aParams) - 1][2], $ListViewParams)
+					$aParams[UBound($aParams) - 1][2] = "ByVal"
+;~ 					GUICtrlCreateListViewItem(UBound($aParams) - 1 & "|" & $aParams[UBound($aParams) - 1][0] & "|" & $aParams[UBound($aParams) - 1][1] & "|" & $aParams[UBound($aParams) - 1][2], $ListViewParams)
 				EndIf
 			Case $iparamrow = $ilastparamrow
 				;last row
@@ -807,20 +826,25 @@ Func CaptureFromMSDN()
 
 	#Region parse Parameters Section
 	; Parameters Section
-	Local $ipointerstart, $istructurestart, $indx, $aparnnote
+	Local $istructurepointerstart, $istructurestart, $ienumpointerstart, $ienumstart, $indx, $aparnnote
 	$istart = StringInStr($sMSDNPage, "Parameters" & @CRLF, $STR_CASESENSE, 1, $iprestart)
 	$iprestart = $istart
 	$iend = StringInStr($sMSDNPage, "Return value" & @CRLF, $STR_CASESENSE, 1, $iprestart)
 	$iprestart = $istart
 	$sParameters = StringMid($sMSDNPage, $istart, $iend - $istart - 1)
-	; parse for pointer to structure
+	; parse for pointer to structure / enumeration type
 	If UBound($aParams) > 1 Then ; with parameters
 		$aparnnote = StringSplit($sParameters, "]" & @CRLF, $STR_ENTIRESPLIT)
 		For $indx = 2 To ($aparnnote[0])
-			$ipointerstart = StringInStr($aparnnote[$indx], "pointer to a", $STR_CASESENSE)
-			$istructurestart = StringInStr($aparnnote[$indx], "structure ", $STR_CASESENSE)
-			If $ipointerstart > 0 And $istructurestart > 0 Then
+			$istructurepointerstart = StringInStr($aparnnote[$indx], "pointer to a", $STR_CASESENSE)
+			$istructurestart = StringInStr($aparnnote[$indx], "structure", $STR_CASESENSE)
+			If $istructurepointerstart > 0 And $istructurestart > 0 Then
 				; setta flag struttura e parse structure page
+			EndIf
+			$ienumpointerstart = StringInStr($aparnnote[$indx], "pointer to a", $STR_CASESENSE)
+			$ienumstart = StringInStr($aparnnote[$indx], "enumeration", $STR_CASESENSE)
+			If $ienumstart > 0 Then
+				; setta flag enumeration type e parse enumeration page
 			EndIf
 		Next
 	EndIf
@@ -942,6 +966,12 @@ Func CaptureFromMSDN()
 	
 	GUICtrlSetData($InputDll, $sDLL)
 	#EndRegion parse Requirements Section
+	
+	#Region generate param in list iew
+	For $i = 2 To UBound($aParams)
+		GUICtrlCreateListViewItem(($i - 1) & "|" & $aParams[$i - 1][0] & "|" & $aParams[$i - 1][1] & "|" & $aParams[$i - 1][2], $ListViewParams)
+	Next
+	#EndRegion generate param in list iew
 	
 	$ireturncode = True
 EndFunc   ;==>CaptureFromMSDN

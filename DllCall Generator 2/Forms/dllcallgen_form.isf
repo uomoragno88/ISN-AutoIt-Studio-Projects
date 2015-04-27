@@ -26,25 +26,23 @@ GUICtrlSendMsg(-1, $LVM_SETCOLUMNWIDTH, 2, 50)
 GUICtrlSendMsg(-1, $LVM_SETCOLUMNWIDTH, 3, 50)
 $Label5 = GUICtrlCreateLabel("Parameters:",20,182,60,17,-1,-1)
 $Label6 = GUICtrlCreateLabel("Type",28,203,28,17,-1,-1)
-$Label7 = GUICtrlCreateLabel("Value (0 for null)",156,203,80,17,-1,-1)
+$Label7 = GUICtrlCreateLabel("Name",156,203,80,17,-1,-1)
 $Label8 = GUICtrlCreateLabel("Method",284,203,39,17,-1,-1)
 $InputParamType = GUICtrlCreateInput("",28,222,121,21,-1,512)
 $InputParamValue = GUICtrlCreateInput("",156,222,122,21,-1,512)
 $ComboParamByref = GUICtrlCreateCombo("",284,222,89,25,67,-1)
-GUICtrlSetData(-1,"Input/ByVal|Output/ByRef")
+GUICtrlSetData(-1,"ByVal|ByRef")
 $ButtonParamAdd = GUICtrlCreateButton("Add Parameter",28,259,91,25,-1,-1)
 $ButtonParamDelete = GUICtrlCreateButton("Clear All",132,259,107,25,-1,-1)
 $Label9 = GUICtrlCreateLabel("Calling convention",20,158,91,17,-1,-1)
 $Label10 = GUICtrlCreateLabel("Generated AutoIt code:",422,235,115,17,-1,-1)
 $EditCode = GUICtrlCreateEdit("",421,256,401,160,3147776,-1)
-$ButtonTest = GUICtrlCreateButton("Test Code",423,425,107,25,-1,-1)
 $ButtonCopy = GUICtrlCreateButton("Copy to Clipboard",576,425,107,25,-1,-1)
 $ButtonCapture = GUICtrlCreateButton("Capture from MSDN",704,1,107,25,-1,-1)
-$ButtonGenonly = GUICtrlCreateButton("Nothing Else",708,427,107,25,-1,-1)
+$ButtonGenonly = GUICtrlCreateButton("Generate code",430,425,107,25,-1,-1)
 $ComboOutput = GUICtrlCreateCombo("",102,429,121,25,67,-1)
 GUICtrlSetData(-1,"ConsoleWrite|MsgBox|$vDllCallReturn only")
 $Label11 = GUICtrlCreateLabel("Output method:",20,433,77,17,-1,-1)
-$Label12 = GUICtrlCreateLabel("Generate code and:",236,433,99,17,-1,-1)
 GUICtrlCreateLabel("MSDN URL page",16,5,115,17,-1,-1)
 $InputFromMSDNPage = GUICtrlCreateEdit("",421,78,401,150,3145728,-1)
 $ButtonParamEdit = GUICtrlCreateButton("Edit Parameter",256,259,91,25,-1,-1)
@@ -72,7 +70,7 @@ xpos=-1
 ypos=-1
 center_gui=true
 title_textmode=normal
-[0x00011DFE]
+[0x00011D3E]
 handle=459
 locked=0
 resize=
@@ -99,7 +97,7 @@ bgimage=
 order=0
 tabpage=-1
 textmode=text
-[0x00011E02]
+[0x00011D42]
 handle=460
 locked=0
 resize=
@@ -126,7 +124,7 @@ bgimage=
 order=2
 tabpage=-1
 textmode=text
-[0x00011E06]
+[0x00011D46]
 handle=461
 locked=0
 resize=
@@ -153,7 +151,7 @@ bgimage=
 order=3
 tabpage=-1
 textmode=text
-[0x00011E0A]
+[0x00011D4A]
 handle=462
 locked=0
 resize=
@@ -180,7 +178,7 @@ bgimage=
 order=4
 tabpage=-1
 textmode=text
-[0x00011E0E]
+[0x00011D4E]
 handle=463
 locked=0
 resize=
@@ -207,7 +205,7 @@ bgimage=
 order=5
 tabpage=-1
 textmode=text
-[0x00011E12]
+[0x00011D52]
 handle=464
 locked=0
 resize=
@@ -234,7 +232,7 @@ bgimage=
 order=6
 tabpage=-1
 textmode=text
-[0x00011E16]
+[0x00011D56]
 handle=465
 locked=0
 resize=
@@ -261,7 +259,7 @@ bgimage=
 order=7
 tabpage=-1
 textmode=text
-[0x00011E1A]
+[0x00011D5A]
 handle=466
 locked=0
 resize=
@@ -288,7 +286,7 @@ bgimage=
 order=8
 tabpage=-1
 textmode=text
-[0x00011E1E]
+[0x00011D5E]
 handle=467
 locked=0
 resize=
@@ -315,7 +313,7 @@ bgimage=
 order=9
 tabpage=-1
 textmode=text
-[0x00011E26]
+[0x00011D66]
 handle=468
 locked=0
 resize=
@@ -342,7 +340,7 @@ bgimage=
 order=10
 tabpage=-1
 textmode=text
-[0x00011E2E]
+[0x00011D6E]
 handle=469
 locked=0
 resize=
@@ -369,7 +367,7 @@ bgimage=
 order=12
 tabpage=-1
 textmode=text
-[0x00011E32]
+[0x00011D72]
 handle=470
 locked=0
 resize=
@@ -396,7 +394,7 @@ bgimage=
 order=13
 tabpage=-1
 textmode=text
-[0x00011E36]
+[0x00011D76]
 handle=471
 locked=0
 resize=
@@ -406,7 +404,7 @@ x=156
 y=203
 width=80
 height=17
-text=Value (0 for null)
+text=Name
 tooltip=
 state=$GUI_SHOW+$GUI_ENABLE
 style=
@@ -423,7 +421,7 @@ bgimage=
 order=14
 tabpage=-1
 textmode=text
-[0x00011E3A]
+[0x00011D7A]
 handle=472
 locked=0
 resize=
@@ -450,7 +448,7 @@ bgimage=
 order=15
 tabpage=-1
 textmode=text
-[0x00011E3E]
+[0x00011D7E]
 handle=473
 locked=0
 resize=
@@ -477,7 +475,7 @@ bgimage=
 order=16
 tabpage=-1
 textmode=text
-[0x00011E42]
+[0x00011D82]
 handle=474
 locked=0
 resize=
@@ -504,7 +502,7 @@ bgimage=
 tabpage=-1
 order=17
 textmode=text
-[0x00011E46]
+[0x00011D86]
 handle=475
 locked=0
 resize=
@@ -514,7 +512,7 @@ x=284
 y=222
 width=89
 height=25
-text=Input/ByVal|Output/ByRef
+text=ByVal|ByRef
 tooltip=
 state=$GUI_SHOW+$GUI_ENABLE
 style=$CBS_AUTOHSCROLL+$CBS_DROPDOWNLIST
@@ -531,7 +529,7 @@ bgimage=
 order=18
 tabpage=-1
 textmode=text
-[0x00011E4E]
+[0x00011D8E]
 handle=476
 locked=0
 resize=
@@ -558,7 +556,7 @@ bgimage=
 order=19
 tabpage=-1
 textmode=text
-[0x00011E52]
+[0x00011D92]
 handle=477
 locked=0
 resize=
@@ -585,7 +583,7 @@ bgimage=
 tabpage=-1
 textmode=text
 order=20
-[0x00011E56]
+[0x00011D96]
 handle=478
 locked=0
 resize=
@@ -612,7 +610,7 @@ bgimage=
 order=21
 tabpage=-1
 textmode=text
-[0x00011E5A]
+[0x00011D9A]
 handle=479
 locked=0
 resize=
@@ -639,7 +637,7 @@ bgimage=
 order=22
 tabpage=-1
 textmode=text
-[0x00011E5E]
+[0x00011D9E]
 handle=480
 locked=0
 resize=
@@ -666,34 +664,7 @@ bgimage=
 order=23
 tabpage=-1
 textmode=text
-[0x00011E62]
-handle=481
-locked=0
-resize=
-code=
-type=button
-x=423
-y=425
-width=107
-height=25
-text=Test Code
-tooltip=
-state=$GUI_SHOW+$GUI_ENABLE
-style=
-exstyle=
-textcolour=0x000000
-bgcolour=
-font=MS Sans Serif
-fontsize=8
-fontstyle=400
-fontattribute=0
-id=ButtonTest
-func=
-bgimage=
-order=24
-tabpage=-1
-textmode=text
-[0x00011E66]
+[0x00011DA6]
 handle=482
 locked=0
 resize=
@@ -720,7 +691,7 @@ bgimage=
 tabpage=-1
 textmode=text
 order=25
-[0x00011E6A]
+[0x00011DAA]
 handle=483
 locked=0
 resize=
@@ -747,17 +718,17 @@ bgimage=
 tabpage=-1
 textmode=text
 order=26
-[0x00011E6E]
+[0x00011DAE]
 handle=484
 locked=0
 resize=
 code=
 type=button
-x=708
-y=427
+x=430
+y=425
 width=107
 height=25
-text=Nothing Else
+text=Generate code
 tooltip=
 state=$GUI_SHOW+$GUI_ENABLE
 style=
@@ -774,7 +745,7 @@ bgimage=
 tabpage=-1
 textmode=text
 order=27
-[0x00011E72]
+[0x00011DB2]
 handle=485
 locked=0
 resize=
@@ -801,7 +772,7 @@ bgimage=
 order=28
 tabpage=-1
 textmode=text
-[0x00011E7A]
+[0x00011DBA]
 handle=486
 locked=0
 resize=
@@ -828,34 +799,7 @@ bgimage=
 order=29
 tabpage=-1
 textmode=text
-[0x00011E7E]
-handle=487
-locked=0
-resize=
-code=
-type=label
-x=236
-y=433
-width=99
-height=17
-text=Generate code and:
-tooltip=
-state=$GUI_SHOW+$GUI_ENABLE
-style=
-exstyle=
-textcolour=0x000000
-bgcolour=
-font=MS Sans Serif
-fontsize=8
-fontstyle=400
-fontattribute=0
-id=Label12
-func=
-bgimage=
-tabpage=-1
-textmode=text
-order=30
-[0x00011E82]
+[0x00011DC2]
 handle=488
 locked=0
 resize=
@@ -882,7 +826,7 @@ bgimage=
 tabpage=-1
 textmode=text
 order=31
-[0x00011E86]
+[0x00011DC6]
 handle=489
 locked=0
 resize=
@@ -909,7 +853,7 @@ bgimage=
 tabpage=-1
 textmode=text
 order=32
-[0x00011E8A]
+[0x00011DCA]
 handle=490
 locked=0
 resize=
@@ -936,7 +880,7 @@ bgimage=
 tabpage=-1
 textmode=text
 order=33
-[0x00021E90]
+[0x00011DCE]
 handle=491
 locked=0
 resize=
@@ -963,7 +907,7 @@ bgimage=
 order=34
 tabpage=-1
 textmode=text
-[0x00011E92]
+[0x00011DD2]
 handle=492
 locked=0
 resize=
@@ -990,7 +934,7 @@ bgimage=
 order=35
 tabpage=-1
 textmode=text
-[0x00101EB0]
+[0x00011DD6]
 handle=493
 locked=0
 resize=
