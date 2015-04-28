@@ -28,6 +28,7 @@ DllCall("ole32.dll", "long", "OleInitialize", "ptr", 0)
 Opt("MustDeclareVars", 0) ;0=no, 1=require pre-declare
 
 Global $aParams[1][3]
+Global $aStructs[1][3]
 Local $nMsg
 Local $sDllCallOut
 Local $nExit
@@ -173,8 +174,6 @@ While 1
 		Case $ButtonCaptureStructure
 			; set variable to original state
 			GUICtrlSetData($hMsgBar, "")
-			_GUICtrlListView_DeleteAllItems($ListViewParams)
-			ReDim $aParams[1][3]
 			; load url
 			GUICtrlSetData($hMsgBar, "Loading web page ...")
 			Local $sMSDNURLStructure
@@ -229,6 +228,17 @@ Func GenerateCode($sOutputType = "")
 		Next
 	EndIf
 	
+	If UBound($aStructs) > 1 Then
+		$sDllCallOut &= "Local $tag" & $aStructs[1][0] & " = '"
+		For $x = 1 To UBound($aStructs) - 1
+			$sParamTypeOut = ''
+			$sParamTypeOut = ConvertTypeArch(ConvertType($aStructs[$x][1]), $sArch)
+			$sDllCallOut &= $sParamTypeOut & " " & $aStructs[1][2] & ";"
+		Next
+		$sDllCallOut &= "'" & @CRLF
+		$sDllCallOut &= "Local $t" & $aStructs[1][0] & " = DllStructCreate($tag" & $aStructs[1][0] & ")" & @CRLF
+	EndIf
+
 	$sDllCallOut &= 'Local $aDllCallReturn,$vDllCallReturn' & @CRLF
 	$sDllCallOut &= '$aDllCallReturn = DllCall("' & GUICtrlRead($InputDll) & '","' & $sReturnTypeOut & '","' & GUICtrlRead($InputFunc) & '"'
 	If UBound($aParams) > 1 Then
@@ -1005,7 +1015,7 @@ Func CaptureFunctionFromMSDN()
 EndFunc   ;==>CaptureFunctionFromMSDN
 
 Func CaptureStructureFromMSDN()
-	; https://msdn.microsoft.com/en-us/library/aa364935%28VS.85%29.aspx
+	; https://msdn.microsoft.com/en-us/library/windows/desktop/aa373232%28v=vs.85%29.aspx
 	Local $istart, $iend, $ireturncode, $iprestart
 	Local $sMSDNPage
 	Local $sSyntax
@@ -1023,8 +1033,7 @@ Func CaptureStructureFromMSDN()
 	Local $iRequirementsSectPresent
 	Local $iSeealsoSectPresent
 	Local $iCommunityAdditionsPresent
-	Local $sReturnType
-	Local $sFunctionName
+	Local $sStructureName
 	Local $sDLL
 	Local $iDLLSectPresent
 	Local $sUnicodeandANSI
@@ -1121,7 +1130,61 @@ Func CaptureStructureFromMSDN()
 		$iCommunityAdditionsPresent = True
 	EndIf
 	#EndRegion verify if section is present
-
+	
+	#Region parse Syntax Section
+	; Syntax Section
+	$istart = StringInStr($sMSDNPage, "Syntax" & @CRLF, $STR_CASESENSE)
+	$iprestart = $istart
+	$iend = StringInStr($sMSDNPage, "Members" & @CRLF, $STR_CASESENSE, 1, $iprestart)
+	$sSyntax = StringMid($sMSDNPage, $istart, $iend - $istart - 1)
+	Local $astructfromMSDN
+	Local $istuctrow, $ifirststuctrow, $ilaststuctrow
+	$astructfromMSDN = StringSplit($sSyntax, @CRLF, $STR_ENTIRESPLIT)
+	For $istuctrow = 1 To $astructfromMSDN[0]
+		Select
+			Case StringInStr($astructfromMSDN[$istuctrow], "{")
+				$ifirststuctrow = $istuctrow
+				$ilaststuctrow = $istuctrow
+			Case StringInStr($astructfromMSDN[$istuctrow], "}")
+				$ilaststuctrow = $istuctrow
+		EndSelect
+	Next
+	
+	For $istuctrow = $ifirststuctrow To $ilaststuctrow
+		Select
+			Case $istuctrow = $ifirststuctrow ; first row
+				$arow = StringSplit($astructfromMSDN[$istuctrow], " ")
+				ArrayRemoveBlanks($arow)
+				$sStructureName = $arow[3]
+				StringStripWS($sStructureName, $STR_STRIPALL)
+				StringStripCR($sStructureName)
+				If StringLeft($sStructureName, 1) = "_" Then
+					$sStructureName = StringMid($sStructureName, 2)
+				EndIf
+			Case $istuctrow < $ilaststuctrow
+				; row next first
+				$arow = StringSplit($astructfromMSDN[$istuctrow], " ")
+				ArrayRemoveBlanks($arow)
+				$arow[2] = StringRegExpReplace($arow[2], "(?i)[^a-z0-9]", "")
+				ReDim $aStructs[UBound($aStructs) + 1][3] ; Add a "row" to the array
+				$aStructs[UBound($aStructs) - 1][0] = $sStructureName
+				$aStructs[UBound($aStructs) - 1][1] = $arow[1]
+				$aStructs[UBound($aStructs) - 1][2] = $arow[2]
+			Case $istuctrow = $ilaststuctrow
+				;last row
+				
+		EndSelect
+	Next
+	
+	#Region generate param in list iew
+	For $i = 2 To UBound($aStructs)
+		GUICtrlCreateListViewItem(($i - 1) & "|" & $aStructs[$i - 1][0] & "|" & $aStructs[$i - 1][1] & "|" & $aStructs[$i - 1][2], $ListViewStrucs)
+	Next
+	#EndRegion generate param in list iew
+	
+	#EndRegion parse Syntax Section
+	
+	$ireturncode = True
 EndFunc   ;==>CaptureStructureFromMSDN
 
 Func ArrayRemoveBlanks(ByRef $arr)
@@ -1136,3 +1199,4 @@ Func ArrayRemoveBlanks(ByRef $arr)
 	ReDim $arr[$idx]
 	$arr[0] = $idx - 1
 EndFunc   ;==>ArrayRemoveBlanks
+

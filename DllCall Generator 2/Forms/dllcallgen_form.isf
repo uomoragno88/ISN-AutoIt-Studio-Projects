@@ -19,7 +19,7 @@ $Label3 = GUICtrlCreateLabel("Return Type",20,131,63,17,-1,-1)
 $InputReturnType = GUICtrlCreateInput("int",124,128,121,21,-1,512)
 $ComboCallConv = GUICtrlCreateCombo("",124,156,121,25,66,-1)
 GUICtrlSetData(-1,"stdcall|cdecl")
-$ListViewParams = GUICtrlCreatelistview("#|Type|Value|Method",20,291,362,126,33280,544)
+$ListViewParams = GUICtrlCreatelistview("#|Type|Name|Method",20,291,362,126,33280,544)
 GUICtrlSendMsg(-1, $LVM_SETCOLUMNWIDTH, 0, 50)
 GUICtrlSendMsg(-1, $LVM_SETCOLUMNWIDTH, 1, 50)
 GUICtrlSendMsg(-1, $LVM_SETCOLUMNWIDTH, 2, 50)
@@ -44,12 +44,17 @@ $ComboOutput = GUICtrlCreateCombo("",102,429,121,25,67,-1)
 GUICtrlSetData(-1,"ConsoleWrite|MsgBox|$vDllCallReturn only")
 $Label11 = GUICtrlCreateLabel("Output method:",20,433,77,17,-1,-1)
 GUICtrlCreateLabel("MSDN URL page",16,5,115,17,-1,-1)
-$InputFromMSDNPage = GUICtrlCreateEdit("",421,78,401,150,3145728,-1)
 $ButtonParamEdit = GUICtrlCreateButton("Edit Parameter",256,259,91,25,-1,-1)
+GUICtrlCreateLabel("Structures:",422,85,60,17,-1,-1)
 $ButtonCaptureStructure = GUICtrlCreateButton("Capture structure",545,32,107,25,-1,-1)
 $InputParamNumber = GUICtrlCreateInput("",5,224,15,21,-1,512)
-$hMsgBar = GUICtrlCreateLabel("",20,40,300,17,-1,-1)
+$ListViewStrucs = GUICtrlCreatelistview("#|Structure|Type|Name",421,105,362,80,33280,544)
+GUICtrlSendMsg(-1, $LVM_SETCOLUMNWIDTH, 0, 50)
+GUICtrlSendMsg(-1, $LVM_SETCOLUMNWIDTH, 1, 50)
+GUICtrlSendMsg(-1, $LVM_SETCOLUMNWIDTH, 2, 50)
+GUICtrlSendMsg(-1, $LVM_SETCOLUMNWIDTH, 3, 50)
 $hMSDNURL = GUICtrlCreateInput("",120,5,550,21,-1,512)
+$hMsgBar = GUICtrlCreateLabel("",20,40,300,17,-1,-1)
 
 
 
@@ -71,7 +76,7 @@ xpos=-1
 ypos=-1
 center_gui=true
 title_textmode=normal
-[0x00011BB8]
+[0x00031D66]
 handle=459
 locked=0
 resize=
@@ -98,7 +103,7 @@ bgimage=
 order=0
 tabpage=-1
 textmode=text
-[0x00011BBC]
+[0x00031D5A]
 handle=460
 locked=0
 resize=
@@ -125,7 +130,7 @@ bgimage=
 order=2
 tabpage=-1
 textmode=text
-[0x00011BC0]
+[0x00031D76]
 handle=461
 locked=0
 resize=
@@ -152,7 +157,7 @@ bgimage=
 order=3
 tabpage=-1
 textmode=text
-[0x00011BC4]
+[0x00031D82]
 handle=462
 locked=0
 resize=
@@ -179,7 +184,7 @@ bgimage=
 order=4
 tabpage=-1
 textmode=text
-[0x00011BC8]
+[0x00031D92]
 handle=463
 locked=0
 resize=
@@ -206,7 +211,7 @@ bgimage=
 order=5
 tabpage=-1
 textmode=text
-[0x00011BCC]
+[0x00031DA6]
 handle=464
 locked=0
 resize=
@@ -233,7 +238,7 @@ bgimage=
 order=6
 tabpage=-1
 textmode=text
-[0x00011BD0]
+[0x00031D9E]
 handle=465
 locked=0
 resize=
@@ -260,7 +265,7 @@ bgimage=
 order=7
 tabpage=-1
 textmode=text
-[0x00011BD4]
+[0x00031D8E]
 handle=466
 locked=0
 resize=
@@ -287,7 +292,7 @@ bgimage=
 order=8
 tabpage=-1
 textmode=text
-[0x00011BD8]
+[0x00031D7A]
 handle=467
 locked=0
 resize=
@@ -314,7 +319,7 @@ bgimage=
 order=9
 tabpage=-1
 textmode=text
-[0x00011BE0]
+[0x00031D5C]
 handle=468
 locked=0
 resize=
@@ -324,7 +329,7 @@ x=20
 y=291
 width=362
 height=126
-text=#|Type|Value|Method
+text=#|Type|Name|Method
 tooltip=
 state=$GUI_SHOW+$GUI_ENABLE
 style=$LVS_EDITLABELS+$LVS_NOSORTHEADER
@@ -341,7 +346,7 @@ bgimage=
 order=10
 tabpage=-1
 textmode=text
-[0x00011BE8]
+[0x00031D3A]
 handle=469
 locked=0
 resize=
@@ -368,7 +373,7 @@ bgimage=
 order=12
 tabpage=-1
 textmode=text
-[0x00011BEC]
+[0x00031D34]
 handle=470
 locked=0
 resize=
@@ -395,7 +400,7 @@ bgimage=
 order=13
 tabpage=-1
 textmode=text
-[0x00011BF0]
+[0x00031D4C]
 handle=471
 locked=0
 resize=
@@ -422,7 +427,7 @@ bgimage=
 order=14
 tabpage=-1
 textmode=text
-[0x00011BF4]
+[0x00031D68]
 handle=472
 locked=0
 resize=
@@ -449,7 +454,7 @@ bgimage=
 order=15
 tabpage=-1
 textmode=text
-[0x00011BF8]
+[0x00031D78]
 handle=473
 locked=0
 resize=
@@ -476,7 +481,7 @@ bgimage=
 order=16
 tabpage=-1
 textmode=text
-[0x00011BFC]
+[0x00031D8C]
 handle=474
 locked=0
 resize=
@@ -503,7 +508,7 @@ bgimage=
 tabpage=-1
 order=17
 textmode=text
-[0x00011C00]
+[0x00031D9C]
 handle=475
 locked=0
 resize=
@@ -530,7 +535,7 @@ bgimage=
 order=18
 tabpage=-1
 textmode=text
-[0x00011C08]
+[0x00081DD6]
 handle=476
 locked=0
 resize=
@@ -557,7 +562,7 @@ bgimage=
 order=19
 tabpage=-1
 textmode=text
-[0x00011C0C]
+[0x0004181A]
 handle=477
 locked=0
 resize=
@@ -584,7 +589,7 @@ bgimage=
 tabpage=-1
 textmode=text
 order=20
-[0x00011C10]
+[0x00041826]
 handle=478
 locked=0
 resize=
@@ -611,7 +616,7 @@ bgimage=
 order=21
 tabpage=-1
 textmode=text
-[0x00011C14]
+[0x00071830]
 handle=479
 locked=0
 resize=
@@ -638,7 +643,7 @@ bgimage=
 order=22
 tabpage=-1
 textmode=text
-[0x00011C18]
+[0x00041A16]
 handle=480
 locked=0
 resize=
@@ -665,7 +670,7 @@ bgimage=
 order=23
 tabpage=-1
 textmode=text
-[0x00011C1C]
+[0x00061A08]
 handle=481
 locked=0
 resize=
@@ -692,7 +697,7 @@ bgimage=
 tabpage=-1
 textmode=text
 order=25
-[0x00011C20]
+[0x00041A06]
 handle=482
 locked=0
 resize=
@@ -719,7 +724,7 @@ bgimage=
 tabpage=-1
 textmode=text
 order=26
-[0x00011C24]
+[0x00041A0C]
 handle=483
 locked=0
 resize=
@@ -746,7 +751,7 @@ bgimage=
 tabpage=-1
 textmode=text
 order=27
-[0x00011C28]
+[0x00041874]
 handle=484
 locked=0
 resize=
@@ -773,7 +778,7 @@ bgimage=
 order=28
 tabpage=-1
 textmode=text
-[0x00011C30]
+[0x00041878]
 handle=485
 locked=0
 resize=
@@ -800,7 +805,7 @@ bgimage=
 order=29
 tabpage=-1
 textmode=text
-[0x00011C34]
+[0x00041810]
 handle=486
 locked=0
 resize=
@@ -827,35 +832,8 @@ bgimage=
 tabpage=-1
 textmode=text
 order=31
-[0x00011C38]
+[0x00041818]
 handle=487
-locked=0
-resize=
-code=
-type=edit
-x=421
-y=78
-width=401
-height=150
-text=
-tooltip=
-state=$GUI_SHOW+$GUI_ENABLE
-style=$WS_VSCROLL+$WS_HSCROLL
-exstyle=
-textcolour=0x000000
-bgcolour=
-font=MS Sans Serif
-fontsize=8
-fontstyle=400
-fontattribute=0
-id=InputFromMSDNPage
-func=
-bgimage=
-tabpage=-1
-textmode=text
-order=32
-[0x00011C3C]
-handle=488
 locked=0
 resize=
 code=
@@ -881,8 +859,8 @@ bgimage=
 tabpage=-1
 textmode=text
 order=33
-[0x00011C40]
-handle=489
+[0x0004184C]
+handle=488
 locked=0
 resize=
 code=
@@ -908,8 +886,8 @@ bgimage=
 order=34
 tabpage=-1
 textmode=text
-[0x00011C44]
-handle=490
+[0x00041DE4]
+handle=489
 locked=0
 resize=
 code=
@@ -935,8 +913,8 @@ bgimage=
 order=35
 tabpage=-1
 textmode=text
-[0x00011C48]
-handle=491
+[0x00031DE8]
+handle=490
 locked=0
 resize=
 code=
@@ -962,8 +940,8 @@ bgimage=
 tabpage=-1
 textmode=text
 order=35
-[0x00041C5C]
-handle=500
+[0x00011DEC]
+handle=491
 locked=0
 resize=
 code=
@@ -989,4 +967,58 @@ bgimage=
 tabpage=-1
 textmode=text
 order=34
+[0x00011DF0]
+handle=492
+locked=0
+resize=
+code=
+type=label
+x=422
+y=85
+width=60
+height=17
+text=Structures:
+tooltip=
+state=$GUI_SHOW+$GUI_ENABLE
+style=
+exstyle=
+textcolour=0x000000
+bgcolour=
+font=MS Sans Serif
+fontsize=8
+fontstyle=400
+fontattribute=0
+id=
+func=
+bgimage=
+tabpage=-1
+textmode=text
+order=34
+[0x00011DF4]
+handle=493
+locked=0
+resize=
+code=GUICtrlSendMsg(-1, $LVM_SETCOLUMNWIDTH, 0, 50)[BREAK]GUICtrlSendMsg(-1, $LVM_SETCOLUMNWIDTH, 1, 50)[BREAK]GUICtrlSendMsg(-1, $LVM_SETCOLUMNWIDTH, 2, 50)[BREAK]GUICtrlSendMsg(-1, $LVM_SETCOLUMNWIDTH, 3, 50)
+type=listview
+x=421
+y=105
+width=362
+height=80
+text=#|Structure|Type|Name
+tooltip=
+state=$GUI_SHOW+$GUI_ENABLE
+style=$LVS_EDITLABELS+$LVS_NOSORTHEADER
+exstyle=$LVS_EX_FULLROWSELECT+$WS_EX_CLIENTEDGE
+textcolour=0x000000
+bgcolour=
+font=MS Sans Serif
+fontsize=8
+fontstyle=400
+fontattribute=0
+id=ListViewStrucs
+func=
+bgimage=
+tabpage=-1
+textmode=text
+order=35
 #ce
