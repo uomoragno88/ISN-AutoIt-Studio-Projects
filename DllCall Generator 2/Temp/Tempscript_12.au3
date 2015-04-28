@@ -1,35 +1,30 @@
-Local $hdc
-Local $nXLeft
-Local $nYLeft
-Local $nWidth
-Local $nHeight
-Local $dwRop
+Local $hDevice
+Local $uiCommand
+Local $pData
+Local $pcbSize
 Local $aDllCallReturn,$vDllCallReturn
-$aDllCallReturn = DllCall("Gdi32.dll","BOOL","PatBlt","HANDLE", $hdc,"int", $nXLeft,"int", $nYLeft,"int", $nWidth,"int", $nHeight,"DWORD", $dwRop)
+$aDllCallReturn = DllCall("User32.dll","UINT","GetRawInputDeviceInfoW","HANDLE", $hDevice,"UINT", $uiCommand,"ptr", $pData,"UINT*", $pcbSize)
 If @error Then
    Switch @error
       Case 1
-         ConsoleWrite("DllCall error (Gdi32.dll/PatBlt): Unable to use the DLL file.  Possibly a problem with the parameters." & @CRLF)
+         ConsoleWrite("DllCall error (User32.dll/GetRawInputDeviceInfoW): Unable to use the DLL file.  Possibly a problem with the parameters." & @CRLF)
       Case 2
-         ConsoleWrite("DllCall error (Gdi32.dll/PatBlt): Unknown return type." & @CRLF)
+         ConsoleWrite("DllCall error (User32.dll/GetRawInputDeviceInfoW): Unknown return type." & @CRLF)
       Case 3
-         ConsoleWrite("DllCall error (Gdi32.dll/PatBlt): Function not found in DLL file.  Remember that function names are case sensitive." & @CRLF)
+         ConsoleWrite("DllCall error (User32.dll/GetRawInputDeviceInfoW): Function not found in DLL file.  Remember that function names are case sensitive." & @CRLF)
       Case 4
-         ConsoleWrite("DllCall error (Gdi32.dll/PatBlt): Incorrect number of parameters." & @CRLF)
+         ConsoleWrite("DllCall error (User32.dll/GetRawInputDeviceInfoW): Incorrect number of parameters." & @CRLF)
       Case 5
-         ConsoleWrite("DllCall error (Gdi32.dll/PatBlt): Bad parameter." & @CRLF)
+         ConsoleWrite("DllCall error (User32.dll/GetRawInputDeviceInfoW): Bad parameter." & @CRLF)
       Case Else
-         ConsoleWrite("DllCall error (Gdi32.dll/PatBlt): Unknown/unspecified error." & @CRLF)
+         ConsoleWrite("DllCall error (User32.dll/GetRawInputDeviceInfoW): Unknown/unspecified error." & @CRLF)
    EndSwitch
    $vDllCallReturn = ""
 Else
    $vDllCallReturn = $aDllCallReturn[0]
-   $hdc = $aDllCallReturn[1]
-   $nXLeft = $aDllCallReturn[2]
-   $nYLeft = $aDllCallReturn[3]
-   $nWidth = $aDllCallReturn[4]
-   $nHeight = $aDllCallReturn[5]
-   $dwRop = $aDllCallReturn[6]
-   ConsoleWrite("$hdc = " & $hdc & @CRLF & "$nXLeft = " & $nXLeft & @CRLF & "$nYLeft = " & $nYLeft & @CRLF & "$nWidth = " & $nWidth & @CRLF & "$nHeight = " & $nHeight & @CRLF & "$dwRop = " & $dwRop & @CRLF & "DllCall return value: " & $vDllCallReturn & @CRLF)
+   $hDevice = $aDllCallReturn[1]
+   $uiCommand = $aDllCallReturn[2]
+   $pData = $aDllCallReturn[3]
+   $pcbSize = $aDllCallReturn[4]
+   ConsoleWrite("$hDevice = " & $hDevice & @CRLF & "$uiCommand = " & $uiCommand & @CRLF & "$pData = " & $pData & @CRLF & "$pcbSize = " & $pcbSize & @CRLF & "DllCall return value: " & $vDllCallReturn & @CRLF)
 EndIf
-

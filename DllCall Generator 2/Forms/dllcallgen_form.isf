@@ -38,7 +38,7 @@ $Label9 = GUICtrlCreateLabel("Calling convention",20,158,91,17,-1,-1)
 $Label10 = GUICtrlCreateLabel("Generated AutoIt code:",422,235,115,17,-1,-1)
 $EditCode = GUICtrlCreateEdit("",421,256,401,160,3147776,-1)
 $ButtonCopy = GUICtrlCreateButton("Copy to Clipboard",576,425,107,25,-1,-1)
-$ButtonCapture = GUICtrlCreateButton("Capture from MSDN",704,1,107,25,-1,-1)
+$ButtonCaptureFunction = GUICtrlCreateButton("Capture function",422,32,107,25,-1,-1)
 $ButtonGenonly = GUICtrlCreateButton("Generate code",430,425,107,25,-1,-1)
 $ComboOutput = GUICtrlCreateCombo("",102,429,121,25,67,-1)
 GUICtrlSetData(-1,"ConsoleWrite|MsgBox|$vDllCallReturn only")
@@ -46,8 +46,9 @@ $Label11 = GUICtrlCreateLabel("Output method:",20,433,77,17,-1,-1)
 GUICtrlCreateLabel("MSDN URL page",16,5,115,17,-1,-1)
 $InputFromMSDNPage = GUICtrlCreateEdit("",421,78,401,150,3145728,-1)
 $ButtonParamEdit = GUICtrlCreateButton("Edit Parameter",256,259,91,25,-1,-1)
+$ButtonCaptureStructure = GUICtrlCreateButton("Capture structure",545,32,107,25,-1,-1)
 $InputParamNumber = GUICtrlCreateInput("",5,224,15,21,-1,512)
-$hMsgBar = GUICtrlCreateLabel("",20,40,600,17,-1,-1)
+$hMsgBar = GUICtrlCreateLabel("",20,40,300,17,-1,-1)
 $hMSDNURL = GUICtrlCreateInput("",120,5,550,21,-1,512)
 
 
@@ -70,7 +71,7 @@ xpos=-1
 ypos=-1
 center_gui=true
 title_textmode=normal
-[0x00011D3E]
+[0x00011BB8]
 handle=459
 locked=0
 resize=
@@ -97,7 +98,7 @@ bgimage=
 order=0
 tabpage=-1
 textmode=text
-[0x00011D42]
+[0x00011BBC]
 handle=460
 locked=0
 resize=
@@ -124,7 +125,7 @@ bgimage=
 order=2
 tabpage=-1
 textmode=text
-[0x00011D46]
+[0x00011BC0]
 handle=461
 locked=0
 resize=
@@ -151,7 +152,7 @@ bgimage=
 order=3
 tabpage=-1
 textmode=text
-[0x00011D4A]
+[0x00011BC4]
 handle=462
 locked=0
 resize=
@@ -178,7 +179,7 @@ bgimage=
 order=4
 tabpage=-1
 textmode=text
-[0x00011D4E]
+[0x00011BC8]
 handle=463
 locked=0
 resize=
@@ -205,7 +206,7 @@ bgimage=
 order=5
 tabpage=-1
 textmode=text
-[0x00011D52]
+[0x00011BCC]
 handle=464
 locked=0
 resize=
@@ -232,7 +233,7 @@ bgimage=
 order=6
 tabpage=-1
 textmode=text
-[0x00011D56]
+[0x00011BD0]
 handle=465
 locked=0
 resize=
@@ -259,7 +260,7 @@ bgimage=
 order=7
 tabpage=-1
 textmode=text
-[0x00011D5A]
+[0x00011BD4]
 handle=466
 locked=0
 resize=
@@ -286,7 +287,7 @@ bgimage=
 order=8
 tabpage=-1
 textmode=text
-[0x00011D5E]
+[0x00011BD8]
 handle=467
 locked=0
 resize=
@@ -313,7 +314,7 @@ bgimage=
 order=9
 tabpage=-1
 textmode=text
-[0x00011D66]
+[0x00011BE0]
 handle=468
 locked=0
 resize=
@@ -340,7 +341,7 @@ bgimage=
 order=10
 tabpage=-1
 textmode=text
-[0x00011D6E]
+[0x00011BE8]
 handle=469
 locked=0
 resize=
@@ -367,7 +368,7 @@ bgimage=
 order=12
 tabpage=-1
 textmode=text
-[0x00011D72]
+[0x00011BEC]
 handle=470
 locked=0
 resize=
@@ -394,7 +395,7 @@ bgimage=
 order=13
 tabpage=-1
 textmode=text
-[0x00011D76]
+[0x00011BF0]
 handle=471
 locked=0
 resize=
@@ -421,7 +422,7 @@ bgimage=
 order=14
 tabpage=-1
 textmode=text
-[0x00011D7A]
+[0x00011BF4]
 handle=472
 locked=0
 resize=
@@ -448,7 +449,7 @@ bgimage=
 order=15
 tabpage=-1
 textmode=text
-[0x00011D7E]
+[0x00011BF8]
 handle=473
 locked=0
 resize=
@@ -475,7 +476,7 @@ bgimage=
 order=16
 tabpage=-1
 textmode=text
-[0x00011D82]
+[0x00011BFC]
 handle=474
 locked=0
 resize=
@@ -502,7 +503,7 @@ bgimage=
 tabpage=-1
 order=17
 textmode=text
-[0x00011D86]
+[0x00011C00]
 handle=475
 locked=0
 resize=
@@ -529,7 +530,7 @@ bgimage=
 order=18
 tabpage=-1
 textmode=text
-[0x00011D8E]
+[0x00011C08]
 handle=476
 locked=0
 resize=
@@ -556,7 +557,7 @@ bgimage=
 order=19
 tabpage=-1
 textmode=text
-[0x00011D92]
+[0x00011C0C]
 handle=477
 locked=0
 resize=
@@ -583,7 +584,7 @@ bgimage=
 tabpage=-1
 textmode=text
 order=20
-[0x00011D96]
+[0x00011C10]
 handle=478
 locked=0
 resize=
@@ -610,7 +611,7 @@ bgimage=
 order=21
 tabpage=-1
 textmode=text
-[0x00011D9A]
+[0x00011C14]
 handle=479
 locked=0
 resize=
@@ -637,7 +638,7 @@ bgimage=
 order=22
 tabpage=-1
 textmode=text
-[0x00011D9E]
+[0x00011C18]
 handle=480
 locked=0
 resize=
@@ -664,8 +665,8 @@ bgimage=
 order=23
 tabpage=-1
 textmode=text
-[0x00011DA6]
-handle=482
+[0x00011C1C]
+handle=481
 locked=0
 resize=
 code=
@@ -691,17 +692,17 @@ bgimage=
 tabpage=-1
 textmode=text
 order=25
-[0x00011DAA]
-handle=483
+[0x00011C20]
+handle=482
 locked=0
 resize=
 code=
 type=button
-x=704
-y=1
+x=422
+y=32
 width=107
 height=25
-text=Capture from MSDN
+text=Capture function
 tooltip=
 state=$GUI_SHOW+$GUI_ENABLE
 style=
@@ -712,14 +713,14 @@ font=MS Sans Serif
 fontsize=8
 fontstyle=400
 fontattribute=0
-id=ButtonCapture
+id=ButtonCaptureFunction
 func=
 bgimage=
 tabpage=-1
 textmode=text
 order=26
-[0x00011DAE]
-handle=484
+[0x00011C24]
+handle=483
 locked=0
 resize=
 code=
@@ -745,8 +746,8 @@ bgimage=
 tabpage=-1
 textmode=text
 order=27
-[0x00011DB2]
-handle=485
+[0x00011C28]
+handle=484
 locked=0
 resize=
 code=
@@ -772,8 +773,8 @@ bgimage=
 order=28
 tabpage=-1
 textmode=text
-[0x00011DBA]
-handle=486
+[0x00011C30]
+handle=485
 locked=0
 resize=
 code=
@@ -799,8 +800,8 @@ bgimage=
 order=29
 tabpage=-1
 textmode=text
-[0x00011DC2]
-handle=488
+[0x00011C34]
+handle=486
 locked=0
 resize=
 code=
@@ -826,8 +827,8 @@ bgimage=
 tabpage=-1
 textmode=text
 order=31
-[0x00011DC6]
-handle=489
+[0x00011C38]
+handle=487
 locked=0
 resize=
 code=
@@ -853,8 +854,8 @@ bgimage=
 tabpage=-1
 textmode=text
 order=32
-[0x00011DCA]
-handle=490
+[0x00011C3C]
+handle=488
 locked=0
 resize=
 code=
@@ -880,8 +881,8 @@ bgimage=
 tabpage=-1
 textmode=text
 order=33
-[0x00011DCE]
-handle=491
+[0x00011C40]
+handle=489
 locked=0
 resize=
 code=
@@ -907,8 +908,8 @@ bgimage=
 order=34
 tabpage=-1
 textmode=text
-[0x00011DD2]
-handle=492
+[0x00011C44]
+handle=490
 locked=0
 resize=
 code=
@@ -934,15 +935,15 @@ bgimage=
 order=35
 tabpage=-1
 textmode=text
-[0x00011DD6]
-handle=493
+[0x00011C48]
+handle=491
 locked=0
 resize=
 code=
 type=label
 x=20
 y=40
-width=600
+width=300
 height=17
 text=
 tooltip=
@@ -961,4 +962,31 @@ bgimage=
 tabpage=-1
 textmode=text
 order=35
+[0x00041C5C]
+handle=500
+locked=0
+resize=
+code=
+type=button
+x=545
+y=32
+width=107
+height=25
+text=Capture structure
+tooltip=
+state=$GUI_SHOW+$GUI_ENABLE
+style=
+exstyle=
+textcolour=0x000000
+bgcolour=
+font=MS Sans Serif
+fontsize=8
+fontstyle=400
+fontattribute=0
+id=ButtonCaptureStructure
+func=
+bgimage=
+tabpage=-1
+textmode=text
+order=34
 #ce
