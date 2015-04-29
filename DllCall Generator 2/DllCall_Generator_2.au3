@@ -122,28 +122,6 @@ While 1
 		Case $ButtonParamDelete
 			_GUICtrlListView_DeleteAllItems($ListViewParams)
 			ReDim $aParams[1][3]
-;~ 		Case $ButtonTest
-;~ 			$sDllCallOut = GenerateCode("MsgBox") ; Always use MsgBox for output when generating for testing.
-;~ 			GUICtrlSetData($EditCode, $sDllCallOut)
-;~ 			If $sDllCallOut <> "" Then
-;~ 				GUISetState(@SW_DISABLE, $FormMain)
-;~ 				GUICtrlSetData($ButtonTest, "Executing...")
-;~ 				FileDelete(@TempDir & "\DllCallExec.au3")
-;~ 				FileWrite(@TempDir & "\DllCallExec.au3", $sDllCallOut); Write code to temporary file to be executed.
-;~ 				$nExit = RunWait(@AutoItExe & ' /AutoIt3ExecuteScript "' & @TempDir & '\DllCallExec.au3"', @TempDir) ; Execute the temporary file.
-;~ 				If $nExit <> 0 Then
-;~ 					Switch $nExit
-;~ 						Case 1
-;~ 							MsgBox($MB_ICONERROR, "DLL Code Generator", "The AutoIt interpreter encountered an error while parsing or executing the generated code." & @CRLF & "Exit code: " & $nExit, 0, $FormMain)
-;~ 						Case Else
-;~ 							MsgBox($MB_ICONERROR, "DLL Code Generator", "There was a problem with the DllCall (possibly incorrect parameters).  The AutoIt interpreter ended unexpectedly." & @CRLF & "Exit code: " & $nExit, 0, $FormMain)
-;~ 					EndSwitch
-;~ 				EndIf
-;~ 				GUICtrlSetData($ButtonTest, "Test Code")
-;~ 				GUISetState(@SW_ENABLE, $FormMain)
-;~ 				FileDelete(@TempDir & "\DllCallExec.au3")
-;~ 				WinActivate($FormMain)
-;~ 			EndIf
 		Case $ButtonGenonly
 			$sDllCallOut = GenerateCode(GUICtrlRead($ComboOutput))
 			GUICtrlSetData($EditCode, $sDllCallOut)
@@ -162,6 +140,8 @@ While 1
 			GUICtrlSetData($hMsgBar, "")
 			_GUICtrlListView_DeleteAllItems($ListViewParams)
 			ReDim $aParams[1][3]
+			_GUICtrlListView_DeleteAllItems($ListViewStrucs)
+			ReDim $aStructs[1][3]
 			; load url
 			GUICtrlSetData($hMsgBar, "Loading web page ...")
 			Local $sMSDNURLFunction
@@ -170,7 +150,6 @@ While 1
 			_IELoadWait($oIE)
 			$ireturncode = CaptureFunctionFromMSDN()
 			GUICtrlSetData($hMsgBar, "Done!")
-			
 		Case $ButtonCaptureStructure
 			; set variable to original state
 			GUICtrlSetData($hMsgBar, "")
@@ -233,7 +212,7 @@ Func GenerateCode($sOutputType = "")
 		For $x = 1 To UBound($aStructs) - 1
 			$sParamTypeOut = ''
 			$sParamTypeOut = ConvertTypeArch(ConvertType($aStructs[$x][1]), $sArch)
-			$sDllCallOut &= $sParamTypeOut & " " & $aStructs[1][2] & ";"
+			$sDllCallOut &= $sParamTypeOut & " " & $aStructs[$x][2] & ";"
 		Next
 		$sDllCallOut &= "'" & @CRLF
 		$sDllCallOut &= "Local $t" & $aStructs[1][0] & " = DllStructCreate($tag" & $aStructs[1][0] & ")" & @CRLF
@@ -345,7 +324,7 @@ Func ConvertType($MSDN_Type)
 		Case 'HCONVLIST'
 			Return 'HANDLE'
 		Case 'HCURSOR'
-			Return 'HICON'
+			Return 'HANDLE'
 		Case 'HDC'
 			Return 'HANDLE'
 		Case 'HDDEDATA'
@@ -678,8 +657,6 @@ Func CaptureFunctionFromMSDN()
 	Send("^a")
 	Sleep(200)
 	Send("^c")
-;~ 	ControlSetText("DllCall Code Generator 2.0", "", "[CLASS:Edit; INSTANCE:8]", ClipGet())
-;~ 	$sMSDNPage = GUICtrlRead($InputFromMSDNPage)
 	$sMSDNPage = ClipGet()
 
 	#Region verify if section is present
@@ -814,7 +791,6 @@ Func CaptureFunctionFromMSDN()
 					$aParams[UBound($aParams) - 1][0] = $arow[2]
 					$aParams[UBound($aParams) - 1][1] = "$" & $arow[3]
 					$aParams[UBound($aParams) - 1][2] = "ByVal"
-;~ 					GUICtrlCreateListViewItem(UBound($aParams) - 1 & "|" & $aParams[UBound($aParams) - 1][0] & "|" & $aParams[UBound($aParams) - 1][1] & "|" & $aParams[UBound($aParams) - 1][2], $ListViewParams)
 				ElseIf $arow[1] = "_Out_" Then
 					ReDim $aParams[UBound($aParams) + 1][3] ; Add a "row" to the array
 					$aParams[UBound($aParams) - 1][0] = $arow[2]
@@ -824,7 +800,6 @@ Func CaptureFunctionFromMSDN()
 					Else
 						$aParams[UBound($aParams) - 1][2] = "ByRef"
 					EndIf
-;~ 					GUICtrlCreateListViewItem(UBound($aParams) - 1 & "|" & $aParams[UBound($aParams) - 1][0] & "|" & $aParams[UBound($aParams) - 1][1] & "|" & $aParams[UBound($aParams) - 1][2], $ListViewParams)
 				ElseIf $arow[1] = "_Inout_" Or $arow[1] = "_Inout_opt_" Then
 					ReDim $aParams[UBound($aParams) + 1][3] ; Add a "row" to the array
 					$aParams[UBound($aParams) - 1][0] = $arow[2]
@@ -834,13 +809,11 @@ Func CaptureFunctionFromMSDN()
 					Else
 						$aParams[UBound($aParams) - 1][2] = "ByRef"
 					EndIf
-;~ 					GUICtrlCreateListViewItem(UBound($aParams) - 1 & "|" & $aParams[UBound($aParams) - 1][0] & "|" & $aParams[UBound($aParams) - 1][1] & "|" & $aParams[UBound($aParams) - 1][2], $ListViewParams)
 				ElseIf $arow[1] = "_Reserved_" Then ; reserved for future use. It must be NULL.
 					ReDim $aParams[UBound($aParams) + 1][3] ; Add a "row" to the array
 					$aParams[UBound($aParams) - 1][0] = $arow[2]
 					$aParams[UBound($aParams) - 1][1] = "0"
 					$aParams[UBound($aParams) - 1][2] = "ByVal"
-;~ 					GUICtrlCreateListViewItem(UBound($aParams) - 1 & "|" & $aParams[UBound($aParams) - 1][0] & "|" & $aParams[UBound($aParams) - 1][1] & "|" & $aParams[UBound($aParams) - 1][2], $ListViewParams)
 				EndIf
 			Case $iparamrow = $ilastparamrow
 				;last row
@@ -850,11 +823,13 @@ Func CaptureFunctionFromMSDN()
 	
 	GUICtrlSetData($InputFunc, $sFunctionName)
 	GUICtrlSetData($InputReturnType, $sReturnType)
+	
 	#EndRegion parse Syntax Section
 
 	#Region parse Parameters Section
 	; Parameters Section
 	Local $istructurepointerstart, $istructurestart, $ienumpointerstart, $ienumstart, $indx, $aparnnote
+	Local $sstructure
 	$istart = StringInStr($sMSDNPage, "Parameters" & @CRLF, $STR_CASESENSE, 1, $iprestart)
 	$iprestart = $istart
 	$iend = StringInStr($sMSDNPage, "Return value" & @CRLF, $STR_CASESENSE, 1, $iprestart)
@@ -867,7 +842,8 @@ Func CaptureFunctionFromMSDN()
 			$istructurepointerstart = StringInStr($aparnnote[$indx], "pointer to a", $STR_CASESENSE)
 			$istructurestart = StringInStr($aparnnote[$indx], "structure", $STR_CASESENSE)
 			If $istructurepointerstart > 0 And $istructurestart > 0 Then
-				; setta flag struttura e parse structure page
+				$structure = StringMid($aparnnote[$indx], $istructurepointerstart + 12, $istructurestart - ($istructurepointerstart + 12))
+				StringStripWS($structure, $STR_STRIPALL)
 			EndIf
 			$ienumpointerstart = StringInStr($aparnnote[$indx], "pointer to a", $STR_CASESENSE)
 			$ienumstart = StringInStr($aparnnote[$indx], "enumeration", $STR_CASESENSE)
@@ -1005,11 +981,9 @@ Func CaptureFunctionFromMSDN()
 	GUICtrlSetData($InputDll, $sDLL)
 	#EndRegion parse Requirements Section
 	
-	#Region generate param in list iew
 	For $i = 2 To UBound($aParams)
 		GUICtrlCreateListViewItem(($i - 1) & "|" & $aParams[$i - 1][0] & "|" & $aParams[$i - 1][1] & "|" & $aParams[$i - 1][2], $ListViewParams)
 	Next
-	#EndRegion generate param in list iew
 	
 	$ireturncode = True
 EndFunc   ;==>CaptureFunctionFromMSDN
@@ -1020,26 +994,18 @@ Func CaptureStructureFromMSDN()
 	Local $sMSDNPage
 	Local $sSyntax
 	Local $sMembers
-	Local $sReturnvalue
 	Local $sRemarks
 	Local $sExamples
 	Local $sRequirements
 	Local $sSeealso
 	Local $iSyntaxSectPresent
 	Local $iMembersSectPresent
-	Local $iReturnvalueSectPresent
 	Local $iRemarksSectPresent
 	Local $iExamplesSectPresent
 	Local $iRequirementsSectPresent
 	Local $iSeealsoSectPresent
 	Local $iCommunityAdditionsPresent
 	Local $sStructureName
-	Local $sDLL
-	Local $iDLLSectPresent
-	Local $sUnicodeandANSI
-	Local $iUnicodeandANSISectPresent
-	Local $sUnicodeName
-	Local $sANSIName
 	Local $awork, $swork, $arow, $ioffset
 
 	; from http://www.autoitscript.com/forum/topic/158186-embedded-ie-copying-content/page-3
@@ -1048,8 +1014,6 @@ Func CaptureStructureFromMSDN()
 	Send("^a")
 	Sleep(200)
 	Send("^c")
-;~ 	ControlSetText("DllCall Code Generator 2.0", "", "[CLASS:Edit; INSTANCE:8]", ClipGet())
-;~ 	$sMSDNPage = GUICtrlRead($InputFromMSDNPage)
 	$sMSDNPage = ClipGet()
 
 	#Region verify if section is present
@@ -1076,18 +1040,7 @@ Func CaptureStructureFromMSDN()
 		$iMembersSectPresent = True
 		$iprestart = $istart
 	EndIf
-	
-;~ 	$istart = StringInStr($sMSDNPage, "Return value" & @CRLF, $STR_CASESENSE, 1, $iprestart)
-;~ 	If $istart = 0 Then
-;~ 		$iReturnvalueSectPresent = False
-;~ 		$ireturncode = False
-;~ 		Return SetError(3, 0, 0)
-;~ 		;messaggio di stop
-;~ 	Else
-;~ 		$iReturnvalueSectPresent = True
-;~ 		$iprestart = $istart
-;~ 	EndIf
-	
+
 	$istart = StringInStr($sMSDNPage, "Remarks" & @CRLF, $STR_CASESENSE, 1, $iprestart)
 	If $istart = 0 Then
 		$iRemarksSectPresent = False
@@ -1095,14 +1048,6 @@ Func CaptureStructureFromMSDN()
 		$iRemarksSectPresent = True
 		$iprestart = $istart
 	EndIf
-
-;~ 	$istart = StringInStr($sMSDNPage, "Examples" & @CRLF, $STR_CASESENSE, 1, $iprestart)
-;~ 	If $istart = 0 Then
-;~ 		$iExamplesSectPresent = False
-;~ 	Else
-;~ 		$iExamplesSectPresent = True
-;~ 		$iprestart = $istart
-;~ 	EndIf
 
 	$istart = StringInStr($sMSDNPage, "Requirements" & @CRLF, $STR_CASESENSE, 1, $iprestart)
 	If $istart = 0 Then
@@ -1176,11 +1121,9 @@ Func CaptureStructureFromMSDN()
 		EndSelect
 	Next
 	
-	#Region generate param in list iew
 	For $i = 2 To UBound($aStructs)
 		GUICtrlCreateListViewItem(($i - 1) & "|" & $aStructs[$i - 1][0] & "|" & $aStructs[$i - 1][1] & "|" & $aStructs[$i - 1][2], $ListViewStrucs)
 	Next
-	#EndRegion generate param in list iew
 	
 	#EndRegion parse Syntax Section
 	
@@ -1199,4 +1142,3 @@ Func ArrayRemoveBlanks(ByRef $arr)
 	ReDim $arr[$idx]
 	$arr[0] = $idx - 1
 EndFunc   ;==>ArrayRemoveBlanks
-
