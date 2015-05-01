@@ -69,7 +69,7 @@ xpos=-1
 ypos=-1
 center_gui=true
 title_textmode=normal
-[0x00011CF4]
+[0x00011BB8]
 handle=459
 locked=0
 resize=
@@ -96,7 +96,7 @@ bgimage=
 order=1
 tabpage=-1
 textmode=text
-[0x00011CF8]
+[0x00011BBC]
 handle=460
 locked=0
 resize=
@@ -123,7 +123,7 @@ bgimage=
 order=2
 tabpage=-1
 textmode=text
-[0x00011CFC]
+[0x00011BC0]
 handle=461
 locked=0
 resize=
@@ -150,7 +150,7 @@ bgimage=
 order=4
 tabpage=-1
 textmode=text
-[0x00011D00]
+[0x00011BC4]
 handle=462
 locked=0
 resize=
@@ -177,7 +177,7 @@ bgimage=
 order=5
 tabpage=-1
 textmode=text
-[0x00011D04]
+[0x00011BC8]
 handle=463
 locked=0
 resize=
@@ -204,7 +204,7 @@ bgimage=
 tabpage=-1
 textmode=text
 order=6
-[0x00011D08]
+[0x00011BCC]
 handle=464
 locked=0
 resize=
@@ -231,7 +231,7 @@ bgimage=
 order=3
 tabpage=-1
 textmode=text
-[0x00011D0C]
+[0x00011BD0]
 handle=465
 locked=0
 resize=
@@ -258,7 +258,7 @@ bgimage=
 tabpage=-1
 textmode=text
 order=7
-[0x00011D10]
+[0x00011BD4]
 handle=466
 locked=0
 resize=
@@ -285,7 +285,7 @@ bgimage=
 tabpage=-1
 textmode=text
 order=8
-[0x00011D14]
+[0x00011BD8]
 handle=467
 locked=0
 resize=
@@ -312,7 +312,7 @@ bgimage=
 tabpage=-1
 textmode=text
 order=9
-[0x00011D18]
+[0x00011BDC]
 handle=468
 locked=0
 resize=
@@ -339,7 +339,7 @@ bgimage=Images\amazon.jpg
 order=11
 tabpage=-1
 textmode=text
-[0x00011D1C]
+[0x00011BE0]
 handle=469
 locked=0
 resize=
@@ -366,7 +366,7 @@ bgimage=Images\ebay.jpg
 order=10
 tabpage=-1
 textmode=text
-[0x00011D20]
+[0x00011BE4]
 handle=470
 locked=0
 resize=
@@ -393,7 +393,7 @@ bgimage=Images\spedizione.jpg
 order=12
 tabpage=-1
 textmode=text
-[0x00011D24]
+[0x00011BE8]
 handle=471
 locked=0
 resize=
@@ -420,7 +420,7 @@ bgimage=Images\test_images.jpg
 order=13
 tabpage=-1
 textmode=text
-[0x00011D28]
+[0x00011BEC]
 handle=472
 locked=0
 resize=
@@ -447,7 +447,7 @@ bgimage=
 order=14
 tabpage=-1
 textmode=text
-[0x00011D2C]
+[0x00011BF0]
 handle=473
 locked=0
 resize=
@@ -474,7 +474,7 @@ bgimage=
 tabpage=-1
 textmode=text
 order=15
-[0x00011D30]
+[0x00011BF4]
 handle=474
 locked=0
 resize=
@@ -501,7 +501,7 @@ bgimage=
 tabpage=-1
 textmode=text
 order=16
-[0x00011D34]
+[0x00011BF8]
 handle=475
 locked=0
 resize=

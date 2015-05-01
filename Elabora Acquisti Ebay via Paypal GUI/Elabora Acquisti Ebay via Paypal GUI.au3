@@ -18,11 +18,15 @@ Global $oMyError = ObjEvent("AutoIt.Error", "MyErrFunc")
 #include "ExtMsgBox.au3"
 #include "Forms\GUI_Form.isf"
 
+Opt("MustDeclareVars", 1) ;0=no, 1=require
+; if use Dbug disable this Opt
+
 _ExtMsgBoxSet(0, 0, Default, Default, 11, "Calibri")
 
 Global $s_provenienza
 Global $s_ambiente
 Global $s_versione
+Global $s_data_compilazione
 
 $s_provenienza = "PAYPAL"
 $s_ambiente = "PRODUZIONE"
@@ -50,7 +54,7 @@ Func Chiudi_click() ; se cliccato il tasto "chiudi"
 EndFunc   ;==>Chiudi_click
 
 Func Produzione_click()
-	If(GUICtrlRead($hProduzione) = $GUI_CHECKED) Then
+	If (GUICtrlRead($hProduzione) = $GUI_CHECKED) Then
 		$s_ambiente = "PRODUZIONE"
 		GUICtrlSetState($hProduzione_Image, $GUI_SHOW)
 		GUICtrlSetState($hTest_Image, $GUI_HIDE)
@@ -58,7 +62,7 @@ Func Produzione_click()
 EndFunc   ;==>Produzione_click
 
 Func Test_click()
-	If(GUICtrlRead($hTest) = $GUI_CHECKED) Then
+	If (GUICtrlRead($hTest) = $GUI_CHECKED) Then
 		$s_ambiente = "TEST"
 		GUICtrlSetState($hProduzione_Image, $GUI_HIDE)
 		GUICtrlSetState($hTest_Image, $GUI_SHOW)
@@ -66,7 +70,7 @@ Func Test_click()
 EndFunc   ;==>Test_click
 
 Func Test_Banca_click()
-	If(GUICtrlRead($hTest_Banca) = $GUI_CHECKED) Then
+	If (GUICtrlRead($hTest_Banca) = $GUI_CHECKED) Then
 		$s_ambiente = "TESTBANCA"
 		GUICtrlSetState($hProduzione_Image, $GUI_HIDE)
 		GUICtrlSetState($hTest_Image, $GUI_SHOW)
@@ -74,7 +78,7 @@ Func Test_Banca_click()
 EndFunc   ;==>Test_Banca_click
 
 Func Paypal_click()
-	If(GUICtrlRead($hPaypal) = $GUI_CHECKED) Then
+	If (GUICtrlRead($hPaypal) = $GUI_CHECKED) Then
 		$s_provenienza = "PAYPAL"
 		GUICtrlSetState($hPaypal_Image, $GUI_SHOW)
 	EndIf
@@ -120,6 +124,7 @@ Func Tratta_Paypal($GUI_Form)
 		$UnderValue = 0
 	EndIf
 
+	Local $File, $Input
 	$File = FileOpenDialog("Select a TXT File", @DesktopDir, "TAB Files (*.txt)")
 	$Input = FileRead($File)
 	$Delimiter = @TAB
@@ -134,18 +139,18 @@ Func Tratta_Paypal($GUI_Form)
 	; determino i vari indici per le colonne utilizzate
 	; sulla base delle intestazioni presenti in riga 1
 	; attenzione la "Data" e' l'unica intstazione non preceduto da uno spazio
-	$iIndex_Data = _ArraySearch($ItemArray, "Data", 0, 0, 0, 0, 1, 0, True)
-	$iIndex_Nome = _ArraySearch($ItemArray, " Nome", 0, 0, 0, 0, 1, 0, True)
-	$iIndex_Tipo = _ArraySearch($ItemArray, " Tipo", 0, 0, 0, 0, 1, 0, True)
-	$iIndex_Codice_oggetto = _ArraySearch($ItemArray, " Codice oggetto", 0, 0, 0, 0, 1, 0, True)
-	$iIndex_Tariffa = _ArraySearch($ItemArray, " Tariffa", 0, 0, 0, 0, 1, 0, True)
-	$iIndex_Valuta = _ArraySearch($ItemArray, " Valuta", 0, 0, 0, 0, 1, 0, True)
-	$iIndex_Netto = _ArraySearch($ItemArray, " Netto", 0, 0, 0, 0, 1, 0, True)
-	$iIndex_Codice_transazione_di_riferimento = _ArraySearch($ItemArray, " Codice transazione di riferimento", 0, 0, 0, 0, 1, 0, True)
-	$iIndex_Codice_transazione = _ArraySearch($ItemArray, " Codice transazione", 0, 0, 0, 0, 1, 0, True)
-	$iIndex_Indirizzo_email = _ArraySearch($ItemArray, " Indirizzo email destinatario", 0, 0, 0, 0, 1, 0, True)
-	$iIndex_URL_oggetto = _ArraySearch($ItemArray, " URL oggetto", 0, 0, 0, 0, 1, 0, True)
-	$iIndex_Titolo_oggetto = _ArraySearch($ItemArray, " Titolo oggetto", 0, 0, 0, 0, 1, 0, True)
+	Local $iIndex_Data = _ArraySearch($ItemArray, "Data", 0, 0, 0, 0, 1, 0, True)
+	Local $iIndex_Nome = _ArraySearch($ItemArray, " Nome", 0, 0, 0, 0, 1, 0, True)
+	Local $iIndex_Tipo = _ArraySearch($ItemArray, " Tipo", 0, 0, 0, 0, 1, 0, True)
+	Local $iIndex_Codice_oggetto = _ArraySearch($ItemArray, " Codice oggetto", 0, 0, 0, 0, 1, 0, True)
+	Local $iIndex_Tariffa = _ArraySearch($ItemArray, " Tariffa", 0, 0, 0, 0, 1, 0, True)
+	Local $iIndex_Valuta = _ArraySearch($ItemArray, " Valuta", 0, 0, 0, 0, 1, 0, True)
+	Local $iIndex_Netto = _ArraySearch($ItemArray, " Netto", 0, 0, 0, 0, 1, 0, True)
+	Local $iIndex_Codice_transazione_di_riferimento = _ArraySearch($ItemArray, " Codice transazione di riferimento", 0, 0, 0, 0, 1, 0, True)
+	Local $iIndex_Codice_transazione = _ArraySearch($ItemArray, " Codice transazione", 0, 0, 0, 0, 1, 0, True)
+	Local $iIndex_Indirizzo_email = _ArraySearch($ItemArray, " Indirizzo email destinatario", 0, 0, 0, 0, 1, 0, True)
+	Local $iIndex_URL_oggetto = _ArraySearch($ItemArray, " URL oggetto", 0, 0, 0, 0, 1, 0, True)
+	Local $iIndex_Titolo_oggetto = _ArraySearch($ItemArray, " Titolo oggetto", 0, 0, 0, 0, 1, 0, True)
 
 	Global $i_sw_PBL
 	Global $i_sw_EUR
@@ -168,6 +173,7 @@ Func Tratta_Paypal($GUI_Form)
 	Global $s_ACQUISTI_DESCRIZIONE_VALUTA
 	Global $s_CALCOLATO_TOTALE_ACQ_VALUTA
 	Global $s_CALCOLATO_TOTALE_ACQ_EURO
+	Local $sMsg, $iRetValue
 
 	$s_ACQUISTI_SEH_ACQ_VALUTA = "0,00"
 	$s_CALCOLATO_TOTALE_ACQ_VALUTA = "0,00"
@@ -181,17 +187,17 @@ Func Tratta_Paypal($GUI_Form)
 	; inviati per acquisto merce pagata con paypal
 	; il file cvs scaricato è con i dati più recenti in alto
 	; per cui lo leggo in senso inverso
-	Local $s_work, $i_row, $i_max_row
+	Local $s_work, $i_row, $i_max_row, $s_query, $i_cod_ritorno, $s_work_tariffe
 	Local $i_almeno1, $s_work_tipo, $s_work_cod_oggetto, $s_work_fornitore
 	$i_max_row = $ItemLines - 1
 	$i_almeno1 = 0
 
 	For $i_row = $i_max_row To 1 Step -1
-		$s_works_tipo = $ItemArray[$i_row][$iIndex_Tipo]
+		$s_work_tipo = $ItemArray[$i_row][$iIndex_Tipo]
 		$s_work_cod_oggetto = $ItemArray[$i_row][$iIndex_Codice_oggetto]
 		$s_work_fornitore = $ItemArray[$i_row][$iIndex_Nome]
 		Select
-			Case $s_works_tipo = "Pagamento express inviato"
+			Case $s_work_tipo = "Pagamento express inviato"
 				If $s_work_cod_oggetto <> "" Then ; e' un acquisto ebay
 					$i_almeno1 = 1
 ;~ 					ExitLoop
@@ -199,7 +205,7 @@ Func Tratta_Paypal($GUI_Form)
 					$s_work_fornitore = "'" & $s_work_fornitore & "'"
 					$s_query = "SELECT * FROM FORNITORI WHERE COD_FORNITORE =" & $s_work_fornitore & ""
 					$s_ACQUISTI_FORNITORE = RicercaID_Fornitore($s_dbname, $s_query, $o_Con)
-					if @error Then
+					If @error Then
 						$s_work_Email = $ItemArray[$i_row][$iIndex_Indirizzo_email]
 						GUICtrlSetData($h_FORNITORE_DATA, $ItemArray[$i_row][$iIndex_Nome])
 						GUICtrlSetColor($h_FORNITORE_DATA, "0xFF0000")
@@ -255,12 +261,12 @@ Func Tratta_Paypal($GUI_Form)
 
 	; tratto gli ACQUISTI
 	For $i_row = $i_max_row To 1 Step -1
-		$s_works_tipo = $ItemArray[$i_row][$iIndex_Tipo]
-		$s_works_tariffe = $ItemArray[$i_row][$iIndex_Tariffa]
-		$s_works_tariffe = StringReplace($s_works_tariffe, ",", ".")
+		$s_work_tipo = $ItemArray[$i_row][$iIndex_Tipo]
+		$s_work_tariffe = $ItemArray[$i_row][$iIndex_Tariffa]
+		$s_work_tariffe = StringReplace($s_work_tariffe, ",", ".")
 		$s_work_cod_oggetto = $ItemArray[$i_row][$iIndex_Codice_oggetto]
 		Select
-			Case $s_works_tipo = "Conversione di valuta"
+			Case $s_work_tipo = "Conversione di valuta"
 				$s_work_ID_transazione_di_riferimento = $ItemArray[$i_row][$iIndex_Codice_transazione_di_riferimento]
 				$s_work_Valuta = $ItemArray[$i_row][$iIndex_Valuta]
 				$s_work_Importo_netto = $ItemArray[$i_row][$iIndex_Netto]
@@ -271,7 +277,7 @@ Func Tratta_Paypal($GUI_Form)
 						$s_ACQUISTI_VALUTA = $s_work_Valuta
 						$s_ACQUISTI_IMPORTO_ACQ_VALUTA = $s_work_Importo_netto
 				EndSelect
-			Case $s_works_tipo = "Pagamento express inviato"
+			Case $s_work_tipo = "Pagamento express inviato"
 				If $ItemArray[$i_row][$iIndex_Nome] = "Pitney Bowes Limited" Then
 					$i_sw_PBL = 1
 					$i_sw_acq = 1
@@ -308,7 +314,7 @@ Func Tratta_Paypal($GUI_Form)
 								Exit
 							EndIf
 					EndSelect
-					$s_work_Nome = $ItemArray[$i_row][$iIndex_Nome]
+					$s_work_nome = $ItemArray[$i_row][$iIndex_Nome]
 					$s_work_Email = $ItemArray[$i_row][$iIndex_Indirizzo_email]
 					$s_work_URL_oggetto = $ItemArray[$i_row][$iIndex_URL_oggetto]
 					$s_ACQUISTI_DOC_DI_CARICO_DATA = $ItemArray[$i_row][$iIndex_Data]
@@ -344,8 +350,8 @@ Func Tratta_Paypal($GUI_Form)
 					$s_ACQUISTI_DOC_DI_CARICO_NUMERO = $s_ACQUISTI_DOC_DI_CARICO_NUMERO + 1
 					Global $s_work_ID_ACQ = IncrementaID_ACQ($s_ACQUISTI_ID_ACQ, $s_ACQUISTI_DATA_ACQUISTO)
 					; recupero ID fornitore
-					$s_work_Nome = "'" & $s_work_Nome & "'"
-					$s_query = "SELECT * FROM FORNITORI WHERE COD_FORNITORE =" & $s_work_Nome & ""
+					$s_work_nome = "'" & $s_work_nome & "'"
+					$s_query = "SELECT * FROM FORNITORI WHERE COD_FORNITORE =" & $s_work_nome & ""
 					$s_ACQUISTI_FORNITORE = RicercaID_Fornitore($s_dbname, $s_query, $o_Con)
 					; recupero descizione valuta
 					$s_work_Valuta = "'" & $s_work_Valuta & "'"
@@ -477,7 +483,7 @@ EndFunc   ;==>AccessConnectConn
 
 Func MyErrFunc()
 	;#cs
-	$HexNumber = Hex($oMyError.number, 8)
+	Local $HexNumber = Hex($oMyError.number, 8)
 	MsgBox(0, "AutoItCOM Test", "We intercepted a COM Error !" & @CRLF & @CRLF & _
 			"err.description is: " & @TAB & $oMyError.description & @CRLF & _
 			"err.windescription:" & @TAB & $oMyError.windescription & @CRLF & _
@@ -493,6 +499,7 @@ Func MyErrFunc()
 EndFunc   ;==>MyErrFunc
 
 Func RegistraAcquisto($s_dbname, $_query, ByRef $o_adoCon, $i_adoMDB = 1)
+	Local $i_NeedToCloseInFunc, $o_adoRs, $sMsg, $iRetValue
 	If Not IsObj($o_adoCon) Then
 		AccessConnectConn($s_dbname, $o_adoCon)
 		$i_NeedToCloseInFunc = 1
@@ -537,6 +544,7 @@ Func RegistraAcquisto($s_dbname, $_query, ByRef $o_adoCon, $i_adoMDB = 1)
 EndFunc   ;==>RegistraAcquisto
 
 Func RecordSearchLast($s_dbname, $_query, ByRef $o_adoCon, $i_adoMDB = 1)
+	Local $i_NeedToCloseInFunc, $o_adoRs, $sMsg, $iRetValue
 	If Not IsObj($o_adoCon) Then
 		AccessConnectConn($s_dbname, $o_adoCon)
 		$i_NeedToCloseInFunc = 1
@@ -566,12 +574,12 @@ Func RecordSearchLast($s_dbname, $_query, ByRef $o_adoCon, $i_adoMDB = 1)
 EndFunc   ;==>RecordSearchLast
 
 Func IncrementaID_ACQ($s_ACQUISTI_ID_ACQ, $s_ACQUISTI_DATA_ACQUISTO)
-	local $s_workID
-	local $s_workID_anno
-	local $s_workID_mese
-	local $s_workID_prog
-	local $S_workData_mese
-	local $S_workData_anno
+	Local $s_workID
+	Local $s_workID_anno
+	Local $s_workID_mese
+	Local $s_workID_prog
+	Local $S_workData_mese
+	Local $S_workData_anno, $sMsg, $iRetValue
 
 	$s_workID_anno = StringLeft($s_ACQUISTI_ID_ACQ, 4)
 	$s_workID_mese = StringMid($s_ACQUISTI_ID_ACQ, 5, 2)
@@ -580,14 +588,14 @@ Func IncrementaID_ACQ($s_ACQUISTI_ID_ACQ, $s_ACQUISTI_DATA_ACQUISTO)
 	$S_workData_anno = StringRight($s_ACQUISTI_DATA_ACQUISTO, 4)
 
 	Select
-		case $s_workID_anno = $S_workData_anno
+		Case $s_workID_anno = $S_workData_anno
 			If $s_workID_mese = $S_workData_mese Then
 				$s_workID_prog = $s_workID_prog + 1
 			Else
 				$s_workID_mese = $S_workData_mese
 				$s_workID_prog = "01"
 			EndIf
-		case $s_workID_anno <> $S_workData_anno
+		Case $s_workID_anno <> $S_workData_anno
 			$s_workID_anno = $S_workData_anno
 			$s_workID_mese = $S_workData_mese
 			$s_workID_prog = "01"
@@ -597,7 +605,7 @@ Func IncrementaID_ACQ($s_ACQUISTI_ID_ACQ, $s_ACQUISTI_DATA_ACQUISTO)
 			$iRetValue = _ExtMsgBox($EMB_ICONINFO, "OK", "Informazione", $sMsg)
 	EndSelect
 
-	local $i_lung
+	Local $i_lung
 	$i_lung = StringLen($s_workID_mese)
 	If $i_lung < 2 Then
 		$s_workID_mese = "0" & $s_workID_mese
@@ -617,6 +625,7 @@ Func AccessCloseConn($o_adoCon)
 EndFunc   ;==>AccessCloseConn
 
 Func RicercaID_Fornitore($s_dbname, $_query, ByRef $o_adoCon, $i_adoMDB = 1)
+	Local $i_NeedToCloseInFunc, $o_adoRs, $sMsg, $iRetValue
 	If Not IsObj($o_adoCon) Then
 		AccessConnectConn($s_dbname, $o_adoCon)
 		$i_NeedToCloseInFunc = 1
@@ -634,7 +643,7 @@ Func RicercaID_Fornitore($s_dbname, $_query, ByRef $o_adoCon, $i_adoMDB = 1)
 			Return SetError(1, 0, 0)
 		EndIf
 
-		$s_work_ID_FORNITORE = $o_adoRs("ID_FORNITORE").Value
+		Local $s_work_ID_FORNITORE = $o_adoRs("ID_FORNITORE").Value
 
 	EndWith
 	$o_adoRs.Close
@@ -643,6 +652,7 @@ Func RicercaID_Fornitore($s_dbname, $_query, ByRef $o_adoCon, $i_adoMDB = 1)
 EndFunc   ;==>RicercaID_Fornitore
 
 Func RicercaDescr_Valuta($s_dbname, $_query, ByRef $o_adoCon, $i_adoMDB = 1)
+	Local $i_NeedToCloseInFunc, $o_adoRs, $sMsg, $iRetValue
 	If Not IsObj($o_adoCon) Then
 		AccessConnectConn($s_dbname, $o_adoCon)
 		$i_NeedToCloseInFunc = 1
@@ -660,7 +670,7 @@ Func RicercaDescr_Valuta($s_dbname, $_query, ByRef $o_adoCon, $i_adoMDB = 1)
 			Return SetError(1, 0, 0)
 		EndIf
 
-		$s_work_DESCR_VALUTA = $o_adoRs("DESCRIZIONE_VALUTA").Value
+		Local $s_work_DESCR_VALUTA = $o_adoRs("DESCRIZIONE_VALUTA").Value
 
 	EndWith
 	$o_adoRs.Close
@@ -669,6 +679,7 @@ Func RicercaDescr_Valuta($s_dbname, $_query, ByRef $o_adoCon, $i_adoMDB = 1)
 EndFunc   ;==>RicercaDescr_Valuta
 
 Func RegistraMovimento($s_dbname, $_query, ByRef $o_adoCon, $i_adoMDB = 1)
+	Local $i_NeedToCloseInFunc, $o_adoRs, $sMsg, $iRetValue
 	If Not IsObj($o_adoCon) Then
 		AccessConnectConn($s_dbname, $o_adoCon)
 		$i_NeedToCloseInFunc = 1
@@ -702,6 +713,7 @@ Func RegistraMovimento($s_dbname, $_query, ByRef $o_adoCon, $i_adoMDB = 1)
 EndFunc   ;==>RegistraMovimento
 
 Func RegistraFornitore($s_dbname, $_query, ByRef $o_adoCon, $i_adoMDB = 1)
+	Local $i_NeedToCloseInFunc, $o_adoRs, $sMsg, $iRetValue
 	If Not IsObj($o_adoCon) Then
 		AccessConnectConn($s_dbname, $o_adoCon)
 		$i_NeedToCloseInFunc = 1

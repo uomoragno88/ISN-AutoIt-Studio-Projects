@@ -19,11 +19,12 @@ $Label3 = GUICtrlCreateLabel("Return Type",20,131,63,17,-1,-1)
 $InputReturnType = GUICtrlCreateInput("int",124,128,121,21,-1,512)
 $ComboCallConv = GUICtrlCreateCombo("",124,156,121,25,66,-1)
 GUICtrlSetData(-1,"stdcall|cdecl")
-$ListViewParams = GUICtrlCreatelistview("#|Type|Name|Method",20,291,362,126,33280,544)
+$ListViewParams = GUICtrlCreatelistview("#|Type|Name|Method|Structure",20,291,362,126,33280,544)
 GUICtrlSendMsg(-1, $LVM_SETCOLUMNWIDTH, 0, 50)
 GUICtrlSendMsg(-1, $LVM_SETCOLUMNWIDTH, 1, 50)
 GUICtrlSendMsg(-1, $LVM_SETCOLUMNWIDTH, 2, 50)
 GUICtrlSendMsg(-1, $LVM_SETCOLUMNWIDTH, 3, 50)
+GUICtrlSendMsg(-1, $LVM_SETCOLUMNWIDTH, 4, 50)
 $Label5 = GUICtrlCreateLabel("Parameters:",20,182,60,17,-1,-1)
 $Label6 = GUICtrlCreateLabel("Type",28,203,28,17,-1,-1)
 $Label7 = GUICtrlCreateLabel("Name",156,203,80,17,-1,-1)
@@ -76,7 +77,7 @@ xpos=-1
 ypos=-1
 center_gui=true
 title_textmode=normal
-[0x00031D66]
+[0x000120C4]
 handle=459
 locked=0
 resize=
@@ -103,7 +104,7 @@ bgimage=
 order=0
 tabpage=-1
 textmode=text
-[0x00031D5A]
+[0x000120C8]
 handle=460
 locked=0
 resize=
@@ -130,7 +131,7 @@ bgimage=
 order=2
 tabpage=-1
 textmode=text
-[0x00031D76]
+[0x000120CC]
 handle=461
 locked=0
 resize=
@@ -157,7 +158,7 @@ bgimage=
 order=3
 tabpage=-1
 textmode=text
-[0x00031D82]
+[0x000120D0]
 handle=462
 locked=0
 resize=
@@ -184,7 +185,7 @@ bgimage=
 order=4
 tabpage=-1
 textmode=text
-[0x00031D92]
+[0x000120D4]
 handle=463
 locked=0
 resize=
@@ -211,7 +212,7 @@ bgimage=
 order=5
 tabpage=-1
 textmode=text
-[0x00031DA6]
+[0x000120D8]
 handle=464
 locked=0
 resize=
@@ -238,7 +239,7 @@ bgimage=
 order=6
 tabpage=-1
 textmode=text
-[0x00031D9E]
+[0x000120DC]
 handle=465
 locked=0
 resize=
@@ -265,7 +266,7 @@ bgimage=
 order=7
 tabpage=-1
 textmode=text
-[0x00031D8E]
+[0x000120E0]
 handle=466
 locked=0
 resize=
@@ -292,7 +293,7 @@ bgimage=
 order=8
 tabpage=-1
 textmode=text
-[0x00031D7A]
+[0x000120E4]
 handle=467
 locked=0
 resize=
@@ -319,17 +320,17 @@ bgimage=
 order=9
 tabpage=-1
 textmode=text
-[0x00031D5C]
+[0x000120EC]
 handle=468
 locked=0
 resize=
-code=GUICtrlSendMsg(-1, $LVM_SETCOLUMNWIDTH, 0, 50)[BREAK]GUICtrlSendMsg(-1, $LVM_SETCOLUMNWIDTH, 1, 50)[BREAK]GUICtrlSendMsg(-1, $LVM_SETCOLUMNWIDTH, 2, 50)[BREAK]GUICtrlSendMsg(-1, $LVM_SETCOLUMNWIDTH, 3, 50)
+code=GUICtrlSendMsg(-1, $LVM_SETCOLUMNWIDTH, 0, 50)[BREAK]GUICtrlSendMsg(-1, $LVM_SETCOLUMNWIDTH, 1, 50)[BREAK]GUICtrlSendMsg(-1, $LVM_SETCOLUMNWIDTH, 2, 50)[BREAK]GUICtrlSendMsg(-1, $LVM_SETCOLUMNWIDTH, 3, 50)[BREAK]GUICtrlSendMsg(-1, $LVM_SETCOLUMNWIDTH, 4, 50)
 type=listview
 x=20
 y=291
 width=362
 height=126
-text=#|Type|Name|Method
+text=#|Type|Name|Method|Structure
 tooltip=
 state=$GUI_SHOW+$GUI_ENABLE
 style=$LVS_EDITLABELS+$LVS_NOSORTHEADER
@@ -346,7 +347,7 @@ bgimage=
 order=10
 tabpage=-1
 textmode=text
-[0x00031D3A]
+[0x000120F4]
 handle=469
 locked=0
 resize=
@@ -373,7 +374,7 @@ bgimage=
 order=12
 tabpage=-1
 textmode=text
-[0x00031D34]
+[0x000120F8]
 handle=470
 locked=0
 resize=
@@ -400,7 +401,7 @@ bgimage=
 order=13
 tabpage=-1
 textmode=text
-[0x00031D4C]
+[0x000120FC]
 handle=471
 locked=0
 resize=
@@ -427,7 +428,7 @@ bgimage=
 order=14
 tabpage=-1
 textmode=text
-[0x00031D68]
+[0x00012100]
 handle=472
 locked=0
 resize=
@@ -454,7 +455,7 @@ bgimage=
 order=15
 tabpage=-1
 textmode=text
-[0x00031D78]
+[0x00012104]
 handle=473
 locked=0
 resize=
@@ -481,7 +482,7 @@ bgimage=
 order=16
 tabpage=-1
 textmode=text
-[0x00031D8C]
+[0x00012108]
 handle=474
 locked=0
 resize=
@@ -508,7 +509,7 @@ bgimage=
 tabpage=-1
 order=17
 textmode=text
-[0x00031D9C]
+[0x0001210C]
 handle=475
 locked=0
 resize=
@@ -535,7 +536,7 @@ bgimage=
 order=18
 tabpage=-1
 textmode=text
-[0x00081DD6]
+[0x00012114]
 handle=476
 locked=0
 resize=
@@ -562,7 +563,7 @@ bgimage=
 order=19
 tabpage=-1
 textmode=text
-[0x0004181A]
+[0x00012118]
 handle=477
 locked=0
 resize=
@@ -589,7 +590,7 @@ bgimage=
 tabpage=-1
 textmode=text
 order=20
-[0x00041826]
+[0x0001211C]
 handle=478
 locked=0
 resize=
@@ -616,7 +617,7 @@ bgimage=
 order=21
 tabpage=-1
 textmode=text
-[0x00071830]
+[0x00012120]
 handle=479
 locked=0
 resize=
@@ -643,7 +644,7 @@ bgimage=
 order=22
 tabpage=-1
 textmode=text
-[0x00041A16]
+[0x00012124]
 handle=480
 locked=0
 resize=
@@ -670,7 +671,7 @@ bgimage=
 order=23
 tabpage=-1
 textmode=text
-[0x00061A08]
+[0x00012128]
 handle=481
 locked=0
 resize=
@@ -697,7 +698,7 @@ bgimage=
 tabpage=-1
 textmode=text
 order=25
-[0x00041A06]
+[0x0001212C]
 handle=482
 locked=0
 resize=
@@ -724,7 +725,7 @@ bgimage=
 tabpage=-1
 textmode=text
 order=26
-[0x00041A0C]
+[0x00012130]
 handle=483
 locked=0
 resize=
@@ -751,7 +752,7 @@ bgimage=
 tabpage=-1
 textmode=text
 order=27
-[0x00041874]
+[0x00012134]
 handle=484
 locked=0
 resize=
@@ -778,7 +779,7 @@ bgimage=
 order=28
 tabpage=-1
 textmode=text
-[0x00041878]
+[0x0001213C]
 handle=485
 locked=0
 resize=
@@ -805,7 +806,7 @@ bgimage=
 order=29
 tabpage=-1
 textmode=text
-[0x00041810]
+[0x00012140]
 handle=486
 locked=0
 resize=
@@ -832,7 +833,7 @@ bgimage=
 tabpage=-1
 textmode=text
 order=31
-[0x00041818]
+[0x00012144]
 handle=487
 locked=0
 resize=
@@ -859,7 +860,7 @@ bgimage=
 tabpage=-1
 textmode=text
 order=33
-[0x0004184C]
+[0x00012148]
 handle=488
 locked=0
 resize=
@@ -886,7 +887,7 @@ bgimage=
 order=34
 tabpage=-1
 textmode=text
-[0x00041DE4]
+[0x0001214C]
 handle=489
 locked=0
 resize=
@@ -913,7 +914,7 @@ bgimage=
 order=35
 tabpage=-1
 textmode=text
-[0x00031DE8]
+[0x00012150]
 handle=490
 locked=0
 resize=
@@ -940,7 +941,7 @@ bgimage=
 tabpage=-1
 textmode=text
 order=35
-[0x00011DEC]
+[0x00012154]
 handle=491
 locked=0
 resize=
@@ -967,7 +968,7 @@ bgimage=
 tabpage=-1
 textmode=text
 order=34
-[0x00011DF0]
+[0x00012158]
 handle=492
 locked=0
 resize=
@@ -994,7 +995,7 @@ bgimage=
 tabpage=-1
 textmode=text
 order=34
-[0x00011DF4]
+[0x0001215C]
 handle=493
 locked=0
 resize=

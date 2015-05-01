@@ -16,13 +16,20 @@ Global $oMyError = ObjEvent("AutoIt.Error", "MyErrFunc")
 #include "CSV_Function.au3"
 #include "AccessConstants.au3"
 #include "ExtMsgBox.au3"
+#include "ff.au3"
 #include "Forms\GUI_Form.isf"
+
+Opt("MustDeclareVars", 0) ;0=no, 1=require
+; if use Dbug disable this Opt
+
+DllCall("ole32.dll", "long", "OleInitialize", "ptr", 0)
 
 _ExtMsgBoxSet(0, 0, Default, Default, 11, "Calibri")
 
 Global $s_provenienza
 Global $s_ambiente
 Global $s_versione
+Global $s_data_compilazione
 
 $s_provenienza = "EBAY"
 $s_ambiente = "PRODUZIONE"
@@ -126,20 +133,35 @@ Func Tratta_Amazon($GUI_Form, $hArea_Comunicazioni)
 	Local $s_work_distinta_Amazon
 	Local $i_offset
 	Local $i_offset_ok
+	Local $sMsg, $iRetValue
 
-	$sMsg = "Copia il contenuto della distinta di imballaggio di Amazon nella clipboard. Quindi premi OK"
-	$iRetValue = _ExtMsgBox($EMB_ICONINFO, "OK", "Copia", $sMsg)
+	$sMsg = "Apri la distinta di imballaggio di Amazon. Quindi premi OK"
+	$iRetValue = _ExtMsgBox($EMB_ICONINFO, "OK", "Apri", $sMsg)
+	
+	;
+	Local $winHandle = WinGetHandle ("Gestisci i tuoi ordini - Mozilla Firefox") 
+	WinActivate($winHandle)
+	Sleep(200)
+	Send("^a")
+	Sleep(200)
+	Send("^c")
+	Local $s_work_distinta_Amazon = ClipGet()
+	Local $i_work_start, $i_work_end
+	$i_work_start = StringInStr($s_work_distinta_Amazon, "Numero dell'ordine:")
+	$i_work_end = StringInStr($s_work_distinta_Amazon, @CRLF & "Grazie per aver comprato nel Marketplace di Amazon.")
+	$s_work_distinta_Amazon = StringMid($s_work_distinta_Amazon, $i_work_start, ($i_work_end - $i_work_start - 1))
+	;
 
 	Do
 		$i_offset_ok = 0
-		$s_work_distinta_Amazon = ClipGet()
+;~ 		$s_work_distinta_Amazon = ClipGet()
 		$a_distinta_Amazon = StringSplit($s_work_distinta_Amazon, @CRLF, 1)
 		;_ArrayDisplay($a_distinta_Amazon)
 		Select
-			Case $a_distinta_Amazon[0] = 25
+			Case $a_distinta_Amazon[0] = 24
 				$i_offset = 0
 				$i_offset_ok = 1
-			Case $a_distinta_Amazon[0] = 26
+			Case $a_distinta_Amazon[0] = 25	
 				$i_offset = 1
 				$i_offset_ok = 1
 			Case Else
@@ -151,7 +173,7 @@ Func Tratta_Amazon($GUI_Form, $hArea_Comunicazioni)
 		EndIf
 	Until $i_offset_ok
 
-	Local $s_venditore = StringTrimLeft($a_distinta_Amazon[13 + $i_offset], 15)
+	Local $s_venditore = StringTrimLeft($a_distinta_Amazon[12 + $i_offset], 15)
 	$s_venditore = StringStripWS($s_venditore, $STR_STRIPALL)
 	$s_venditore = StringUpper($s_venditore)
 
@@ -178,11 +200,11 @@ Func Tratta_Amazon($GUI_Form, $hArea_Comunicazioni)
 	Local $s_Ebay_Altro
 	Local $s_work_mese
 
-	$a_Etichetta[0] = $a_distinta_Amazon[5]
-	$a_Etichetta[1] = $a_distinta_Amazon[6]
-	$a_Etichetta[2] = $a_distinta_Amazon[7]
-	$a_Etichetta[3] = $a_distinta_Amazon[8]
-	$a_Etichetta[4] = $a_distinta_Amazon[9]
+	$a_Etichetta[0] = $a_distinta_Amazon[4]
+	$a_Etichetta[1] = $a_distinta_Amazon[5]
+	$a_Etichetta[2] = $a_distinta_Amazon[6]
+	$a_Etichetta[3] = $a_distinta_Amazon[7]
+	$a_Etichetta[4] = $a_distinta_Amazon[8]
 
 	Local $s_work_cap = StringRight($a_Etichetta[2 + $i_offset], 5)
 	Local $s_work_resto = StringLeft($a_Etichetta[2 + $i_offset], StringLen($a_Etichetta[2 + $i_offset]) - 5)
@@ -219,28 +241,28 @@ Func Tratta_Amazon($GUI_Form, $hArea_Comunicazioni)
 
 	$s_Ebay_Altro = "AMAZON"
 
-	$s_ID_Vendita = StringTrimLeft($a_distinta_Amazon[2], 19)
+	$s_ID_Vendita = StringTrimLeft($a_distinta_Amazon[1], 19)
 	$s_ID_Vendita = StringStripWS($s_ID_Vendita, $STR_STRIPALL)
 	$s_ID_Vendita = StringReplace($s_ID_Vendita, "-", "")
 
-	$s_Numero_Oggetto = StringTrimLeft($a_distinta_Amazon[16 + $i_offset], 4)
+	$s_Numero_Oggetto = StringTrimLeft($a_distinta_Amazon[15 + $i_offset], 4)
 	$s_Numero_Oggetto = StringStripWS($s_Numero_Oggetto, $STR_STRIPALL)
 	$s_Numero_Oggetto = "'" & $s_Numero_Oggetto & "'"
 
-	$s_Prezzo_Oggetto = $a_distinta_Amazon[21 + $i_offset]
+	$s_Prezzo_Oggetto = $a_distinta_Amazon[20 + $i_offset]
 	;$s_Prezzo_Oggetto = StringStripWS ($s_Prezzo_Oggetto, $STR_STRIPALL)
 	Local $a_work = StringSplit($s_Prezzo_Oggetto, "EUR ")
 	;_ArrayDisplay($a_work)
 	$s_Prezzo_Oggetto = $a_work[5]
 
-	$s_Spedizione_Oggetto = StringTrimLeft($a_distinta_Amazon[23 + $i_offset], 11)
+	$s_Spedizione_Oggetto = StringTrimLeft($a_distinta_Amazon[22 + $i_offset], 11)
 	;$s_Spedizione_Oggetto = StringStripWS ($s_Spedizione_Oggetto, $STR_STRIPALL)
 	$a_work = StringSplit($s_Spedizione_Oggetto, "EUR ")
 	;_ArrayDisplay($a_work)
 	$s_Spedizione_Oggetto = $a_work[6]
 
 	Local $a_work_QTA, $s_work_QTA
-	$s_work_QTA = $a_distinta_Amazon[15 + $i_offset]
+	$s_work_QTA = $a_distinta_Amazon[14 + $i_offset]
 	$a_work_QTA = StringSplit($s_work_QTA, @TAB, 1)
 	;_ArrayDisplay($a_work_QTA)
 	$s_Qta_Oggetto = $a_work_QTA[1]
@@ -254,7 +276,7 @@ Func Tratta_Amazon($GUI_Form, $hArea_Comunicazioni)
 		$s_Spedizione_Oggetto = $s_Spese_Unitarie
 	EndIf
 
-	$s_Data_Vendita_Oggetto = StringTrimLeft($a_distinta_Amazon[10 + $i_offset], 12)
+	$s_Data_Vendita_Oggetto = StringTrimLeft($a_distinta_Amazon[9 + $i_offset], 12)
 	$s_Data_Vendita_Oggetto = StringStripWS($s_Data_Vendita_Oggetto, $STR_STRIPALL)
 	Local $a_work = StringSplit($s_Data_Vendita_Oggetto, "/")
 	;	_ArrayDisplay($a_work)
@@ -293,7 +315,7 @@ Func Tratta_Amazon($GUI_Form, $hArea_Comunicazioni)
 	$s_Data_Vendita_Oggetto = $a_work[1] & "/" & $s_work_mese & "/20" & $a_work[3]
 
 	;Query; Search Records in a table and update rs ========================================================
-	Local $s_query
+	Local $s_query, $i_cod_ritorno
 	$s_query = "SELECT * FROM " & $s_Tablename & " WHERE ID_USCITA=" & $s_Numero_Oggetto & _
 			" AND TIPO_USCITA=5"
 
@@ -380,6 +402,7 @@ Func Tratta_Ebay($GUI_Form, $hArea_Comunicazioni)
 		$UnderValue = 0
 	EndIf
 
+	Local $File, $Input
 	$File = FileOpenDialog("Select a CSV File", @DesktopDir, "CSV Files (*.csv)")
 	$Input = FileRead($File)
 	$Delimiter = ","
@@ -397,7 +420,8 @@ Func Tratta_Ebay($GUI_Form, $hArea_Comunicazioni)
 	$s_venditore = $a_work[2]
 	$s_venditore = StringStripWS($s_venditore, $STR_STRIPALL)
 	$s_venditore = StringUpper($s_venditore)
-
+	
+	Local $sMsg, $iRetValue
 	If $i_records > 0 Then
 	Else
 		$sMsg = "Non ci sono ordini da registrare! Elaborazione abortita"
@@ -541,6 +565,7 @@ Func Tratta_Ebay($GUI_Form, $hArea_Comunicazioni)
 
 		$s_Data_Vendita_Oggetto = $a_work[1] & "/" & $s_work_mese & "/20" & $a_work[3]
 
+		Local $s_query, $i_cod_ritorno
 		;Query; Search Records in a table and update rs ========================================================
 		$s_query = "SELECT * FROM " & $s_Tablename & " WHERE ID_USCITA=" & $s_Numero_Oggetto & _
 				" AND TIPO_USCITA=5"
@@ -641,7 +666,7 @@ EndFunc   ;==>AccessConnectConn
 
 Func MyErrFunc()
 	;#cs
-	$HexNumber = Hex($oMyError.number, 8)
+	Local $HexNumber = Hex($oMyError.number, 8)
 	MsgBox(0, "AutoItCOM Test", "We intercepted a COM Error !" & @CRLF & @CRLF & _
 			"err.description is: " & @TAB & $oMyError.description & @CRLF & _
 			"err.windescription:" & @TAB & $oMyError.windescription & @CRLF & _
@@ -659,13 +684,14 @@ EndFunc   ;==>MyErrFunc
 Func RecordSearch($s_dbname, $_query, ByRef $o_adoCon, _
 		$s_Qta_Oggetto, $s_Data_Vendita_Oggetto, $s_Prezzo_Oggetto, _
 		$s_Spedizione_Oggetto, $s_Ebay_Altro, $s_venditore, $s_ID_Vendita, $i_adoMDB = 1)
+	Local $i_NeedToCloseInFunc, $sMsg, $iRetValue
 	If Not IsObj($o_adoCon) Then
 		AccessConnectConn($s_dbname, $o_adoCon)
 		$i_NeedToCloseInFunc = 1
 	Else
 		$i_NeedToCloseInFunc = 0
 	EndIf
-	$o_adoRs = ObjCreate("ADODB.Recordset")
+	Local $o_adoRs = ObjCreate("ADODB.Recordset")
 	$o_adoRs.CursorType = $adOpenKeyset
 	$o_adoRs.LockType = $adLockOptimistic
 	$o_adoRs.Open($_query, $o_adoCon)

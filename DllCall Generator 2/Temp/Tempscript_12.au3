@@ -1,5 +1,5 @@
-Local $tagSYSTEM_POWER_STATUS = 'BYTE ACLineStatus;BYTE BatteryFlag;BYTE BatteryLifePercent;BYTE SystemStatusFlag;DWORD BatteryLifeTime;DWORD BatteryFullLifeTime;'
-Local $tSYSTEM_POWER_STATUS = DllStructCreate($tagSYSTEM_POWER_STATUS)
+Local $tagGUIDA = 'struct;DWORD Data1;WORD Data2;WORD Data3;BYTE Data4[8];endstruct'
+Local $tGUIDA = DllStructCreate($tagGUID)
 Local $aDllCallReturn,$vDllCallReturn
 $aDllCallReturn = DllCall("user32.dll","int","")
 If @error Then
@@ -22,4 +22,6 @@ Else
    $vDllCallReturn = $aDllCallReturn[0]
    ConsoleWrite("DllCall return value: " & $vDllCallReturn & @CRLF)
 EndIf
+
+
 

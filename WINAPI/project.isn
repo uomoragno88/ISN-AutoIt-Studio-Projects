@@ -1,0 +1,14 @@
+[ISNAUTOITSTUDIO]
+name=WINAPI
+mainfile=WINAPI.au3
+author=S522733
+time=1460281
+date=29.04.2015
+comment=
+studioversion=0.98 BETA
+version=1.0
+projectopened=5
+lastusedfiles=\_WinAPI_CreateDIBColorTable.au3|\_WinAPI_ColorAdjustLuma.au3|\_WinAPI_CalculatePopupWindowPosition.au3|\WINAPI.au3|\_WinAPI_AboutDlg.au3|\_WinAPI_EnumSystemLocales.au3|\_WinAPI_EnumProcessModules.au3|\_WinAPI_EnumHardLinks.au3|\_WinAPI_BackupReadAbort.au3|H:\ISN AutoIt Studio\autoit_3_3_12\install\Include\WinAPIProc.au3|\_WinAPI_BackupRead.au3
+opened=
+opened_tabs=H:\ISN AutoIt Studio\Projects\WINAPI\WINAPI.au3|H:\ISN AutoIt Studio\Projects\WINAPI\_WinAPI_CalculatePopupWindowPosition.au3|H:\ISN AutoIt Studio\Projects\WINAPI\_WinAPI_ColorAdjustLuma.au3|H:\ISN AutoIt Studio\Projects\WINAPI\_WinAPI_CreateDIBColorTable.au3|
+lastopendate=29.04.2015 22:35
