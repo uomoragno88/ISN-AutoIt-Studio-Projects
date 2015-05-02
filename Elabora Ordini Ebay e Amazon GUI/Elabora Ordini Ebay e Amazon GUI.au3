@@ -139,13 +139,17 @@ Func Tratta_Amazon($GUI_Form, $hArea_Comunicazioni)
 	$iRetValue = _ExtMsgBox($EMB_ICONINFO, "OK", "Apri", $sMsg)
 	
 	;
-	Local $winHandle = WinGetHandle ("Gestisci i tuoi ordini - Mozilla Firefox") 
+	Local $winHandle = WinGetHandle("Gestisci i tuoi ordini - Mozilla Firefox")
 	WinActivate($winHandle)
 	Sleep(200)
 	Send("^a")
 	Sleep(200)
 	Send("^c")
 	Local $s_work_distinta_Amazon = ClipGet()
+	Sleep(200)
+	Send("!{F4}")
+	$winHandle = WinGetHandle("Elabora Ordini Ebay e Amazon")
+	WinActivate($winHandle)
 	Local $i_work_start, $i_work_end
 	$i_work_start = StringInStr($s_work_distinta_Amazon, "Numero dell'ordine:")
 	$i_work_end = StringInStr($s_work_distinta_Amazon, @CRLF & "Grazie per aver comprato nel Marketplace di Amazon.")
@@ -161,7 +165,7 @@ Func Tratta_Amazon($GUI_Form, $hArea_Comunicazioni)
 			Case $a_distinta_Amazon[0] = 24
 				$i_offset = 0
 				$i_offset_ok = 1
-			Case $a_distinta_Amazon[0] = 25	
+			Case $a_distinta_Amazon[0] = 25
 				$i_offset = 1
 				$i_offset_ok = 1
 			Case Else
