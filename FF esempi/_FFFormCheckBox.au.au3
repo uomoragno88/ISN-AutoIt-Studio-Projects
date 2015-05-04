@@ -5,8 +5,8 @@ _FFStart("http://ff-au3-example.thorsten-willert.de/")
 
 If _FFIsConnected() Then
 	
-	_FFOpenURL("http://ff-au3-example.thorsten-willert.de/")
-	Sleep(3000)
+;~ 	_FFOpenURL("http://ff-au3-example.thorsten-willert.de/")
+;~ 	Sleep(3000)
 	
 	Sleep(1000)
 	_FFFormCheckBox("oliven", True, 0, "value", "Pizza", "name")

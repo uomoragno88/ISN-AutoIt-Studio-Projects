@@ -3,7 +3,7 @@
 #include <Array.au3>
 
 _FFStart("http://ff-au3-example.thorsten-willert.de/")
-	_FFOpenURL("http://ff-au3-example.thorsten-willert.de/")
+;~ 	_FFOpenURL("http://ff-au3-example.thorsten-willert.de/")
 	Sleep(3000)
 
 If _FFIsConnected() Then

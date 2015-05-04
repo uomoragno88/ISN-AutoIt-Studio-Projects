@@ -4,8 +4,8 @@
 _FFStart("http://ff-au3-example.thorsten-willert.de/")
 
 If _FFIsConnected() Then
-	_FFOpenURL("http://ff-au3-example.thorsten-willert.de/")
-	Sleep(3000)
+;~ 	_FFOpenURL("http://ff-au3-example.thorsten-willert.de/")
+;~ 	Sleep(3000)
 		
 	_FFFormRadioButton(1, 0, "index")
 	Sleep(3000)

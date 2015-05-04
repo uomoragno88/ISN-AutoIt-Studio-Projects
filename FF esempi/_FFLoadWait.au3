@@ -2,7 +2,7 @@
 #include <FF.au3>
 
 _FFStart("http://ff-au3-example.thorsten-willert.de/", Default, 2)
-	_FFOpenURL("http://ff-au3-example.thorsten-willert.de/")
+;~ 	_FFOpenURL("http://ff-au3-example.thorsten-willert.de/")
 	Sleep(3000)
 
 If _FFIsConnected() Then
@@ -11,6 +11,6 @@ If _FFIsConnected() Then
 	If _FFLoadWait() Then MsgBox(64, "", "Page was loaded in " & @extended & "ms")
 
 	Sleep(3000)
-;~ 	_FFQuit()
+	_FFQuit()
 EndIf
 

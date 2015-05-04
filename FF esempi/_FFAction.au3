@@ -3,8 +3,8 @@
 
 _FFStart("http://ff-au3-example.thorsten-willert.de/")
 
-	_FFOpenURL("http://ff-au3-example.thorsten-willert.de/")
-	Sleep(5000)
+;~ 	_FFOpenURL("http://ff-au3-example.thorsten-willert.de/")
+;~ 	Sleep(5000)
 	
 If _FFIsConnected() Then
 	Sleep(2000)
@@ -18,5 +18,5 @@ If _FFIsConnected() Then
 	_FFOpenURL("chrome:bookmarks")
 	Sleep(2000)
 	_FFAction("alert", "Bye bye ...")
-;~ 	_FFQuit()
+	_FFQuit()
 EndIf
